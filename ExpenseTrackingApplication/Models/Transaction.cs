@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ExpenseTrackingApplication.Data.Enum;
 
 namespace ExpenseTrackingApplication.Models;
 
@@ -11,7 +12,7 @@ public class Transaction
     public string? AppUserId {  get; set; }
     public float Amount { get; set; }
     public DateTime Date { get; set; }
-    //public TransactionType Type { get; set; }
+    public TransactionCategory Category { get; set; }
     public string? Description { get; set; }
     
 }
