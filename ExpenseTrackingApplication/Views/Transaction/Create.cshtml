@@ -1,0 +1,38 @@
+﻿@model ExpenseTrackingApplication.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create Transaction";
+}
+
+<h2>Create Transaction</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Category" class="control-label"></label>
+        <select asp-for="Category" class="form-control">
+            @foreach (var category in Enum.GetValues(typeof(ExpenseTrackingApplication.Data.Enum.TransactionCategory)))
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Date" class="control-label"></label>
+        <input asp-for="Date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

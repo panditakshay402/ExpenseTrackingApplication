@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ExpenseTrackingApplication.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h2>Transactions</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Category</td>
+            <td>@item.Amount</td>
+            <td>@item.Date.ToShortDateString()</td>
+            <td>@item.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add Transaction</a>
