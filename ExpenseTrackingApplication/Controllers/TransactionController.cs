@@ -20,7 +20,11 @@ public class TransactionController : Controller
     // GET: Transaction
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Transactions.ToListAsync());
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var transactions = await _context.Transactions
+            .Where(t => t.AppUserId == userId)
+            .ToListAsync();
+        return View(transactions);
     }
     
     // GET: Transaction/Create
