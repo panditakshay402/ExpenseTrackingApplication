@@ -1,0 +1,17 @@
+﻿@model ExpenseTrackingApplication.ViewModels.ReportViewModel
+
+<h2>Generate Report</h2>
+
+<form asp-action="Generate">
+    <div class="form-group">
+        <label asp-for="StartDate" class="control-label"></label>
+        <input asp-for="StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="EndDate" class="control-label"></label>
+        <input asp-for="EndDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Generate" class="btn btn-primary" />
+    </div>
+</form>

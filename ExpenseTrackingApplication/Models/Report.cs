@@ -15,7 +15,6 @@ public class Report
     public string? AppUserId {  get; set; }
     public AppUser? AppUser { get; set; }
     
-    [NotMapped]
     public List<Transaction>? Transactions { get; set; }
     
 }
