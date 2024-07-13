@@ -1,9 +1,11 @@
 ﻿using ExpenseTrackingApplication.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackingApplication.Controllers;
 
+[Authorize]
 public class NotificationController : Controller
 {
     private readonly ApplicationDbContext _context;
