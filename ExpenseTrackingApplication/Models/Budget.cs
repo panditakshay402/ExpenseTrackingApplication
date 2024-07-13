@@ -9,7 +9,9 @@ public class Budget
     public int? Id { get; set; }
     public float? Amount { get; set; }
     public float? Limit { get; set; }
-    [ForeignKey("AppUserId")]
-    public string? AppUserId { get; set; }
+    
+    [ForeignKey("AppUser")]
+    public string? AppUserId {  get; set; }
+    public AppUser? AppUser { get; set; }
     
 }

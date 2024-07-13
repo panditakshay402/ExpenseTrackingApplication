@@ -12,7 +12,8 @@ public class Transaction
     public float Amount { get; set; }
     public DateTime Date { get; set; }
     public string? Description { get; set; }
+    
     [ForeignKey("AppUser")]
     public string? AppUserId {  get; set; }
-    
+    public AppUser? AppUser { get; set; }
 }
