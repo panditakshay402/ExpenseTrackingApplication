@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,10 @@ public class TransactionController : Controller
         if (ModelState.IsValid)
         {
             transaction.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+            // Parse the category from the form data
+            transaction.Category = (TransactionCategory)Enum.Parse(typeof(TransactionCategory), Request.Form["Category"]);
+
             _context.Add(transaction);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
