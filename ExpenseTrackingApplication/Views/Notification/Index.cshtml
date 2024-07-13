@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Notification>
+
+<h2>Notifications</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>AppUserId</th>
+        <th>Topic</th>
+        <th>Message</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Read</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>@item.AppUserId</td>
+            <td>@item.Topic</td>
+            <td>@item.Message</td>
+            <td>@item.Type</td>
+            <td>@item.Date</td>
+            <td>@item.IsRead</td>
+        </tr>
+    }
+    </tbody>
+</table>
