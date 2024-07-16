@@ -19,7 +19,7 @@ public class BudgetController : Controller
     // GET: Budget
     public async Task<IActionResult> Index()
     {
-        // Get the Id of the currently logged-in user
+        // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         // Get all budgets that belong to the currently logged-in user
@@ -43,7 +43,7 @@ public class BudgetController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Get the Id of the currently logged-in user
+            // Get the ID of the currently logged-in user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
             // Set the AppUserId of the budget to the ID of the currently logged-in user

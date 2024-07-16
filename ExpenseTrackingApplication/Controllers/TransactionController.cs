@@ -53,4 +53,23 @@ public class TransactionController : Controller
         return View(transaction);
     }
     
+    // GET: Transaction/Details/{id}
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var transaction = await _context.Transactions
+            .FirstOrDefaultAsync(m => m.Id == id && m.AppUserId == userId);
+
+        if (transaction == null)
+        {
+            return NotFound();
+        }
+
+        return View(transaction);
+    }
 }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ExpenseTrackingApplication.Models.Transaction>
 
 @{
-    ViewData["Title"] = "Transactions";
+ViewData["Title"] = "Transactions";
 }
 
 <h2>Transactions</h2>
@@ -13,17 +13,21 @@
         <th>Amount</th>
         <th>Date</th>
         <th>Description</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.Category</td>
-            <td>@item.Amount</td>
-            <td>@item.Date.ToShortDateString()</td>
-            <td>@item.Description</td>
-        </tr>
+    <tr>
+        <td>@item.Category</td>
+        <td>@item.Amount</td>
+        <td>@item.Date.ToShortDateString()</td>
+        <td>@item.Description</td>
+        <td>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+        </td>
+    </tr>
     }
     </tbody>
 </table>
