@@ -1,30 +1,28 @@
 ﻿using System.Security.Claims;
-using ExpenseTrackingApplication.Data;
-using ExpenseTrackingApplication.Data.Enum;
+using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace ExpenseTrackingApplication.Controllers;
 
 [Authorize]
 public class TransactionController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ITransactionRepository _transactionRepository;
 
-    public TransactionController(ApplicationDbContext context)
+    public TransactionController(ITransactionRepository transactionRepository)
     {
-        _context = context;
+        _transactionRepository = transactionRepository;
     }
     
     // GET: Transaction
     public async Task<IActionResult> Index()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var transactions = await _context.Transactions
-            .Where(t => t.AppUserId == userId)
-            .ToListAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+        var transactions = await _transactionRepository.GetTransactionByUser(userId);
         return View(transactions);
     }
     
@@ -41,14 +39,14 @@ public class TransactionController : Controller
     {
         if (ModelState.IsValid)
         {
-            transaction.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-            // Parse the category from the form data
-            transaction.Category = (TransactionCategory)Enum.Parse(typeof(TransactionCategory), Request.Form["Category"]);
+            transaction.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                                    ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
 
-            _context.Add(transaction);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (await _transactionRepository.AddAsync(transaction))
+            {
+                // SaveAsync should be called inside AddAsync to follow the unit of work pattern
+                return RedirectToAction(nameof(Index));
+            }
         }
         return View(transaction);
     }
@@ -61,11 +59,11 @@ public class TransactionController : Controller
             return NotFound();
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var transaction = await _context.Transactions
-            .FirstOrDefaultAsync(m => m.Id == id && m.AppUserId == userId);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+        var transaction = await _transactionRepository.GetById(id.Value);
 
-        if (transaction == null)
+        if (transaction == null || transaction.AppUserId != userId)
         {
             return NotFound();
         }
