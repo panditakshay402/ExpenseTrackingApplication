@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,10 @@ namespace ExpenseTrackingApplication.Controllers;
 [Authorize]
 public class BudgetController : Controller
 {
-    private readonly ApplicationDbContext _context;
-    public BudgetController(ApplicationDbContext context)
+    private readonly IBudgetRepository _budgetRepository;
+    public BudgetController(IBudgetRepository budgetRepository)
     {
-        _context = context;
+        _budgetRepository = budgetRepository;
     }
     
     // GET: Budget
@@ -23,9 +24,7 @@ public class BudgetController : Controller
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         // Get all budgets that belong to the currently logged-in user
-        var budgets = await _context.Budgets
-            .Where(b => b.AppUserId == userId)
-            .ToListAsync();
+        var budgets = await _budgetRepository.GetBudgetByUser(userId);
 
         return View(budgets);
     }
@@ -49,9 +48,10 @@ public class BudgetController : Controller
             // Set the AppUserId of the budget to the ID of the currently logged-in user
             budget.AppUserId = userId;
 
-            _context.Add(budget);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (await _budgetRepository.AddAsync(budget))
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
         return View(budget);
     }
