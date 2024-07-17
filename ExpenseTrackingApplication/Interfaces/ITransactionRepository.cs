@@ -5,7 +5,6 @@ namespace ExpenseTrackingApplication.Interfaces;
 
 public interface ITransactionRepository
 {
-    // TODO: Change everything to async?
     Task<IEnumerable<Transaction?>> GetAll();
     Task<Transaction?> GetById(int id);
     Task<IEnumerable<Transaction>> GetTransactionByUser(string userId);
