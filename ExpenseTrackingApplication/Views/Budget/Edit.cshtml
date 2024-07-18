@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExpenseTrackingApplication.ViewModels.EditBudgetViewModel
+
+<h2>Edit Budget</h2>
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label">Amount</label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Limit" class="control-label">Limit</label>
+        <input asp-for="Limit" class="form-control" />
+        <span asp-validation-for="Limit" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

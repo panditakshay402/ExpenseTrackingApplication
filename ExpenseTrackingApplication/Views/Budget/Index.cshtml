@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Budget>
+﻿@model IEnumerable<ExpenseTrackingApplication.Models.Budget>
 
 <h2>Your Budgets</h2>
 
@@ -6,27 +6,25 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Amount)
+            @Html.DisplayNameFor(model => model.First().Amount)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Limit)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AppUserId)
+            @Html.DisplayNameFor(model => model.First().Limit)
         </th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
     <tr>
         <td>
-            @Html.DisplayNameFor(model => model.Amount)
+            @Html.DisplayFor(modelItem => item.Amount)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Limit)
         </td>
         <td>
-            @Html.DisplayNameFor(model => model.AppUserId)
+            <a asp-controller="Budget" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
         </td>
     </tr>
     }
