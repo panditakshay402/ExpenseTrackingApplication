@@ -12,17 +12,17 @@ public class BudgetRepository : IBudgetRepository
     {
         _context = context;
     }
-    public async Task<IEnumerable<Budget?>> GetAll()
+    public async Task<IEnumerable<Budget?>> GetAllAsync()
     {
         return await _context.Budgets.ToListAsync();
     }
 
-    public async Task<Budget?> GetById(int id)
+    public async Task<Budget?> GetByIdAsync(int id)
     {
         return await _context.Budgets.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<IEnumerable<Budget>> GetBudgetByUser(string userId)
+    public async Task<IEnumerable<Budget>> GetBudgetByUserAsync(string userId)
     {
         return await _context.Budgets.Where(b => b.AppUserId == userId).ToListAsync();
     }

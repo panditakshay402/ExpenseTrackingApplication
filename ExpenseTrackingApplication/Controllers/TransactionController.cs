@@ -22,7 +22,7 @@ public class TransactionController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
                      ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var transactions = await _transactionRepository.GetTransactionByUser(userId);
+        var transactions = await _transactionRepository.GetTransactionByUserAsync(userId);
         return View(transactions);
     }
     
@@ -61,7 +61,7 @@ public class TransactionController : Controller
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
                      ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var transaction = await _transactionRepository.GetById(id.Value);
+        var transaction = await _transactionRepository.GetByIdAsync(id.Value);
 
         if (transaction == null || transaction.AppUserId != userId)
         {
