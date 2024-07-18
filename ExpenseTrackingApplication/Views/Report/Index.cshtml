@@ -17,21 +17,23 @@
     </div>
 </form>
 
-@if (Model != null)
-{
-    <h3>Report from @Model.StartDate to @Model.EndDate</h3>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Transactions) {
+<h3>Report from @Model.StartDate to @Model.EndDate</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.Transactions != null)
+    {
+        foreach (var item in Model.Transactions)
+        {
             <tr>
                 <td>@item.Category</td>
                 <td>@item.Amount</td>
@@ -39,6 +41,6 @@
                 <td>@item.Description</td>
             </tr>
         }
-        </tbody>
-    </table>
-}
+    }
+    </tbody>
+</table>
