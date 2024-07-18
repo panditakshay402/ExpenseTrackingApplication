@@ -7,8 +7,13 @@ public class Budget
 {
     [Key]
     public int? Id { get; set; }
-    public float? Amount { get; set; }
-    public float? Limit { get; set; }
+    
+    [Required]
+    [Range(0, double.MaxValue, ErrorMessage = "Amount must be a positive number.")]
+    public decimal? Amount { get; set; }
+    [Required]
+    [Range(0, double.MaxValue, ErrorMessage = "Limit must be a positive number.")]
+    public decimal? Limit { get; set; }
     
     [ForeignKey("AppUser")]
     public string? AppUserId {  get; set; }
