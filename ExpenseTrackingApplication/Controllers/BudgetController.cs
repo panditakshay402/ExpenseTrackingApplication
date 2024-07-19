@@ -21,7 +21,12 @@ public class BudgetController : Controller
     {
         // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
- 
+        
+        if (userId == null)
+        {
+            return NotFound();
+        }
+        
         // Get all budgets that belong to the currently logged-in user
         var budgets = await _budgetRepository.GetBudgetByUserAsync(userId);
 
@@ -97,6 +102,32 @@ public class BudgetController : Controller
     
         await _budgetRepository.UpdateAsync(budget);
     
+        return RedirectToAction("Index");
+    }
+    
+    // GET: Budget/Delete/{id}
+    public async Task<IActionResult> Delete(int id)
+    {
+        var budgetDetails = await _budgetRepository.GetByIdAsync(id);
+        if (budgetDetails == null)
+        {
+            return NotFound();
+        }
+    
+        return View(budgetDetails);
+    }
+    
+    // POST: Budget/Delete/{id}
+    [HttpPost, ActionName("DeleteBudget")]
+    public async Task<IActionResult> DeleteBudget(int id)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+        
+        await _budgetRepository.DeleteAsync(budget);
         return RedirectToAction("Index");
     }
 }
