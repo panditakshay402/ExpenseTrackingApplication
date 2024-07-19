@@ -119,7 +119,7 @@ public class BudgetController : Controller
     
     // POST: Budget/Delete/{id}
     [HttpPost, ActionName("DeleteBudget")]
-    public async Task<IActionResult> DeleteBudget(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var budget = await _budgetRepository.GetByIdAsync(id);
         if (budget == null)
