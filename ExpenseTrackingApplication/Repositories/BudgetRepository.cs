@@ -36,7 +36,7 @@ public class BudgetRepository : IBudgetRepository
     public async Task<bool> DeleteAsync(Budget budget)
     {
         _context.Budgets.Remove(budget);
-        return true;
+        return await SaveAsync();
     }
 
     public async Task<bool> UpdateAsync(Budget budget)
