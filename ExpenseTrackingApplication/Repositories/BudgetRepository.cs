@@ -30,7 +30,7 @@ public class BudgetRepository : IBudgetRepository
     public async Task<bool> AddAsync(Budget budget)
     {
         await _context.Budgets.AddAsync(budget);
-        return true;
+        return await SaveAsync();
     }
 
     public async Task<bool> DeleteAsync(Budget budget)

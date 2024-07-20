@@ -54,7 +54,6 @@ public class BudgetController : Controller
 
             if (await _budgetRepository.AddAsync(budget))
             {
-                await _budgetRepository.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
         }

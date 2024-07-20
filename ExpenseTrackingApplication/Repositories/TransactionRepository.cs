@@ -54,7 +54,7 @@ public class TransactionRepository : ITransactionRepository
     public async Task<bool> AddAsync(Transaction transaction)
     {
         await _context.Transactions.AddAsync(transaction);
-        return true;
+        return await SaveAsync();
     }
 
     public async Task<bool> DeleteAsync(Transaction transaction)
