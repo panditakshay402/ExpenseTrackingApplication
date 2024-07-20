@@ -36,7 +36,7 @@ public class TransactionController : Controller
     // POST: Transaction/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Amount,Description,Date")] Transaction transaction)
+    public async Task<IActionResult> Create([Bind("Id,Recipient,Amount,Date,Category,Description")] Transaction transaction)
     {
         if (ModelState.IsValid)
         {
@@ -45,7 +45,6 @@ public class TransactionController : Controller
 
             if (await _transactionRepository.AddAsync(transaction))
             {
-                // SaveAsync should be called inside AddAsync to follow the unit of work pattern
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -84,9 +83,10 @@ public class TransactionController : Controller
         var transactionViewModel = new EditTransactionViewModel
         {
             Id = transaction.Id,
-            Category = transaction.Category,
+            Recipient = transaction.Recipient,
             Amount = transaction.Amount,
             Date = transaction.Date,
+            Category = transaction.Category,
             Description = transaction.Description,
             AppUserId = transaction.AppUserId
         };
@@ -110,10 +110,11 @@ public class TransactionController : Controller
         {
             return NotFound();
         }
-
-        transaction.Category = transactionViewModel.Category;
+    
+        transaction.Recipient = transactionViewModel.Recipient;
         transaction.Amount = transactionViewModel.Amount;
         transaction.Date = transactionViewModel.Date;
+        transaction.Category = transactionViewModel.Category;
         transaction.Description = transactionViewModel.Description;
 
         await _transactionRepository.UpdateAsync(transaction);

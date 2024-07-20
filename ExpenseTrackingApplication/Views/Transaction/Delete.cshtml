@@ -8,8 +8,8 @@
 
 <form method="post" asp-action="Delete">
     <div class="form-group">
-        <label>Category</label>
-        <p>@Model.Category</p>
+        <label>Recipient</label>
+        <p>@Model.Recipient</p>
     </div>
     <div class="form-group">
         <label>Amount</label>
@@ -18,6 +18,10 @@
     <div class="form-group">
         <label>Date</label>
         <p>@Model.Date.ToShortDateString()</p>
+    </div>
+    <div class="form-group">
+        <label>Category</label>
+        <p>@Model.Category</p>
     </div>
     <div class="form-group">
         <label>Description</label>

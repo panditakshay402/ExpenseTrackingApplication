@@ -9,9 +9,10 @@
 <table class="table">
     <thead>
     <tr>
-        <th>Category</th>
+        <th>Recipient</th>
         <th>Amount</th>
         <th>Date</th>
+        <th>Category</th>
         <th>Description</th>
         <th></th>
     </tr>
@@ -20,9 +21,10 @@
     @foreach (var item in Model)
     {
     <tr>
-        <td>@item.Category</td>
+        <td>@item.Recipient</td>
         <td>@item.Amount</td>
         <td>@item.Date.ToShortDateString()</td>
+        <td>@item.Category</td>
         <td>@item.Description</td>
         <td>
             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
