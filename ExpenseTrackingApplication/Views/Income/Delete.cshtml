@@ -1,0 +1,39 @@
+﻿@model ExpenseTrackingApplication.Models.Income
+
+@{
+    ViewData["Title"] = "Delete Income";
+}
+
+<h2>Delete Income</h2>
+
+<form method="post" asp-action="Delete">
+    <div class="form-group">
+        <label>Recipient</label>
+        <p>@Model.Source</p>
+    </div>
+    <div class="form-group">
+        <label>Amount</label>
+        <p>@Model.Amount</p>
+    </div>
+    <div class="form-group">
+        <label>Date</label>
+        <p>@Model.Date.ToShortDateString()</p>
+    </div>
+    <div class="form-group">
+        <label>Category</label>
+        <p>@Model.Category</p>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <p>@Model.Description</p>
+    </div>
+</form>
+
+<form method="post" asp-action="DeleteIncome">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Confirm" class="btn btn-danger float-right mt-3" />
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</div>
