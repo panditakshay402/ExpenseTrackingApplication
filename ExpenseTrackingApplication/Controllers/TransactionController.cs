@@ -23,7 +23,7 @@ public class TransactionController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
                      ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var transactions = await _transactionRepository.GetTransactionByUserAsync(userId);
+        var transactions = await _transactionRepository.GetByUserAsync(userId);
         return View(transactions);
     }
     
@@ -136,6 +136,7 @@ public class TransactionController : Controller
     
     // POST: Transaction/Delete/{id}
     [HttpPost, ActionName("DeleteTransaction")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var transaction = await _transactionRepository.GetByIdAsync(id);
