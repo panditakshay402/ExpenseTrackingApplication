@@ -7,10 +7,10 @@ public interface IIncomeRepository
 {
     Task<IEnumerable<Income?>> GetAllAsync();
     Task<Income?> GetByIdAsync(int id);
-    Task<IEnumerable<Income>> GetTransactionByUserAsync(string userId);
-    Task<IEnumerable<Income>> GetTransactionByCategoryAsync(IncomeCategory category);
-    Task<IEnumerable<Income>> GetTransactionsByDateRangeAsync(string userId, DateTime startDate, DateTime endDate);
-    Task<int> GetTransactionCountByUserAsync(string userId);
+    Task<IEnumerable<Income>> GetByUserAsync(string userId);
+    Task<IEnumerable<Income>> GetByCategoryAsync(IncomeCategory category);
+    Task<IEnumerable<Income>> GetByDateRangeAsync(string userId, DateTime startDate, DateTime endDate);
+    Task<int> GetIncomeCountByUserAsync(string userId);
     Task<bool> AddAsync(Income income);
     Task<bool> DeleteAsync(Income income);
     Task<bool> UpdateAsync(Income income);

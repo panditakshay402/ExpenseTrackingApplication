@@ -23,17 +23,17 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions.FirstOrDefaultAsync(t => t.Id == id);
     }
     
-    public async Task<IEnumerable<Transaction>> GetTransactionByUserAsync(string userId)
+    public async Task<IEnumerable<Transaction>> GetByUserAsync(string userId)
     {
         return await _context.Transactions.Where(t => t.AppUserId == userId).ToListAsync();
     }
     
-    public async Task<IEnumerable<Transaction>> GetTransactionByCategoryAsync(TransactionCategory category)
+    public async Task<IEnumerable<Transaction>> GetByCategoryAsync(TransactionCategory category)
     {
         return await _context.Transactions.Where(t => t.Category == category).ToListAsync();
     }
     
-    public async Task<IEnumerable<Transaction>> GetTransactionsByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
     {
         return await _context.Transactions.Where(t => t.AppUserId == userId && t.Date >= startDate && t.Date <= endDate)
             .ToListAsync();

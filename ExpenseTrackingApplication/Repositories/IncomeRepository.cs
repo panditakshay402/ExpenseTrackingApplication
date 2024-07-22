@@ -23,23 +23,23 @@ public class IncomeRepository : IIncomeRepository
         return await _context.Incomes.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<IEnumerable<Income>> GetTransactionByUserAsync(string userId)
+    public async Task<IEnumerable<Income>> GetByUserAsync(string userId)
     {
         return await _context.Incomes.Where(i => i.AppUserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<Income>> GetTransactionByCategoryAsync(IncomeCategory category)
+    public async Task<IEnumerable<Income>> GetByCategoryAsync(IncomeCategory category)
     {
         return await _context.Incomes.Where(i => i.Category == category).ToListAsync();
     }
 
-    public async Task<IEnumerable<Income>> GetTransactionsByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Income>> GetByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
     {
         return await  _context.Incomes.Where(i => i.AppUserId == userId && i.Date >= startDate && i.Date <= endDate)
             .ToListAsync();
     }
 
-    public async Task<int> GetTransactionCountByUserAsync(string userId)
+    public async Task<int> GetIncomeCountByUserAsync(string userId)
     {
         return await _context.Incomes.CountAsync(i => i.AppUserId == userId);
     }
