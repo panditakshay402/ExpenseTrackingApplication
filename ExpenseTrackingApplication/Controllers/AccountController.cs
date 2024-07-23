@@ -11,11 +11,13 @@ public class AccountController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly ApplicationDbContext _context;
-    public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationDbContext context)
+    private readonly ILogger<AccountController> _logger;
+    public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ApplicationDbContext context, ILogger<AccountController> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _context = context;
+        _logger = logger;
     }
     
     [HttpGet]
@@ -30,6 +32,7 @@ public class AccountController : Controller
     {
         if(!ModelState.IsValid)
         {
+            _logger.LogWarning("Login failed: Invalid model state.");
             return View(loginViewModel);
         }
         
@@ -45,14 +48,17 @@ public class AccountController : Controller
                 var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation($"User {user.Email} logged in successfully.");
                     return RedirectToAction("Index", "Home");
                 }
             }
             // Password is incorrect
+            _logger.LogWarning($"Login failed: Wrong credentials for user {user.Email}.");
             TempData["Error"] = "Wrong credentials. Please, try again";
             return View(loginViewModel);
         }
         // User is not found
+        _logger.LogWarning($"Login failed: User with email {loginViewModel.Email} not found.");
         TempData["Error"] = "Wrong credentials. Please, try again";
         return View(loginViewModel);
     }
@@ -65,6 +71,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
     {
         if (!ModelState.IsValid) return View(registerViewModel);
@@ -85,9 +92,32 @@ public class AccountController : Controller
         var newUserResult = await _userManager.CreateAsync(newUser, registerViewModel.Password);
 
         if (newUserResult.Succeeded)
+        {
             await _userManager.AddToRoleAsync(newUser, UserRoles.User);
 
-        return RedirectToAction("Index", "Home");
+            // Automatically create a budget for the new user
+            var budget = new Budget
+            {
+                AppUserId = newUser.Id,
+                Amount = 0,
+                Limit = 0
+            };
+            _context.Budgets.Add(budget);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("User created a new account with password and default budget.");
+
+            await _signInManager.SignInAsync(newUser, isPersistent: false);
+            return RedirectToAction("Index", "Home");
+        }
+
+        foreach (var error in newUserResult.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        _logger.LogWarning($"User registration failed for email {registerViewModel.EmailAddress}.");
+        return View(registerViewModel);
     }
     
     [HttpPost]
