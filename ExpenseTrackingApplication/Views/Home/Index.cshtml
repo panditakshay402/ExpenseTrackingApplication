@@ -2,7 +2,42 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero">
+    <div class="hero-content">
+        <h1 class="display-4">Welcome to Expense Tracker</h1>
+        <p class="lead">Easily track your expenses and manage your budget.</p>
+        <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg">Get Started</a>
+    </div>
 </div>
+
+<div class="features">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="feature-box">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                    <h3>Track Expenses</h3>
+                    <p>Keep an eye on your spending and stay within your budget.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-box">
+                    <i class="fas fa-wallet fa-3x"></i>
+                    <h3>Manage Budgets</h3>
+                    <p>Create and manage your personal and family budgets.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-box">
+                    <i class="fas fa-mobile-alt fa-3x"></i>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access your expense tracker from any device, anywhere.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}
