@@ -42,7 +42,10 @@
                 </ul>
                 <ul class="navbar-nav">
                     @if (User.Identity is { IsAuthenticated: true })
-                    {
+                    {   
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Profile</a>
+                        </li>
                         <li class="nav-item">
                             <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
                                 <button class="btn btn-outline-danger">Logout</button>

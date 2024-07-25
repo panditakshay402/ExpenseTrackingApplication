@@ -1,0 +1,47 @@
+﻿@model ExpenseTrackingApplication.ViewModels.UserProfileViewModel
+
+@{
+ViewData["Title"] = "User Profile";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="profile-container">
+    <h2>User's Profile</h2>
+    <div>
+        <label>Email:</label>
+        <span>@Model.Email</span>
+    </div>
+    <div>
+        <label>Registration Date:</label>
+        <span>@Model.RegistrationDate.ToString("yyyy-MM-dd")</span>
+    </div>
+    <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .profile-container h2 {
+        margin-bottom: 20px;
+    }
+
+    .profile-container div {
+        margin-bottom: 10px;
+    }
+
+    .profile-container label {
+        font-weight: bold;
+    }
+
+    .profile-container span {
+        margin-left: 10px;
+    }
+</style>
