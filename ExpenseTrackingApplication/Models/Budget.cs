@@ -11,13 +11,11 @@ public class Budget
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "Amount must be a positive number.")]
     public decimal? Amount { get; set; } = 0;
-
-    [Required]
-    [Range(0, double.MaxValue, ErrorMessage = "Limit must be a positive number.")]
-    public decimal? Limit { get; set; } = 0;
-    
+ 
     [ForeignKey("AppUser")]
     public string? AppUserId {  get; set; }
     public AppUser? AppUser { get; set; }
     
+    // Navigation property to budget categories
+    public ICollection<BudgetCategory> BudgetCategories { get; set; }
 }

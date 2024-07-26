@@ -73,7 +73,6 @@ public class BudgetController : Controller
         {
             Id = budget.Id,
             Amount = budget.Amount,
-            Limit = budget.Limit,
             AppUserId = budget.AppUserId
         };
         return View(budgetViewModel); 
@@ -97,7 +96,6 @@ public class BudgetController : Controller
         }
         
         budget.Amount = budgetViewModel.Amount;
-        budget.Limit = budgetViewModel.Limit;
     
         await _budgetRepository.UpdateAsync(budget);
     

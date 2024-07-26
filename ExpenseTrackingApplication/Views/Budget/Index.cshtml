@@ -12,9 +12,6 @@
         <th>
             @Html.DisplayNameFor(model => model.First().Amount)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Limit)
-        </th>
     </tr>
     </thead>
     <tbody>
@@ -23,9 +20,6 @@
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Amount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Limit)
         </td>
         <td>
             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
