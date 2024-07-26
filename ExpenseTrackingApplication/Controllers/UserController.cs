@@ -28,6 +28,7 @@ public class UserController : Controller
 
         var model = new UserProfileViewModel
         {
+            UserName = user.UserName,
             Email = user.Email,
             RegistrationDate = user.RegistrationDate
         };
@@ -46,6 +47,7 @@ public class UserController : Controller
 
         var model = new EditUserProfileViewModel
         {
+            UserName = user.UserName,
             Email = user.Email
         };
 
@@ -66,7 +68,8 @@ public class UserController : Controller
         {
             return NotFound();
         }
-        
+
+        user.UserName = model.UserName;
         user.Email = model.Email;
 
         var result = await _userManager.UpdateAsync(user);

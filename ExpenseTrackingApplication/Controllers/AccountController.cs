@@ -88,8 +88,8 @@ public class AccountController : Controller
 
         var newUser = new AppUser()
         {
+            UserName = registerViewModel.UserName,
             Email = registerViewModel.EmailAddress,
-            UserName = registerViewModel.EmailAddress,
             RegistrationDate = DateTime.UtcNow
         };
         var newUserResult = await _userManager.CreateAsync(newUser, registerViewModel.Password);
@@ -108,11 +108,11 @@ public class AccountController : Controller
             _context.Budgets.Add(budget);
             await _context.SaveChangesAsync();
             
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, code }, protocol: HttpContext.Request.Scheme);
-
-            await _emailSender.SendEmailAsync(registerViewModel.EmailAddress, "Confirm your email",
-                $"Please confirm your account by clicking <a href='{callbackUrl}'>here</a>.");
+            // var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, code }, protocol: HttpContext.Request.Scheme);
+            //
+            // await _emailSender.SendEmailAsync(registerViewModel.EmailAddress, "Confirm your email",
+            //     $"Please confirm your account by clicking <a href='{callbackUrl}'>here</a>.");
 
             
             _logger.LogInformation("User created a new account with password and default budget.");
