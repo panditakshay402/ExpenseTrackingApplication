@@ -11,6 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         
     }
     public DbSet<Budget> Budgets { get; set; }
+    public DbSet<BudgetCategory> BudgetCategories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Income> Incomes { get; set; }
     public DbSet<Notification> Notifications { get; set; }
