@@ -17,5 +17,5 @@ public class Budget
     public AppUser? AppUser { get; set; }
     
     // Navigation property to budget categories
-    public ICollection<BudgetCategory> BudgetCategories { get; set; }
+    // public ICollection<BudgetCategory> BudgetCategories { get; set; }
 }

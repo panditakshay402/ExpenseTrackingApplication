@@ -42,15 +42,12 @@ public class BudgetController : Controller
     // POST: Budget/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Amount,Limit")] Budget budget)
+    public async Task<IActionResult> Create([Bind("Id,Amount")] Budget budget)
     {
         if (ModelState.IsValid)
         {
-            // Get the ID of the currently logged-in user
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Set the AppUserId of the budget to the ID of the currently logged-in user
-            budget.AppUserId = userId;
+            budget.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                                ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
 
             if (await _budgetRepository.AddAsync(budget))
             {
