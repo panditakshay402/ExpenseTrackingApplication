@@ -36,6 +36,11 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasMany(b => b.Transactions)
             .WithOne(t => t.Budget)
             .HasForeignKey(t => t.BudgetId);
+        
+        modelBuilder.Entity<Budget>()
+            .HasMany(b => b.Incomes)
+            .WithOne(t => t.Budget)
+            .HasForeignKey(t => t.BudgetId);
 
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.BudgetCategories)

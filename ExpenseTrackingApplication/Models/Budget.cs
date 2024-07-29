@@ -21,6 +21,7 @@ public class Budget
     
     // Navigation properties
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public ICollection<Income> Incomes { get; set; } = new List<Income>();
     public ICollection<BudgetCategory> BudgetCategories { get; set; } = new List<BudgetCategory>();
 
 }
