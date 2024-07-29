@@ -11,41 +11,35 @@ namespace ExpenseTrackingApplication.Controllers;
 public class IncomeController : Controller
 {
     private readonly IIncomeRepository _incomeRepository;
-    public IncomeController(IIncomeRepository incomeRepository)
+    private readonly IBudgetRepository _budgetRepository;
+    public IncomeController(IIncomeRepository incomeRepository, IBudgetRepository budgetRepository)
     {
         _incomeRepository = incomeRepository;
-    }
-    
-    // GET: Income
-    public async Task<IActionResult> Index()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var incomes = await _incomeRepository.GetByUserAsync(userId);
-        return View(incomes);
+        _budgetRepository = budgetRepository;
     }
     
     // GET: Income/Create
-    public IActionResult Create()
+    public IActionResult Create(int budgetId)
     {
+        ViewBag.BudgetId = budgetId;
         return View();
     }
     
     // POST: Income/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Source,Amount,Date,Category,Description")] Income income)
+    public async Task<IActionResult> Create(int budgetId, [Bind("Id,Source,Amount,Date,Category,Description")] Income income)
     {
         if (ModelState.IsValid)
         {
-            income.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                               ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+            income.BudgetId = budgetId;
 
             if (await _incomeRepository.AddAsync(income))
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Budget", new { id = budgetId });
             }
         }
+        ViewBag.BudgetId = budgetId;
         return View(income);
     }
     
@@ -57,14 +51,21 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
         var income = await _incomeRepository.GetByIdAsync(id.Value);
-        
-        if (income == null || income.AppUserId != userId)
+        if (income == null)
         {
             return NotFound();
         }
+        
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+
+        var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
+        if (budget == null || budget.AppUserId != userId)
+        {
+            return NotFound();
+        }
+
         
         return View(income);
     }
@@ -86,7 +87,7 @@ public class IncomeController : Controller
             Date = income.Date,
             Category = income.Category,
             Description = income.Description,
-            AppUserId = income.AppUserId
+            BudgetId = income.BudgetId
         };
         
         return View(incomeViewModel);
@@ -108,6 +109,14 @@ public class IncomeController : Controller
         {
             return NotFound();
         }
+        
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+        var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
+        if (budget == null || budget.AppUserId != userId)
+        {
+            return NotFound();
+        }
     
         income.Source = incomeViewModel.Source;
         income.Amount = incomeViewModel.Amount;
@@ -117,7 +126,7 @@ public class IncomeController : Controller
 
         await _incomeRepository.UpdateAsync(income);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Details", "Budget", new { id = incomeViewModel.BudgetId });
     }
     
     // GET: Income/Delete/{id}
@@ -143,9 +152,13 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        await _incomeRepository.DeleteAsync(income);
+        int budgetId = income.BudgetId;
+        if (await _incomeRepository.DeleteAsync(income))
+        {
+            return RedirectToAction("Details", "Budget", new { id = budgetId });
+        }
         
-        return RedirectToAction("Index");
+        return RedirectToAction("Error", "Home");
     }
     
 }

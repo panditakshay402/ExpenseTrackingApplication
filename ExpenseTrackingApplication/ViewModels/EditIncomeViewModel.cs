@@ -10,5 +10,5 @@ public class EditIncomeViewModel
     public DateTime Date { get; set; }
     public IncomeCategory Category { get; set; }
     public string? Description { get; set; }
-    public string? AppUserId {  get; set; }
+    public int BudgetId { get; set; }
 }
