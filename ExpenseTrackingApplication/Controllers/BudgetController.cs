@@ -11,9 +11,13 @@ namespace ExpenseTrackingApplication.Controllers;
 public class BudgetController : Controller
 {
     private readonly IBudgetRepository _budgetRepository;
-    public BudgetController(IBudgetRepository budgetRepository)
+    private readonly ITransactionRepository _transactionRepository;
+    private readonly IIncomeRepository _incomeRepository;
+    public BudgetController(IBudgetRepository budgetRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
     {
         _budgetRepository = budgetRepository;
+        _transactionRepository = transactionRepository;
+        _incomeRepository = incomeRepository;
     }
     
     // GET: Budget
@@ -58,7 +62,6 @@ public class BudgetController : Controller
 
         if (await _budgetRepository.AddAsync(newBudget))
         {
-            await _budgetRepository.SaveAsync(); // Ensure changes are saved
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,48 +92,6 @@ public class BudgetController : Controller
         return View(budget);
     }
     
-    // GET: Budget/Edit/{id}
-    public async Task<IActionResult> Edit(int id)
-    {
-        var budget = await _budgetRepository.GetByIdAsync(id);
-        if (budget == null)
-        {
-            return NotFound();
-        }
-        
-        var budgetViewModel = new EditBudgetViewModel
-        {
-            Id = budget.Id,
-            Balance = budget.Balance,
-            AppUserId = budget.AppUserId
-        };
-        return View(budgetViewModel); 
-    }
-
-    // POST: Budget/Edit/{id}
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, EditBudgetViewModel budgetViewModel)
-    {
-        if(!ModelState.IsValid)
-        {
-            ModelState.AddModelError("", "Failed to edit budget.");
-            return View("Edit", budgetViewModel);
-        }
-    
-        var budget = await _budgetRepository.GetByIdAsync(id);
-        if (budget == null)
-        {
-            return NotFound();
-        }
-        
-        budget.Balance = budgetViewModel.Balance;
-    
-        await _budgetRepository.UpdateAsync(budget);
-    
-        return RedirectToAction("Index");
-    }
-    
     // GET: Budget/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
@@ -153,7 +114,42 @@ public class BudgetController : Controller
             return NotFound();
         }
         
+        // Remove related transactions
+        foreach (var transaction in budget.Transactions.ToList())
+        {
+            await _transactionRepository.DeleteAsync(transaction);
+        }
+
+        // Remove related incomes
+        foreach (var income in budget.Incomes.ToList())
+        {
+            await _incomeRepository.DeleteAsync(income);
+        }
+        
         await _budgetRepository.DeleteAsync(budget);
         return RedirectToAction("Index");
+    }
+    
+    // GET: Budget/Details/{id}
+    public async Task<IActionResult> Details(int id)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+
+        // Get transactions and incomes for the budget
+        var transactions = await _transactionRepository.GetByBudgetAsync(id);
+        var incomes = await _incomeRepository.GetByBudgetAsync(id);
+
+        var viewModel = new BudgetDetailsViewModel
+        {
+            Budget = budget,
+            Transactions = transactions,
+            Incomes = incomes,
+        };
+
+        return View(viewModel);
     }
 }

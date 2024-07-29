@@ -1,0 +1,73 @@
+﻿@model ExpenseTrackingApplication.ViewModels.BudgetDetailsViewModel
+
+@{
+ViewData["Title"] = "Budget Details";
+}
+
+<h2>Details for Budget: @Model.Budget.Name</h2>
+
+<div>
+    <h4>Budget Information</h4>
+    <p><strong>Name:</strong> @Model.Budget.Name</p>
+    <p><strong>Balance:</strong> @Model.Budget.Balance</p>
+    <p><strong>Total Transactions:</strong> @Model.TotalTransactionAmount</p>
+    <p><strong>Total Income:</strong> @Model.TotalIncomeAmount</p>
+</div>
+
+<div>
+    <h4>Transactions</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+        <tr>
+            <td>@transaction.Date.ToShortDateString()</td>
+            <td>@transaction.Recipient</td>
+            <td>@transaction.Amount</td>
+            <td>@transaction.Category</td>
+            <td>@transaction.Description</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h4>Incomes</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var income in Model.Incomes)
+        {
+        <tr>
+            <td>@income.Date.ToShortDateString()</td>
+            <td>@income.Source</td>
+            <td>@income.Amount</td>
+            <td>@income.Category</td>
+            <td>@income.Description</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
