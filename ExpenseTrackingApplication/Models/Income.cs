@@ -10,7 +10,7 @@ public class Income
     public int Id { get; set; }
     [MaxLength(100)]
     public string? Source { get; set; }
-    public float Amount { get; set; }
+    public decimal Amount { get; set; }
     public DateTime Date { get; set; }
     public IncomeCategory Category { get; set; }
     [MaxLength(100)]

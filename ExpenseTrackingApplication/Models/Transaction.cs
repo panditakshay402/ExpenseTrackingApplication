@@ -10,7 +10,7 @@ public class Transaction
     public int Id { get; set; }
     [MaxLength(100)]
     public string? Recipient { get; set; }
-    public float Amount { get; set; }
+    public decimal Amount { get; set; }
     public DateTime Date { get; set; }
     public TransactionCategory Category { get; set; }
     [MaxLength(100)]
