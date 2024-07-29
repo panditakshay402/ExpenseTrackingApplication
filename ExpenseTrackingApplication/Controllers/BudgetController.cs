@@ -33,6 +33,38 @@ public class BudgetController : Controller
         return View(budgets);
     }
     
+    // GET: Budget/AddNewBudget
+    public async Task<IActionResult> AddNewBudget()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (userId == null)
+        {
+            return NotFound();
+        }
+
+        // Get the current number of budgets
+        var budgets = await _budgetRepository.GetBudgetByUserAsync(userId);
+        int newBudgetNumber = budgets.Count() + 1; // Calculate next number
+        
+        var newBudgetName = $"Budget {newBudgetNumber}"; // Generate name
+
+        var newBudget = new Budget
+        {
+            Name = newBudgetName,
+            Amount = 0, // Default amount
+            AppUserId = userId
+        };
+
+        if (await _budgetRepository.AddAsync(newBudget))
+        {
+            await _budgetRepository.SaveAsync(); // Ensure changes are saved
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View("Index"); // Redirect to Index in case of failure
+    }
+    
     // GET: Budget/Create
     public IActionResult Create()
     {

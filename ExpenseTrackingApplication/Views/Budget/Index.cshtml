@@ -9,12 +9,9 @@
 <table class="table">
     <thead>
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Amount)
-        </th>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -22,18 +19,20 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @item.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Amount)
+                @item.Amount
             </td>
             <td>
+                <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@item.Id" class="btn btn-success">Add Transaction</a>
+                <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@item.Id" class="btn btn-info">Add Income</a>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
     }
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Add Budget</a>
+<a asp-action="AddNewBudget" class="btn btn-warning">Add New Budget</a>
