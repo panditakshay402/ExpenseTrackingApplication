@@ -6,7 +6,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Report
 {
     [Key]
-    public int? Id { get; set; }
+    public int Id { get; set; }
     public string? Type { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

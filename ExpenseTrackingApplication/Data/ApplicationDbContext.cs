@@ -23,16 +23,25 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<AppUser>()
-            .HasMany(u => u.Transactions)
-            .WithOne(t => t.AppUser)
-            .HasForeignKey(t => t.AppUserId);
+            .HasMany(u => u.Budgets)
+            .WithOne(b => b.AppUser)
+            .HasForeignKey(b => b.AppUserId);
 
         modelBuilder.Entity<AppUser>()
             .HasMany(u => u.Reports)
             .WithOne(r => r.AppUser)
             .HasForeignKey(r => r.AppUserId);
 
+        modelBuilder.Entity<Budget>()
+            .HasMany(b => b.Transactions)
+            .WithOne(t => t.Budget)
+            .HasForeignKey(t => t.BudgetId);
 
+        modelBuilder.Entity<Budget>()
+            .HasMany(b => b.BudgetCategories)
+            .WithOne(bc => bc.Budget)
+            .HasForeignKey(bc => bc.BudgetId);
+        
     }
     
 }

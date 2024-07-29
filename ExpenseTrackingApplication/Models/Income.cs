@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Income
 {
     [Key]
-    public int? Id { get; set; }
+    public int Id { get; set; }
     public string? Source { get; set; }
     public float Amount { get; set; }
     public DateTime Date { get; set; }

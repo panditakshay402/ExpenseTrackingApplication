@@ -6,7 +6,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Security
 {
     [Key]
-    public int? Id { get; set; }
+    public int Id { get; set; }
     private string? EncryptionMethod { get; set; }
     public DateTime LastLogin { get; set; }
     
