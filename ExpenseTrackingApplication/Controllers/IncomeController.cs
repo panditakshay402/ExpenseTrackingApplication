@@ -36,6 +36,13 @@ public class IncomeController : Controller
 
             if (await _incomeRepository.AddAsync(income))
             {
+                var budget = await _budgetRepository.GetByIdAsync(budgetId);
+                if (budget != null)
+                {
+                    budget.Balance += income.Amount;
+                    await _budgetRepository.UpdateAsync(budget);
+                }
+                
                 return RedirectToAction("Details", "Budget", new { id = budgetId });
             }
         }

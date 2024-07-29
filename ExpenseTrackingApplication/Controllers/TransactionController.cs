@@ -37,6 +37,13 @@ public class TransactionController : Controller
 
             if (await _transactionRepository.AddAsync(transaction))
             {
+                var budget = await _budgetRepository.GetByIdAsync(budgetId);
+                if (budget != null)
+                {
+                    budget.Balance -= transaction.Amount;
+                    await _budgetRepository.UpdateAsync(budget);
+                }
+                
                 return RedirectToAction("Details", "Budget", new { id = budgetId });
             }
         }
