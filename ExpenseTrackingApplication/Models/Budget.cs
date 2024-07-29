@@ -9,13 +9,15 @@ public class Budget
     public int Id { get; set; }
     
     [Required]
-    public string Name { get; set; }
+    [MaxLength(100)]
+    public string Name { get; set; } = "Budget";
     
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "Amount must be a positive number.")]
-    public decimal? Amount { get; set; } = 0;
+    public decimal Balance { get; set; }
  
     [ForeignKey("AppUser")]
+    [MaxLength(450)]
     public string? AppUserId {  get; set; }
     public AppUser? AppUser { get; set; }
     

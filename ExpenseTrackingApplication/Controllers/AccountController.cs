@@ -102,7 +102,7 @@ public class AccountController : Controller
             var budget = new Budget
             {
                 AppUserId = newUser.Id,
-                Amount = 0,
+                Balance = 0,
             };
             _context.Budgets.Add(budget);
             await _context.SaveChangesAsync();

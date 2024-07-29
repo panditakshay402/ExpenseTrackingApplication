@@ -52,7 +52,7 @@ public class BudgetController : Controller
         var newBudget = new Budget
         {
             Name = newBudgetName,
-            Amount = 0, // Default amount
+            Balance = 0,
             AppUserId = userId
         };
 
@@ -101,7 +101,7 @@ public class BudgetController : Controller
         var budgetViewModel = new EditBudgetViewModel
         {
             Id = budget.Id,
-            Amount = budget.Amount,
+            Balance = budget.Balance,
             AppUserId = budget.AppUserId
         };
         return View(budgetViewModel); 
@@ -124,7 +124,7 @@ public class BudgetController : Controller
             return NotFound();
         }
         
-        budget.Amount = budgetViewModel.Amount;
+        budget.Balance = budgetViewModel.Balance;
     
         await _budgetRepository.UpdateAsync(budget);
     
