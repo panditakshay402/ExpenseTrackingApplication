@@ -10,5 +10,5 @@ public class EditTransactionViewModel
     public DateTime Date { get; set; }
     public TransactionCategory Category { get; set; }
     public string? Description { get; set; }
-    public string? AppUserId {  get; set; }
+    public int BudgetId { get; set; }
 }

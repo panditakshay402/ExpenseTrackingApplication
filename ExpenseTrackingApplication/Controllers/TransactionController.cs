@@ -12,42 +12,35 @@ namespace ExpenseTrackingApplication.Controllers;
 public class TransactionController : Controller
 {
     private readonly ITransactionRepository _transactionRepository;
-
-    public TransactionController(ITransactionRepository transactionRepository)
+    private readonly IBudgetRepository _budgetRepository;
+    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository)
     {
         _transactionRepository = transactionRepository;
-    }
-    
-    // GET: Transaction
-    public async Task<IActionResult> Index()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var transactions = await _transactionRepository.GetByUserAsync(userId);
-        return View(transactions);
+        _budgetRepository = budgetRepository;
     }
     
     // GET: Transaction/Create
-    public IActionResult Create()
+    public IActionResult Create(int budgetId)
     {
+        ViewBag.BudgetId = budgetId;
         return View();
     }
     
     // POST: Transaction/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Recipient,Amount,Date,Category,Description")] Transaction transaction)
+    public async Task<IActionResult> Create(int budgetId, [Bind("Recipient,Amount,Date,Category,Description")] Transaction transaction)
     {
         if (ModelState.IsValid)
         {
-            transaction.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                                    ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+            transaction.BudgetId = budgetId;
 
             if (await _transactionRepository.AddAsync(transaction))
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Budget", new { id = budgetId });
             }
         }
+        ViewBag.BudgetId = budgetId;
         return View(transaction);
     }
     
@@ -59,11 +52,17 @@ public class TransactionController : Controller
             return NotFound();
         }
 
+        var transaction = await _transactionRepository.GetByIdAsync(id.Value);
+        if (transaction == null)
+        {
+            return NotFound();
+        }
+
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
                      ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-        var transaction = await _transactionRepository.GetByIdAsync(id.Value);
 
-        if (transaction == null || transaction.AppUserId != userId)
+        var budget = await _budgetRepository.GetByIdAsync(transaction.BudgetId);
+        if (budget == null || budget.AppUserId != userId)
         {
             return NotFound();
         }
@@ -88,7 +87,7 @@ public class TransactionController : Controller
             Date = transaction.Date,
             Category = transaction.Category,
             Description = transaction.Description,
-            AppUserId = transaction.AppUserId
+            BudgetId = transaction.BudgetId
         };
 
         return View(transactionViewModel);
@@ -111,6 +110,14 @@ public class TransactionController : Controller
             return NotFound();
         }
     
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
+        var budget = await _budgetRepository.GetByIdAsync(transaction.BudgetId);
+        if (budget == null || budget.AppUserId != userId)
+        {
+            return NotFound();
+        }
+
         transaction.Recipient = transactionViewModel.Recipient;
         transaction.Amount = transactionViewModel.Amount;
         transaction.Date = transactionViewModel.Date;
@@ -119,7 +126,7 @@ public class TransactionController : Controller
 
         await _transactionRepository.UpdateAsync(transaction);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Details", "Budget", new { id = transactionViewModel.BudgetId });
     }
     
     // GET: Transaction/Delete/{id}
@@ -145,7 +152,12 @@ public class TransactionController : Controller
             return NotFound();
         }
 
-        await _transactionRepository.DeleteAsync(transaction);
-        return RedirectToAction("Index");
+        int budgetId = transaction.BudgetId;
+        if (await _transactionRepository.DeleteAsync(transaction))
+        {
+            return RedirectToAction("Details", "Budget", new { id = budgetId });
+        }
+        
+        return RedirectToAction("Error", "Home");
     }
 }

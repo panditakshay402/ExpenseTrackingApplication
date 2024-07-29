@@ -1,12 +1,13 @@
 ﻿@model ExpenseTrackingApplication.Models.Transaction
 
 @{
-    ViewData["Title"] = "Create Transaction";
+ViewData["Title"] = "Create Transaction";
 }
 
 <h2>Create Transaction</h2>
 
 <form asp-action="Create">
+    <input type="hidden" asp-for="BudgetId" value="@ViewBag.BudgetId" />
     <div class="form-group">
         <label asp-for="Recipient" class="control-label"></label>
         <input asp-for="Recipient" class="form-control" />
