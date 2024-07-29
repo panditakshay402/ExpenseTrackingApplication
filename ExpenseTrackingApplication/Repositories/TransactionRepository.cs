@@ -23,32 +23,14 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions.FirstOrDefaultAsync(t => t.Id == id);
     }
     
-    public async Task<IEnumerable<Transaction>> GetByUserAsync(string userId)
+    public async Task<IEnumerable<Transaction>> GetByBudgetAsync(int budgetId)
     {
-        return await _context.Transactions.Where(t => t.AppUserId == userId).ToListAsync();
+        return await _context.Transactions.Where(t => t.BudgetId == budgetId).ToListAsync();
     }
     
     public async Task<IEnumerable<Transaction>> GetByCategoryAsync(TransactionCategory category)
     {
         return await _context.Transactions.Where(t => t.Category == category).ToListAsync();
-    }
-    
-    public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
-    {
-        return await _context.Transactions.Where(t => t.AppUserId == userId && t.Date >= startDate && t.Date <= endDate)
-            .ToListAsync();
-    }
-    
-    public async Task<decimal> GetTotalAmountByCategoryAsync(string userId, TransactionCategory category)
-    {
-        return (decimal)await _context.Transactions
-            .Where(t => t.AppUserId == userId && t.Category == category)
-            .SumAsync(t => t.Amount);
-    }
-    
-    public async Task<int> GetTransactionCountByUserAsync(string userId)
-    {
-        return await _context.Transactions.CountAsync(t => t.AppUserId == userId);
     }
     
     public async Task<bool> AddAsync(Transaction transaction)
