@@ -1,5 +1,4 @@
 ﻿using ExpenseTrackingApplication.Data;
-using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,25 +22,9 @@ public class IncomeRepository : IIncomeRepository
         return await _context.Incomes.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<IEnumerable<Income>> GetByUserAsync(string userId)
+    public async Task<IEnumerable<Income>> GetByBudgetAsync(int budgetId)
     {
-        return await _context.Incomes.Where(i => i.AppUserId == userId).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Income>> GetByCategoryAsync(IncomeCategory category)
-    {
-        return await _context.Incomes.Where(i => i.Category == category).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Income>> GetByDateRangeAsync(string userId, DateTime startDate, DateTime endDate)
-    {
-        return await  _context.Incomes.Where(i => i.AppUserId == userId && i.Date >= startDate && i.Date <= endDate)
-            .ToListAsync();
-    }
-
-    public async Task<int> GetIncomeCountByUserAsync(string userId)
-    {
-        return await _context.Incomes.CountAsync(i => i.AppUserId == userId);
+        return await _context.Incomes.Where(i => i.BudgetId == budgetId).ToListAsync();
     }
 
     public async Task<bool> AddAsync(Income income)
