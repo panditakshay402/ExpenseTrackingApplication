@@ -124,16 +124,26 @@ public class IncomeController : Controller
         {
             return NotFound();
         }
-    
+        
+        // Calculate new balance
+        var previousAmount = income.Amount;
+        var newAmount = incomeViewModel.Amount;
+        
+        // Update income details
         income.Source = incomeViewModel.Source;
         income.Amount = incomeViewModel.Amount;
         income.Date = incomeViewModel.Date;
         income.Category = incomeViewModel.Category;
         income.Description = incomeViewModel.Description;
-
+        
+        // Update the budget balance
+        budget.Balance -= previousAmount - newAmount;
+        
+        // Update the repositories
         await _incomeRepository.UpdateAsync(income);
-
-        return RedirectToAction("Details", "Budget", new { id = incomeViewModel.BudgetId });
+        await _budgetRepository.UpdateAsync(budget);
+        
+        return RedirectToAction("Details", "Budget", new { id = income.BudgetId });
     }
     
     // GET: Income/Delete/{id}

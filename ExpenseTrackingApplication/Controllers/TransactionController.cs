@@ -125,15 +125,25 @@ public class TransactionController : Controller
             return NotFound();
         }
 
+        // Calculate new balance
+        var previousAmount = transaction.Amount;
+        var newAmount = transactionViewModel.Amount;
+        
+        // Update transaction details
         transaction.Recipient = transactionViewModel.Recipient;
         transaction.Amount = transactionViewModel.Amount;
         transaction.Date = transactionViewModel.Date;
         transaction.Category = transactionViewModel.Category;
         transaction.Description = transactionViewModel.Description;
 
+        // Update the budget balance
+        budget.Balance += previousAmount - newAmount;
+    
+        // Update the repositories
         await _transactionRepository.UpdateAsync(transaction);
-
-        return RedirectToAction("Details", "Budget", new { id = transactionViewModel.BudgetId });
+        await _budgetRepository.UpdateAsync(budget);
+        
+        return RedirectToAction("Details", "Budget", new { id = transaction.BudgetId });
     }
     
     // GET: Transaction/Delete/{id}
