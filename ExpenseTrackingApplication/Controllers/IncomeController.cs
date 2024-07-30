@@ -160,6 +160,18 @@ public class IncomeController : Controller
         }
         
         int budgetId = income.BudgetId;
+        
+        // Get the budget associated with the income
+        var budget = await _budgetRepository.GetByIdAsync(budgetId);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+
+        // Update the budget balance
+        budget.Balance -= income.Amount;
+        await _budgetRepository.UpdateAsync(budget);
+        
         if (await _incomeRepository.DeleteAsync(income))
         {
             return RedirectToAction("Details", "Budget", new { id = budgetId });

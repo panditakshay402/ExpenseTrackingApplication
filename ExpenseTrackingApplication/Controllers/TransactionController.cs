@@ -160,11 +160,25 @@ public class TransactionController : Controller
         }
 
         int budgetId = transaction.BudgetId;
+
+        // Get the budget associated with the transaction
+        var budget = await _budgetRepository.GetByIdAsync(budgetId);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+
+        // Update the budget balance
+        budget.Balance += transaction.Amount;
+        await _budgetRepository.UpdateAsync(budget);
+
+        // Delete the transaction
         if (await _transactionRepository.DeleteAsync(transaction))
         {
             return RedirectToAction("Details", "Budget", new { id = budgetId });
         }
-        
+
         return RedirectToAction("Error", "Home");
     }
+
 }
