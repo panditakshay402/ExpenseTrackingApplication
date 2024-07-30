@@ -7,17 +7,21 @@ ViewData["Title"] = "Edit Budget";
 <h2>Edit Budget: @Model.Budget.Name</h2>
 
 <form asp-controller="Budget" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Budget.Id" />
     <div class="form-group">
-        <label for="budgetName">Name</label>
-        <input type="text" class="form-control" id="budgetName" name="Name" value="@Model.Budget.Name" />
+        <label asp-for="Budget.Name" class="control-label"></label>
+        <input asp-for="Budget.Name" class="form-control" />
+        <span asp-validation-for="Budget.Name" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label for="budgetBalance">Balance</label>
-        <input type="text" class="form-control" id="budgetBalance" name="Balance" value="@Model.Budget.Balance" readonly />
+        <label asp-for="Budget.Balance" class="control-label"></label>
+        <input asp-for="Budget.Balance" class="form-control" readonly />
+        <span asp-validation-for="Budget.Balance" class="text-danger"></span>
     </div>
-    <input type="hidden" name="Id" value="@Model.Budget.Id" />
     <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>
+
+
 
 <h4>Transactions</h4>
 <table class="table">

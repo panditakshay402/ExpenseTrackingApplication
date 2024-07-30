@@ -154,6 +154,7 @@ public class BudgetController : Controller
             Budget = budget,
             Transactions = transactions,
             Incomes = incomes,
+            // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
             BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
@@ -183,12 +184,13 @@ public class BudgetController : Controller
         return View(viewModel);
     }
 
+
     // POST: Budget/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, BudgetEditViewModel viewModel)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Balance")] Budget budget)
     {
-        if (id != viewModel.Budget.Id)
+        if (id != budget.Id)
         {
             return NotFound();
         }
@@ -197,12 +199,20 @@ public class BudgetController : Controller
         {
             try
             {
-                await _budgetRepository.UpdateAsync(viewModel.Budget);
+                var budgetToUpdate = await _budgetRepository.GetByIdAsync(budget.Id);
+                if (budgetToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                budgetToUpdate.Name = budget.Name;
+
+                await _budgetRepository.UpdateAsync(budgetToUpdate);
                 await _budgetRepository.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BudgetExists(viewModel.Budget.Id))
+                if (!await BudgetExists(budget.Id))
                 {
                     return NotFound();
                 }
@@ -211,18 +221,23 @@ public class BudgetController : Controller
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Details), new { id = viewModel.Budget.Id });
+            return RedirectToAction(nameof(Details), new { id = budget.Id });
         }
 
         // Re-fetch transactions and incomes in case of error
-        viewModel.Transactions = await _transactionRepository.GetByBudgetAsync(id);
-        viewModel.Incomes = await _incomeRepository.GetByBudgetAsync(id);
+        var viewModel = new BudgetEditViewModel
+        {
+            Budget = await _budgetRepository.GetByIdAsync(id),
+            Transactions = await _transactionRepository.GetByBudgetAsync(id),
+            Incomes = await _incomeRepository.GetByBudgetAsync(id)
+        };
         return View(viewModel);
     }
 
-    private bool BudgetExists(int id)
+    private async Task<bool> BudgetExists(int id)
     {
-        return _budgetRepository.GetByIdAsync(id) != null;
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        return budget != null;
     }
 
 }
