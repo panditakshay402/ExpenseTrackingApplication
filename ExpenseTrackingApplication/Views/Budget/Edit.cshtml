@@ -1,0 +1,86 @@
+﻿@model ExpenseTrackingApplication.ViewModels.BudgetEditViewModel
+
+@{
+ViewData["Title"] = "Edit Budget";
+}
+
+<h2>Edit Budget: @Model.Budget.Name</h2>
+
+<form asp-controller="Budget" asp-action="Edit" method="post">
+    <div class="form-group">
+        <label for="budgetName">Name</label>
+        <input type="text" class="form-control" id="budgetName" name="Name" value="@Model.Budget.Name" />
+    </div>
+    <div class="form-group">
+        <label for="budgetBalance">Balance</label>
+        <input type="text" class="form-control" id="budgetBalance" name="Balance" value="@Model.Budget.Balance" readonly />
+    </div>
+    <input type="hidden" name="Id" value="@Model.Budget.Id" />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<h4>Transactions</h4>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Recipient</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var transaction in Model.Transactions)
+    {
+    <tr>
+        <td>@transaction.Date.ToShortDateString()</td>
+        <td>@transaction.Recipient</td>
+        <td>@transaction.Amount</td>
+        <td>@transaction.Category</td>
+        <td>@transaction.Description</td>
+        <td>
+            <a asp-controller="Transaction" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-warning">Edit</a>
+            <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.Id" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+<a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-success">Add Transaction</a>
+
+<h4>Incomes</h4>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Source</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var income in Model.Incomes)
+    {
+    <tr>
+        <td>@income.Date.ToShortDateString()</td>
+        <td>@income.Source</td>
+        <td>@income.Amount</td>
+        <td>@income.Category</td>
+        <td>@income.Description</td>
+        <td>
+            <a asp-controller="Income" asp-action="Edit" asp-route-id="@income.Id" class="btn btn-warning">Edit</a>
+            <a asp-controller="Income" asp-action="Delete" asp-route-id="@income.Id" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+<a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+
+<div>
+    <a asp-action="Details" asp-route-id="@Model.Budget.Id" class="btn btn-secondary">Back to Details</a>
+</div>

@@ -4,6 +4,8 @@ using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackingApplication.Controllers;
 
@@ -142,14 +144,85 @@ public class BudgetController : Controller
         // Get transactions and incomes for the budget
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
-
+        
+        // Get all budgets for the current user
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
+        
         var viewModel = new BudgetDetailsViewModel
         {
             Budget = budget,
             Transactions = transactions,
             Incomes = incomes,
+            AllBudgets = allBudgets,
+            BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
 
         return View(viewModel);
     }
+    
+    // GET: Budget/Edit/{id}
+    public async Task<IActionResult> Edit(int id)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+
+        var transactions = await _transactionRepository.GetByBudgetAsync(id);
+        var incomes = await _incomeRepository.GetByBudgetAsync(id);
+
+        var viewModel = new BudgetEditViewModel
+        {
+            Budget = budget,
+            Transactions = transactions,
+            Incomes = incomes
+        };
+
+        return View(viewModel);
+    }
+
+    // POST: Budget/Edit/{id}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, BudgetEditViewModel viewModel)
+    {
+        if (id != viewModel.Budget.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await _budgetRepository.UpdateAsync(viewModel.Budget);
+                await _budgetRepository.SaveAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BudgetExists(viewModel.Budget.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Details), new { id = viewModel.Budget.Id });
+        }
+
+        // Re-fetch transactions and incomes in case of error
+        viewModel.Transactions = await _transactionRepository.GetByBudgetAsync(id);
+        viewModel.Incomes = await _incomeRepository.GetByBudgetAsync(id);
+        return View(viewModel);
+    }
+
+    private bool BudgetExists(int id)
+    {
+        return _budgetRepository.GetByIdAsync(id) != null;
+    }
+
 }
