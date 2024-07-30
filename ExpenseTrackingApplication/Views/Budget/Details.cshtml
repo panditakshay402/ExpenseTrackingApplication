@@ -69,5 +69,21 @@ ViewData["Title"] = "Budget Details";
 </div>
 
 <div>
+    <h4>Navigate to Another Budget</h4>
+    <form asp-controller="Budget" asp-action="Details" method="get">
+        <div class="form-group">
+            <label for="budgetSelect">Select Budget</label>
+            <select id="budgetSelect" name="id" class="form-control" onchange="this.form.submit()">
+                @foreach (var budget in Model.AllBudgets)
+                {
+                <option value="@budget.Id" selected="@(budget.Id == Model.Budget.Id)">@budget.Name</option>
+                }
+            </select>
+        </div>
+    </form>
+</div>
+
+<div>
     <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Budget.Id" class="btn btn-warning">Edit</a>
 </div>
