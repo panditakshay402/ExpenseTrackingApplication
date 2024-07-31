@@ -20,6 +20,36 @@ ViewData["Title"] = "User Profile";
         <label>Registration Date:</label>
         <span>@Model.RegistrationDate.ToString("yyyy-MM-dd")</span>
     </div>
+    <div>
+        <label>Avatar:</label>
+        @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+        {
+        var defaultAvatarUrl = "https://res.cloudinary.com/ggeztrw22/image/upload/v1722424290/avatars/default.jpg";
+        if (Model.AvatarUrl != defaultAvatarUrl)
+        {
+        <img src="@Model.AvatarUrl" alt="Avatar" style="max-width: 150px;" />
+        <form asp-action="RemoveAvatar" method="post" class="form-inline">
+            <button type="submit" class="btn btn-danger">Remove Avatar</button>
+        </form>
+        }
+        else
+        {
+        <img src="@Model.AvatarUrl" alt="Avatar" style="max-width: 150px;" />
+        <span>Default avatar</span>
+        }
+        }
+        else
+        {
+        <span>No avatar</span>
+        }
+    </div>
+    <form asp-action="UploadAvatar" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="avatar">Upload New Avatar</label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
     <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
 </div>
 
@@ -47,5 +77,9 @@ ViewData["Title"] = "User Profile";
 
     .profile-container span {
         margin-left: 10px;
+    }
+
+    .form-inline {
+        display: inline;
     }
 </style>
