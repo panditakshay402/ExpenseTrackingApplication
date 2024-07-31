@@ -26,8 +26,6 @@
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">View Details</a>
-                <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@item.Id" class="btn btn-success">Add Transaction</a>
-                <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@item.Id" class="btn btn-info">Add Income</a>
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
