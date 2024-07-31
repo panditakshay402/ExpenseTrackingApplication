@@ -44,7 +44,7 @@ public class TransactionController : Controller
                     await _budgetRepository.UpdateAsync(budget);
                 }
                 
-                return RedirectToAction("Details", "Budget", new { id = budgetId });
+                return RedirectToAction("Edit", "Budget", new { id = budgetId });
             }
         }
         ViewBag.BudgetId = budgetId;
@@ -143,7 +143,7 @@ public class TransactionController : Controller
         await _transactionRepository.UpdateAsync(transaction);
         await _budgetRepository.UpdateAsync(budget);
         
-        return RedirectToAction("Details", "Budget", new { id = transaction.BudgetId });
+        return RedirectToAction("Edit", "Budget", new { id = transaction.BudgetId });
     }
     
     // GET: Transaction/Delete/{id}
@@ -185,7 +185,7 @@ public class TransactionController : Controller
         // Delete the transaction
         if (await _transactionRepository.DeleteAsync(transaction))
         {
-            return RedirectToAction("Details", "Budget", new { id = budgetId });
+            return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
 
         return RedirectToAction("Error", "Home");

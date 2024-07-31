@@ -221,7 +221,7 @@ public class BudgetController : Controller
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Details), new { id = budget.Id });
+            return RedirectToAction(nameof(Edit), new { id = budget.Id });
         }
 
         // Re-fetch transactions and incomes in case of error
@@ -233,7 +233,7 @@ public class BudgetController : Controller
         };
         return View(viewModel);
     }
-
+    
     private async Task<bool> BudgetExists(int id)
     {
         var budget = await _budgetRepository.GetByIdAsync(id);

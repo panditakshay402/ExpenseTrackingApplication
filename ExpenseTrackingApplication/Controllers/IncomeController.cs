@@ -43,7 +43,7 @@ public class IncomeController : Controller
                     await _budgetRepository.UpdateAsync(budget);
                 }
                 
-                return RedirectToAction("Details", "Budget", new { id = budgetId });
+                return RedirectToAction("Edit", "Budget", new { id = budgetId });
             }
         }
         ViewBag.BudgetId = budgetId;
@@ -143,7 +143,7 @@ public class IncomeController : Controller
         await _incomeRepository.UpdateAsync(income);
         await _budgetRepository.UpdateAsync(budget);
         
-        return RedirectToAction("Details", "Budget", new { id = income.BudgetId });
+        return RedirectToAction("Edit", "Budget", new { id = income.BudgetId });
     }
     
     // GET: Income/Delete/{id}
@@ -184,7 +184,7 @@ public class IncomeController : Controller
         
         if (await _incomeRepository.DeleteAsync(income))
         {
-            return RedirectToAction("Details", "Budget", new { id = budgetId });
+            return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
         
         return RedirectToAction("Error", "Home");
