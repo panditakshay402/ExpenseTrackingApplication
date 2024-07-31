@@ -179,3 +179,7 @@ button.accept-policy {
     margin-bottom: 30px;
   }
 }
+
+.rounded-circle {
+  border-radius: 50%;
+}

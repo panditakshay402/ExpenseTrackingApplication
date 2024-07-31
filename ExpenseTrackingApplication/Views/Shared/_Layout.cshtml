@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@using ExpenseTrackingApplication.Utilities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -36,10 +40,20 @@
                 </ul>
                 <ul class="navbar-nav">
                     @if (User.Identity is { IsAuthenticated: true })
-                    {   
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Profile</a>
-                        </li>
+                    {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="User" asp-action="Index">
+                            @if (!string.IsNullOrEmpty(User.FindFirstValue(CustomClaimTypes.Avatar)))
+                            {
+                                <img src="@User.FindFirstValue(CustomClaimTypes.Avatar)" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1722424290/avatars/default.jpg" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" />
+                            }
+                            @User.Identity.Name
+                        </a>
+                    </li>
                         <li class="nav-item">
                             <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
                                 <button class="btn btn-outline-danger">Logout</button>
