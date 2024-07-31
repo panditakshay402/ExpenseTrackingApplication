@@ -1,13 +1,13 @@
 ﻿@model ExpenseTrackingApplication.ViewModels.UserProfileViewModel
 
 @{
-ViewData["Title"] = "User Profile";
+    ViewData["Title"] = "User Profile";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div class="profile-container">
-    <h2>User's Profile</h2>
+    <h2>@Model.UserName's Profile</h2>
     <div>
         <label>Username:</label>
         <span>@Model.UserName</span>
