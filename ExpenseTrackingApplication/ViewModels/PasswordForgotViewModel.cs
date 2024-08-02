@@ -2,7 +2,7 @@
 
 namespace ExpenseTrackingApplication.ViewModels;
 
-public class ForgotPasswordViewModel
+public class PasswordForgotViewModel
 {
     [Required]
     [EmailAddress]

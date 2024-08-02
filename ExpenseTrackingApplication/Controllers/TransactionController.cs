@@ -86,7 +86,7 @@ public class TransactionController : Controller
             return NotFound();
         }
 
-        var transactionViewModel = new EditTransactionViewModel
+        var transactionViewModel = new TransactionEditViewModel
         {
             Id = transaction.Id,
             Recipient = transaction.Recipient,
@@ -103,12 +103,12 @@ public class TransactionController : Controller
     // POST: Transaction/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, EditTransactionViewModel transactionViewModel)
+    public async Task<IActionResult> Edit(int id, TransactionEditViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit transaction.");
-            return View("Edit", transactionViewModel);
+            return View("Edit", viewModel);
         }
 
         var transaction = await _transactionRepository.GetByIdAsync(id);
@@ -127,14 +127,14 @@ public class TransactionController : Controller
 
         // Calculate new balance
         var previousAmount = transaction.Amount;
-        var newAmount = transactionViewModel.Amount;
+        var newAmount = viewModel.Amount;
         
         // Update transaction details
-        transaction.Recipient = transactionViewModel.Recipient;
-        transaction.Amount = transactionViewModel.Amount;
-        transaction.Date = transactionViewModel.Date;
-        transaction.Category = transactionViewModel.Category;
-        transaction.Description = transactionViewModel.Description;
+        transaction.Recipient = viewModel.Recipient;
+        transaction.Amount = viewModel.Amount;
+        transaction.Date = viewModel.Date;
+        transaction.Category = viewModel.Category;
+        transaction.Description = viewModel.Description;
 
         // Update the budget balance
         budget.Balance += previousAmount - newAmount;

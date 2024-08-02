@@ -138,7 +138,7 @@ public class AccountController : Controller
     
     public async Task<IActionResult> ConfirmEmail(string? userId, string? code)
     {
-        var confirmEmailViewModel = new ConfirmEmailViewModel();
+        var confirmEmailViewModel = new EmailConfirmViewModel();
 
         if (userId == null || code == null)
         {
@@ -173,13 +173,13 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult ResetPassword(string? token = null)
     {
-        var model = new ResetPasswordViewModel { Token = token };
+        var model = new PasswordResetViewModel { Token = token };
         return View(model);
     }
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    public async Task<IActionResult> ResetPassword(PasswordResetViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -230,14 +230,14 @@ public class AccountController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
+    public async Task<IActionResult> ForgotPassword(PasswordForgotViewModel passwordForgotViewModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(forgotPasswordViewModel);
+            return View(passwordForgotViewModel);
         }
 
-        var user = await _userManager.FindByEmailAsync(forgotPasswordViewModel.Email);
+        var user = await _userManager.FindByEmailAsync(passwordForgotViewModel.Email);
         if (user == null)
         {
             // Don't reveal that the user does not exist or is not confirmed
@@ -247,7 +247,7 @@ public class AccountController : Controller
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
 
-        await _emailSender.SendEmailAsync(forgotPasswordViewModel.Email, "Reset Password",
+        await _emailSender.SendEmailAsync(passwordForgotViewModel.Email, "Reset Password",
             $"Please reset your password by clicking <a href='{callbackUrl}'>here</a>.");
 
         return RedirectToAction(nameof(ForgotPasswordConfirmation));

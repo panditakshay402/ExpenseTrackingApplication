@@ -1,6 +1,6 @@
 ﻿namespace ExpenseTrackingApplication.ViewModels
 {
-    public class EditUserProfileViewModel
+    public class UserProfileEditViewModel
     {
         public string? UserName { get; set; }
         public string? Email { get; set; }

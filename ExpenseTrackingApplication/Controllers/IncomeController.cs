@@ -86,7 +86,7 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        var incomeViewModel = new EditIncomeViewModel
+        var incomeViewModel = new IncomeEditViewModel
         {
             Id = income.Id,
             Source = income.Source,
@@ -103,12 +103,12 @@ public class IncomeController : Controller
     // POST: Income/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, EditIncomeViewModel incomeViewModel)
+    public async Task<IActionResult> Edit(int id, IncomeEditViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit income.");
-            return View("Edit", incomeViewModel);
+            return View("Edit", viewModel);
         }
 
         var income = await _incomeRepository.GetByIdAsync(id);
@@ -127,14 +127,14 @@ public class IncomeController : Controller
         
         // Calculate new balance
         var previousAmount = income.Amount;
-        var newAmount = incomeViewModel.Amount;
+        var newAmount = viewModel.Amount;
         
         // Update income details
-        income.Source = incomeViewModel.Source;
-        income.Amount = incomeViewModel.Amount;
-        income.Date = incomeViewModel.Date;
-        income.Category = incomeViewModel.Category;
-        income.Description = incomeViewModel.Description;
+        income.Source = viewModel.Source;
+        income.Amount = viewModel.Amount;
+        income.Date = viewModel.Date;
+        income.Category = viewModel.Category;
+        income.Description = viewModel.Description;
         
         // Update the budget balance
         budget.Balance -= previousAmount - newAmount;

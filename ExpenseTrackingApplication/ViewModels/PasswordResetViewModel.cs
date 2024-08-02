@@ -1,6 +1,6 @@
 ﻿namespace ExpenseTrackingApplication.ViewModels;
 
-public class ResetPasswordViewModel
+public class PasswordResetViewModel
 {
     public string Email { get; set; }
     public string Password { get; set; }

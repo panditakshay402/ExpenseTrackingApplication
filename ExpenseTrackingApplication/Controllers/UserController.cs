@@ -53,7 +53,7 @@ public class UserController : Controller
             return NotFound();
         }
 
-        var model = new EditUserProfileViewModel
+        var model = new UserProfileEditViewModel
         {
             UserName = user.UserName,
             Email = user.Email,
@@ -65,7 +65,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EditUserProfileViewModel model)
+    public async Task<IActionResult> Edit(UserProfileEditViewModel model)
     {
         if (!ModelState.IsValid)
         {
