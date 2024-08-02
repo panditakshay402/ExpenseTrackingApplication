@@ -4,7 +4,10 @@
 ViewData["Title"] = "Budget Details";
 }
 
-<h2>Details for Budget: @Model.Budget.Name</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Details for Budget: @Model.Budget.Name</h2>
+    <a class="btn btn-success" asp-controller="Report" asp-action="Generate" asp-route-id="@Model.Budget.Id">Create Report</a>
+</div>
 
 <div>
     <h4>Budget Information</h4>

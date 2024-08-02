@@ -1,45 +1,65 @@
-﻿@model ExpenseTrackingApplication.ViewModels.ReportViewModel
+﻿@model ExpenseTrackingApplication.ViewModels.ReportSettingsViewModel
+
+@{
+    ViewData["Title"] = "Generate Report";
+}
 
 <h2>Generate Report</h2>
 
-<form asp-action="Generate">
+<form asp-action="GenerateReport" method="post">
     <div class="form-group">
-        <label asp-for="StartDate" class="control-label"></label>
-        <input asp-for="StartDate" class="form-control" />
+        <label asp-for="Type">Report Type</label>
+        <select asp-for="Type" class="form-control">
+            <option value="MonthlySummary">Monthly Summary</option>
+            <option value="ExpensesByCategory">Expenses By Category</option>
+            <option value="TrendAnalysis">Trend Analysis</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="EndDate" class="control-label"></label>
-        <input asp-for="EndDate" class="form-control" />
+        <label asp-for="StartDate">Start Date</label>
+        <input asp-for="StartDate" class="form-control" type="date" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <input type="submit" value="Generate" class="btn btn-primary" />
+        <label asp-for="EndDate">End Date</label>
+        <input asp-for="EndDate" class="form-control" type="date" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
     </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" asp-for="IncludeAllBudgets" />
+            Include All Budgets
+        </label>
+    </div>
+
+    <div class="form-group" id="budget-selection" style="display: none;">
+        <label>Select Budgets</label>
+        <select asp-for="SelectedBudgetIds" class="form-control" multiple>
+            @foreach (var budget in Model.AvailableBudgets)
+            {
+                <option value="@budget.Id">@budget.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate Report</button>
 </form>
 
+@section Scripts {
+    <script>
+        document.getElementById('IncludeAllBudgets').addEventListener('change', function () {
+            var budgetSelection = document.getElementById('budget-selection');
+            if (this.checked) {
+                budgetSelection.style.display = 'none';
+            } else {
+                budgetSelection.style.display = 'block';
+            }
+        });
 
-<h3>Report from @Model.StartDate to @Model.EndDate</h3>
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>Category</th>
-        <th>Amount</th>
-        <th>Date</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    @if (Model.Transactions != null)
-    {
-        foreach (var item in Model.Transactions)
-        {
-            <tr>
-                <td>@item.Category</td>
-                <td>@item.Amount</td>
-                <td>@item.Date</td>
-                <td>@item.Description</td>
-            </tr>
-        }
-    }
-    </tbody>
-</table>
+        document.getElementById('IncludeAllBudgets').dispatchEvent(new Event('change'));
+    </script>
+}
