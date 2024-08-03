@@ -31,6 +31,16 @@ namespace ExpenseTrackingApplication.Repositories
                 .ToListAsync();
         }
         
+        public async Task<bool> UpdateBalanceAsync(int budgetId, decimal amount)
+        {
+            var budget = await _context.BudgetCategories.FindAsync(budgetId);
+            if (budget == null) return false;
+
+            budget.CurrentBalance += amount;
+            return await SaveAsync();
+        }
+
+        
         public async Task<bool> AddAsync(BudgetCategory budgetCategory)
         {
             await _context.BudgetCategories.AddAsync(budgetCategory);
