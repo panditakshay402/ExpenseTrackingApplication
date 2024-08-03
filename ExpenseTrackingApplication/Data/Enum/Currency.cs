@@ -1,11 +1,10 @@
-﻿namespace ExpenseTrackingApplication.Data.Enum
+﻿namespace ExpenseTrackingApplication.Data.Enum;
+    
+public enum Currency
 {
-    public enum Currency
-    {
-        USD,
-        EUR,
-        GBP,
-        PLN,
+    Usd,
+    Eur,
+    Gbp,
+    Pln,
 
-    }
 }
