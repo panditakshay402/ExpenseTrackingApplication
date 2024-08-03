@@ -6,6 +6,7 @@ namespace ExpenseTrackingApplication.Interfaces
     {
         Task<IEnumerable<BudgetCategory?>> GetAllAsync();
         Task<BudgetCategory?> GetByIdAsync(int id);
+        Task<IEnumerable<BudgetCategory>> GetByBudgetAsync(int budgetId);
         Task<bool> AddAsync(BudgetCategory budgetCategory);
         Task<bool> DeleteAsync(BudgetCategory budgetCategory);
         Task<bool> UpdateAsync(BudgetCategory budgetCategory);
