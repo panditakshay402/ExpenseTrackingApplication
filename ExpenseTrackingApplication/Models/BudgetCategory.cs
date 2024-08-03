@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ExpenseTrackingApplication.Data.Enum;
 
 namespace ExpenseTrackingApplication.Models;
 
@@ -13,9 +14,18 @@ public class BudgetCategory
     public string Name { get; set; }  = "Budget Category";
 
     [Required]
+    public BudgetCategoryType Type { get; set; }
+    
+    [Range(0, double.MaxValue, ErrorMessage = "Expense must be a positive number.")]
+    public decimal CurrentBalance { get; set; }
+    
+    [Required]
     [Range(0, double.MaxValue, ErrorMessage = "Limit must be a positive number.")]
     public decimal Limit { get; set; }
-
+    
+    [Required]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
     [ForeignKey("Budget")]
     public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
