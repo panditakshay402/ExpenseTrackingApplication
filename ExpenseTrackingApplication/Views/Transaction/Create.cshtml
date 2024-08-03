@@ -1,7 +1,7 @@
 ﻿@model ExpenseTrackingApplication.Models.Transaction
 
 @{
-ViewData["Title"] = "Create Transaction";
+    ViewData["Title"] = "Create Transaction";
 }
 
 <h2>Create Transaction</h2>
@@ -25,7 +25,7 @@ ViewData["Title"] = "Create Transaction";
         <select asp-for="Category" class="form-control">
             @foreach (var category in Enum.GetValues(typeof(ExpenseTrackingApplication.Data.Enum.TransactionCategory)))
             {
-            <option value="@category">@category</option>
+                <option value="@category">@category</option>
             }
         </select>
     </div>

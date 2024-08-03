@@ -1,16 +1,24 @@
-﻿using ExpenseTrackingApplication.Interfaces;
+﻿using ExpenseTrackingApplication.Data.Enum;
+using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTrackingApplication.Controllers;
 
+[Authorize]
 public class BudgetCategoryController : Controller
 {
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
+    private readonly IBudgetRepository _budgetRepository;
+    private readonly ITransactionRepository _transactionRepository;
 
-    public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository)
+    public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository, IBudgetRepository budgetRepository, ITransactionRepository transactionRepository)
     {
         _budgetCategoryRepository = budgetCategoryRepository;
+        _budgetRepository = budgetRepository;
+        _transactionRepository = transactionRepository;
+        
     }
 
     // GET: BudgetCategory/Create
@@ -23,15 +31,28 @@ public class BudgetCategoryController : Controller
     // POST: BudgetCategory/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(BudgetCategory budgetCategory)
+    public async Task<IActionResult> Create(int budgetId, [Bind("Name,Type,Limit")] BudgetCategory budgetCategory)
     {
         if (ModelState.IsValid)
         {
-            budgetCategory.CreatedAt = DateTime.UtcNow; // Set creation date
-            var result = await _budgetCategoryRepository.AddAsync(budgetCategory);
-            if (result)
+            var budget = await _budgetRepository.GetByIdAsync(budgetId);
+            if (budget == null)
             {
-                return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
+                ModelState.AddModelError("", "Invalid budget ID.");
+                return View(budgetCategory);
+            }
+            
+            budgetCategory.BudgetId = budgetId;
+            budgetCategory.CreatedAt = DateTime.UtcNow;
+            
+            if (await _budgetCategoryRepository.AddAsync(budgetCategory))
+            {
+                var transactions = await _transactionRepository.GetByCategoryAsync(budgetId, (TransactionCategory)budgetCategory.Type);
+                
+                decimal totalExpenses = transactions.Sum(t => t.Amount);
+                await _budgetCategoryRepository.UpdateBalanceAsync(budgetCategory.Id, totalExpenses);
+                
+                return RedirectToAction("Details", "Budget", new { id = budgetId });
             }
 
             ModelState.AddModelError("", "Error while creating category.");
