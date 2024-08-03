@@ -9,12 +9,48 @@ ViewData["Title"] = "Budget Details";
     <a class="btn btn-success" asp-controller="Report" asp-action="Generate" asp-route-id="@Model.Budget.Id">Create Report</a>
 </div>
 
+<div class="info-boxes">
+    <div class="info-box">
+        <h4>Name:</h4>
+        <p>@Model.Budget.Name</p>
+    </div>
+    <div class="info-box">
+        <h4>Balance:</h4>
+        <p class="balance @(Model.Budget.Balance >= 0 ? "positive" : "negative")">
+            @Model.Budget.Balance.ToString("C")
+        </p>
+    </div>
+    <div class="info-box">
+        <h4>Total Transactions:</h4>
+        <p>@Model.TotalTransactionAmount.ToString("C")</p>
+    </div>
+    <div class="info-box">
+        <h4>Total Income:</h4>
+        <p>@Model.TotalIncomeAmount.ToString("C")</p>
+    </div>
+</div>
+
 <div>
-    <h4>Budget Information</h4>
-    <p><strong>Name:</strong> @Model.Budget.Name</p>
-    <p><strong>Balance:</strong> @Model.Budget.Balance</p>
-    <p><strong>Total Transactions:</strong> @Model.TotalTransactionAmount</p>
-    <p><strong>Total Income:</strong> @Model.TotalIncomeAmount</p>
+    <h4>Budget Categories</h4>
+    <a class="btn btn-success" asp-controller="BudgetCategory" asp-action="Create" asp-route-id="@Model.Budget.Id">Add BudgetCategory</a>
+    <div class="row">
+        @foreach (var category in Model.BudgetCategories)
+        {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@category.Name</h5>
+                    <p class="card-text">
+                        <strong>Type:</strong> @category.Type<br />
+                        <strong>Current Balance:</strong> @category.CurrentBalance<br />
+                        <strong>Limit:</strong> @category.Limit
+                    </p>
+                    <a class="btn btn-info" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
 </div>
 
 <div>

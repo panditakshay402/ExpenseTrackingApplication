@@ -13,11 +13,13 @@ namespace ExpenseTrackingApplication.Controllers;
 public class BudgetController : Controller
 {
     private readonly IBudgetRepository _budgetRepository;
+    private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
-    public BudgetController(IBudgetRepository budgetRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
     {
         _budgetRepository = budgetRepository;
+        _budgetCategoryRepository = budgetCategoryRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
     }
@@ -149,6 +151,9 @@ public class BudgetController : Controller
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
         
+        // Get budget categories for the budget
+        var budgetCategories = await _budgetCategoryRepository.GetByBudgetAsync(id);
+        
         var viewModel = new BudgetDetailsViewModel
         {
             Budget = budget,
@@ -156,6 +161,7 @@ public class BudgetController : Controller
             Incomes = incomes,
             // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
+            BudgetCategories = budgetCategories,
             BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
 
