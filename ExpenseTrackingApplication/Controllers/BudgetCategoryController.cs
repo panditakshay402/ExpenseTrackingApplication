@@ -1,4 +1,5 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
+﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,36 @@ public class BudgetCategoryController : Controller
         
     }
     
+    // GET: BudgetCategory/AddNewBudgetCategory
+    public async Task<IActionResult> AddNewBudgetCategory(int budgetId)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(budgetId);
+        if (budget == null)
+        {
+            ModelState.AddModelError("", "Invalid budget ID.");
+            return RedirectToAction("Details", "Budget", new { id = budgetId });
+        }
+
+        var existingCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(budgetId);
+        int categoryCount = existingCategories.Count();
+
+        var newCategory = new BudgetCategory
+        {
+            Name = $"Category {categoryCount + 1}",
+            Type = BudgetCategoryType.Expenses,
+            CurrentBalance = 0,
+            Limit = 0,
+            BudgetId = budgetId
+        };
+
+        if (await _budgetCategoryRepository.AddAsync(newCategory))
+        {
+            return RedirectToAction("Edit", new { id = newCategory.Id });
+        }
+
+        ModelState.AddModelError("", "Error while creating category.");
+        return RedirectToAction("Details", "Budget", new { id = budgetId });
+    }
 
     // GET: BudgetCategory/Edit/5
     public async Task<IActionResult> Edit(int id)
