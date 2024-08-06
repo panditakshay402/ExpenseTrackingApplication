@@ -41,6 +41,27 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .WithOne(bc => bc.Budget)
             .HasForeignKey(bc => bc.BudgetId);
         
+        // Configure precision and scale for decimal properties
+        modelBuilder.Entity<Budget>()
+            .Property(b => b.Balance)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<BudgetCategory>()
+            .Property(bc => bc.CurrentBalance)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<BudgetCategory>()
+            .Property(bc => bc.Limit)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Transaction>()
+            .Property(t => t.Amount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Income>()
+            .Property(i => i.Amount)
+            .HasColumnType("decimal(18,2)");
+        
     }
     
 }
