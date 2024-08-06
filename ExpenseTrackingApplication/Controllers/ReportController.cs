@@ -44,6 +44,7 @@ public class ReportController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> GenerateReport(ReportSettingsViewModel model)
     {
+        // TODO: Fix Report Generation, no download window.
         if (!ModelState.IsValid)
         {
             var user = await _userManager.GetUserAsync(User);
