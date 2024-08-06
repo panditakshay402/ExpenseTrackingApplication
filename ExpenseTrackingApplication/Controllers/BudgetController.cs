@@ -72,30 +72,6 @@ public class BudgetController : Controller
         return View("Index"); // Redirect to Index in case of failure
     }
     
-    // GET: Budget/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
-    
-    // POST: Budget/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Amount")] Budget budget)
-    {
-        if (ModelState.IsValid)
-        {
-            budget.AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                                ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-
-            if (await _budgetRepository.AddAsync(budget))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-        }
-        return View(budget);
-    }
-    
     // GET: Budget/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
@@ -152,7 +128,7 @@ public class BudgetController : Controller
         var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
         
         // Get budget categories for the budget
-        var budgetCategories = await _budgetCategoryRepository.GetByBudgetAsync(id);
+        var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
         
         var viewModel = new BudgetDetailsViewModel
         {

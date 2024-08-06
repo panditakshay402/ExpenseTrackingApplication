@@ -20,46 +20,7 @@ public class BudgetCategoryController : Controller
         _transactionRepository = transactionRepository;
         
     }
-
-    // GET: BudgetCategory/Create
-    public IActionResult Create(int budgetId)
-    {
-        ViewBag.BudgetId = budgetId;
-        return View();
-    }
-
-    // POST: BudgetCategory/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int budgetId, [Bind("Name,Type,Limit")] BudgetCategory budgetCategory)
-    {
-        if (ModelState.IsValid)
-        {
-            var budget = await _budgetRepository.GetByIdAsync(budgetId);
-            if (budget == null)
-            {
-                ModelState.AddModelError("", "Invalid budget ID.");
-                return View(budgetCategory);
-            }
-            
-            budgetCategory.BudgetId = budgetId;
-            budgetCategory.CreatedAt = DateTime.UtcNow;
-            
-            if (await _budgetCategoryRepository.AddAsync(budgetCategory))
-            {
-                var transactions = await _transactionRepository.GetByCategoryAsync(budgetId, (TransactionCategory)budgetCategory.Type);
-                
-                decimal totalExpenses = transactions.Sum(t => t.Amount);
-                await _budgetCategoryRepository.UpdateBalanceAsync(budgetCategory.Id, totalExpenses);
-                
-                return RedirectToAction("Details", "Budget", new { id = budgetId });
-            }
-
-            ModelState.AddModelError("", "Error while creating category.");
-        }
-
-        return View(budgetCategory);
-    }
+    
 
     // GET: BudgetCategory/Edit/5
     public async Task<IActionResult> Edit(int id)
