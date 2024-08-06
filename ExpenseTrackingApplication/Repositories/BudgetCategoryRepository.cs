@@ -24,7 +24,7 @@ namespace ExpenseTrackingApplication.Repositories
             return await _context.BudgetCategories.FirstOrDefaultAsync(bc => bc.Id == id);
         }
         
-        public async Task<IEnumerable<BudgetCategory>> GetByBudgetAsync(int budgetId)
+        public async Task<IEnumerable<BudgetCategory>> GetByBudgetIdAsync(int budgetId)
         {
             return await _context.BudgetCategories
                 .Where(c => c.BudgetId == budgetId)
