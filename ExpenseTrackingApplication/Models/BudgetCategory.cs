@@ -23,9 +23,6 @@ public class BudgetCategory
     [Range(0, double.MaxValue, ErrorMessage = "Limit must be a positive number.")]
     public decimal Limit { get; set; }
     
-    [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
     [ForeignKey("Budget")]
     public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
