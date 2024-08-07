@@ -1,35 +1,46 @@
 ﻿@model ExpenseTrackingApplication.Models.BudgetCategory
 
 @{
-ViewData["Title"] = "Delete Budget Category";
+    ViewData["Title"] = "Delete Budget Category";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>Delete Budget Category</h2>
 
-<h4>Are you sure you want to delete this budget category?</h4>
-<hr />
+<h3>Are you sure you want to delete this category?</h3>
+<div>
+    <h4>Budget Category</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SubCategory)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SubCategory)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Limit)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Limit)
+        </dd>
+    </dl>
 
-<form asp-action="Delete" method="post">
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Type" class="control-label"></label>
-        <input asp-for="Type" class="form-control" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Limit" class="control-label"></label>
-        <input asp-for="Limit" class="form-control" readonly />
-    </div>
-
-    <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="BudgetId" />
-
-    <div class="form-group">
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="BudgetId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Details" asp-controller="Budget" asp-route-id="@Model.BudgetId" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
