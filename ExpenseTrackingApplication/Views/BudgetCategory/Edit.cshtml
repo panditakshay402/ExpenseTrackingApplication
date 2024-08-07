@@ -1,1 +1,78 @@
-﻿<h1>Edit</h1>
+﻿@using ExpenseTrackingApplication.Data.Enum
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BudgetCategory
+
+<h2>Edit Budget Category</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type" class="control-label"></label>
+        <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<BudgetCategoryType>()" id="type-select"></select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SubCategory" class="control-label"></label>
+        <select asp-for="SubCategory" class="form-control" id="subcategory-select" multiple="multiple">
+            <!-- Options will be populated via JavaScript -->
+        </select>
+        <span asp-validation-for="SubCategory" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Limit" class="control-label"></label>
+        <input asp-for="Limit" class="form-control" />
+        <span asp-validation-for="Limit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const typeSelect = document.getElementById("type-select");
+        const subcategorySelect = document.getElementById("subcategory-select");
+
+        const incomeCategories = @Html.Raw(Json.Serialize(Enum.GetNames(typeof(IncomeCategory))));
+        const transactionCategories = @Html.Raw(Json.Serialize(Enum.GetNames(typeof(TransactionCategory))));
+
+        const selectedSubCategories = "@Model.SubCategory".split(',');
+
+        function updateSubcategoryOptions() {
+            subcategorySelect.innerHTML = ""; // Clear previous options
+
+            let categories = [];
+            if (typeSelect.value === 'Income') {
+                categories = incomeCategories;
+            } else if (typeSelect.value === 'Expense') {
+                categories = transactionCategories;
+            }
+
+            categories.forEach(category => {
+                const option = document.createElement("option");
+                option.value = category;
+                option.text = category;
+                if (selectedSubCategories.includes(category)) {
+                    option.selected = true;
+                }
+                subcategorySelect.appendChild(option);
+            });
+        }
+
+        typeSelect.addEventListener("change", updateSubcategoryOptions);
+
+        // Initialize options on page load
+        updateSubcategoryOptions();
+    });
+</script>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
