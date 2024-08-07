@@ -9,54 +9,75 @@ ViewData["Title"] = "Budget Details";
     <a class="btn btn-success" asp-controller="Report" asp-action="Generate" asp-route-id="@Model.Budget.Id">Create Report</a>
 </div>
 
-<div class="info-boxes">
-    <div class="info-box">
-        <h4>Name:</h4>
-        <p>@Model.Budget.Name</p>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Name:</h5>
+                <p class="card-text">@Model.Budget.Name</p>
+            </div>
+        </div>
     </div>
-    <div class="info-box">
-        <h4>Balance:</h4>
-        <p class="balance @(Model.Budget.Balance >= 0 ? "positive" : "negative")">
-            @Model.Budget.Balance.ToString("C")
-        </p>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Balance:</h5>
+                <p class="card-text balance @(Model.Budget.Balance >= 0 ? "positive" : "negative")">
+                    @Model.Budget.Balance.ToString("C")
+                </p>
+            </div>
+        </div>
     </div>
-    <div class="info-box">
-        <h4>Total Transactions:</h4>
-        <p>@Model.TotalTransactionAmount.ToString("C")</p>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Transactions:</h5>
+                <p class="card-text">@Model.TotalTransactionAmount.ToString("C")</p>
+            </div>
+        </div>
     </div>
-    <div class="info-box">
-        <h4>Total Income:</h4>
-        <p>@Model.TotalIncomeAmount.ToString("C")</p>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Income:</h5>
+                <p class="card-text">@Model.TotalIncomeAmount.ToString("C")</p>
+            </div>
+        </div>
     </div>
 </div>
 
 <div>
-    <h4>Budget Categories</h4>
-    <a class="btn btn-success" asp-controller="BudgetCategory" asp-action="AddNewBudgetCategory" asp-route-budgetId="@Model.Budget.Id">Add BudgetCategory</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Budget Categories</h4>
+        <a class="btn btn-success" asp-controller="BudgetCategory" asp-action="AddNewBudgetCategory" asp-route-budgetId="@Model.Budget.Id">Add Budget Category</a>
+    </div>
     <div class="row">
         @foreach (var category in Model.BudgetCategories)
         {
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">@category.Name</h5>
-                    <p class="card-text">
-                        <strong>Type:</strong> @category.Type<br />
-                        <strong>Current Balance:</strong> @category.CurrentBalance<br />
-                        <strong>Limit:</strong> @category.Limit
-                    </p>
-                    <a class="btn btn-info" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
-                    <a class="btn btn-warning" asp-controller="BudgetCategory" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
-                    <a class="btn btn-danger" asp-controller="BudgetCategory" asp-action="Delete" asp-route-id="@category.Id">Delete</a>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <p class="card-text">
+                            <strong>Type:</strong> @category.Type<br/>
+                            <strong>Current Balance:</strong> @category.CurrentBalance<br/>
+                            <strong>Limit:</strong> @category.Limit
+                        </p>
+                        <a class="btn btn-info" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
+                        <a class="btn btn-warning" asp-controller="BudgetCategory" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="BudgetCategory" asp-action="Delete" asp-route-id="@category.Id">Delete</a>
+                    </div>
                 </div>
             </div>
-        </div>
         }
     </div>
 </div>
 
 <div>
-    <h4>Transactions</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Transactions</h4>
+        <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Transaction</a>
+    </div>
     <table class="table">
         <thead>
         <tr>
@@ -70,20 +91,23 @@ ViewData["Title"] = "Budget Details";
         <tbody>
         @foreach (var transaction in Model.Transactions)
         {
-        <tr>
-            <td>@transaction.Date.ToShortDateString()</td>
-            <td>@transaction.Recipient</td>
-            <td>@transaction.Amount</td>
-            <td>@transaction.Category</td>
-            <td>@transaction.Description</td>
-        </tr>
+            <tr>
+                <td>@transaction.Date.ToShortDateString()</td>
+                <td>@transaction.Recipient</td>
+                <td>@transaction.Amount</td>
+                <td>@transaction.Category</td>
+                <td>@transaction.Description</td>
+            </tr>
         }
         </tbody>
     </table>
 </div>
 
 <div>
-    <h4>Incomes</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Incomes</h4>
+        <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+    </div>
     <table class="table">
         <thead>
         <tr>
@@ -97,13 +121,13 @@ ViewData["Title"] = "Budget Details";
         <tbody>
         @foreach (var income in Model.Incomes)
         {
-        <tr>
-            <td>@income.Date.ToShortDateString()</td>
-            <td>@income.Source</td>
-            <td>@income.Amount</td>
-            <td>@income.Category</td>
-            <td>@income.Description</td>
-        </tr>
+            <tr>
+                <td>@income.Date.ToShortDateString()</td>
+                <td>@income.Source</td>
+                <td>@income.Amount</td>
+                <td>@income.Category</td>
+                <td>@income.Description</td>
+            </tr>
         }
         </tbody>
     </table>
