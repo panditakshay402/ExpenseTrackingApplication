@@ -28,10 +28,10 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions.Where(t => t.BudgetId == budgetId).ToListAsync();
     }
     
-    public async Task<IEnumerable<Transaction>> GetByCategoryAsync(int budgetId, TransactionCategory category)
+    public async Task<IEnumerable<Transaction>> GetByCategoryAsync(int budgetId, string subCategory)
     {
         return await _context.Transactions
-            .Where(t => t.BudgetId == budgetId && t.Category == category)
+            .Where(i => i.BudgetId == budgetId && i.Category.ToString() == subCategory)
             .ToListAsync();
     }
     
