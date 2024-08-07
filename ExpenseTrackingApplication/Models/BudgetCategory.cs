@@ -16,6 +16,9 @@ public class BudgetCategory
     [Required]
     public BudgetCategoryType Type { get; set; }
     
+    [Required]
+    public string? SubCategory { get; set; }
+    
     [Range(0, double.MaxValue, ErrorMessage = "Expense must be a positive number.")]
     public decimal CurrentBalance { get; set; }
     
