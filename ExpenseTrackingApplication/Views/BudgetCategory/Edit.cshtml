@@ -1,1 +1,39 @@
-﻿<h1> Edit </h1>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExpenseTrackingApplication.ViewModels.BudgetCategoryEditViewModel
+
+<h2>Edit Budget Category</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="BudgetId" />
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type" class="control-label"></label>
+        <select asp-for="Type" class="form-control" asp-items="ViewBag.CategoryTypes">
+            <option value="">Select Type</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CurrentSpending" class="control-label"></label>
+        <input asp-for="CurrentSpending" class="form-control" readonly />
+        <span asp-validation-for="CurrentSpending" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Limit" class="control-label"></label>
+        <input asp-for="Limit" class="form-control" />
+        <span asp-validation-for="Limit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>

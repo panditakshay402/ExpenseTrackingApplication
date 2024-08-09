@@ -2,6 +2,7 @@
 using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
+using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -41,8 +42,8 @@ public class BudgetCategoryController : Controller
         var newCategory = new BudgetCategory
         {
             Name = $"Category {categoryCount + 1}",
-            Type = BudgetCategoryType.Expenses,
-            CurrentBalance = 0,
+            Type = BudgetCategoryType.Expense,
+            CurrentSpending = 0,
             Limit = 0,
             BudgetId = budgetId
         };
@@ -65,74 +66,75 @@ public class BudgetCategoryController : Controller
             return NotFound();
         }
 
-        ViewBag.IncomeCategories = Enum.GetValues(typeof(IncomeCategory)).Cast<IncomeCategory>().ToList();
-        ViewBag.TransactionCategories = Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList();
-
-        return View(category);
+        // Załaduj dane potrzebne do widoku edycji
+        var viewModel = new BudgetCategoryEditViewModel
+        {
+            Id = category.Id,
+            Name = category.Name,
+            Type = category.Type,
+            CurrentSpending = category.CurrentSpending,
+            Limit = category.Limit,
+            BudgetId = category.BudgetId
+        };
+        
+        // Przygotuj listę typów kategorii dla rozwijanego menu
+        ViewBag.CategoryTypes = new SelectList(Enum.GetValues(typeof(BudgetCategoryType))
+                .Cast<BudgetCategoryType>()
+                .Select(t => new { Value = t, Text = t.ToString() }),
+            "Value", "Text", viewModel.Type);
+        
+        return View(viewModel);
     }
 
     // POST: BudgetCategory/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, BudgetCategory category, string[] subCategories)
+    public async Task<IActionResult> Edit(int id, BudgetCategoryEditViewModel viewModel)
     {
-        if (id != category.Id)
+        if (id != viewModel.Id)
+        {
+            return BadRequest(); // lub inny odpowiedni kod błędu
+        }
+
+        var category = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (category == null)
         {
             return NotFound();
         }
 
+        if (viewModel.Type == BudgetCategoryType.Expense)
+        {
+            // Pobierz sumę wydatków z bieżącego miesiąca
+            viewModel.CurrentSpending = await _transactionRepository
+                .GetCurrentMonthAmountAsync(category.BudgetId);
+        }
+        else if (viewModel.Type == BudgetCategoryType.Income)
+        {
+            // Pobierz sumę przychodów z bieżącego miesiąca
+            viewModel.CurrentSpending = await _incomeRepository
+                .GetCurrentMonthAmountAsync(category.BudgetId);
+        }
+
         if (ModelState.IsValid)
         {
-            try
-            {
-                category.SubCategory = string.Join(",", subCategories);
-                
-                // Calculate CurrentBalance
-                category.CurrentBalance = await CalculateCurrentBalance(category);
+            // Zaktualizuj kategorię budżetową na podstawie modelu widoku
+            category.Name = viewModel.Name;
+            category.Limit = viewModel.Limit;
+            category.Type = viewModel.Type;
+            category.CurrentSpending = viewModel.CurrentSpending; // Aktualizuj CurrentSpending na podstawie wartości z widoku
 
-                await _budgetCategoryRepository.UpdateAsync(category);
+            if (await _budgetCategoryRepository.UpdateAsync(category))
+            {
                 return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await BudgetCategoryExists(category.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            ModelState.AddModelError("", "Error while updating category.");
         }
 
-        ViewBag.IncomeCategories = Enum.GetValues(typeof(IncomeCategory)).Cast<IncomeCategory>().ToList();
-        ViewBag.TransactionCategories = Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList();
-
-        return View(category);
-    }
-    
-    private async Task<decimal> CalculateCurrentBalance(BudgetCategory category)
-    {
-        if (category.Type == BudgetCategoryType.Incomes)
-        {
-            var incomes = await _incomeRepository.GetByCategoryAsync(category.BudgetId, category.SubCategory);
-            return incomes.Sum(i => i.Amount);
-        }
-        else if (category.Type == BudgetCategoryType.Expenses)
-        {
-            var transactions = await _transactionRepository.GetByCategoryAsync(category.BudgetId, category.SubCategory);
-            return transactions.Sum(t => t.Amount);
-        }
-
-        return 0;
+        // Jeśli model nie jest ważny, zwróć widok z błędami walidacji
+        return View(viewModel);
     }
 
-    private async Task<bool> BudgetCategoryExists(int id)
-    {
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        return category != null;
-    }
     
     // GET: BudgetCategory/Delete/5
     public async Task<IActionResult> Delete(int id)
