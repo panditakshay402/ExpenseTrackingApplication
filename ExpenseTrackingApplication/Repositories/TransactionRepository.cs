@@ -28,6 +28,18 @@ public class TransactionRepository : ITransactionRepository
         return await _context.Transactions.Where(t => t.BudgetId == budgetId).ToListAsync();
     }
     
+    public async Task<decimal> GetCurrentMonthAmountAsync(int budgetId)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var currentYear = DateTime.Now.Year;
+
+        return await _context.Transactions
+            .Where(t => t.BudgetId == budgetId 
+                        && t.Date.Month == currentMonth 
+                        && t.Date.Year == currentYear)
+            .SumAsync(t => t.Amount);
+    }
+    
     public async Task<bool> AddAsync(Transaction transaction)
     {
         await _context.Transactions.AddAsync(transaction);

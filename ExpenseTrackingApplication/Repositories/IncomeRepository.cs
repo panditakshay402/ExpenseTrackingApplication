@@ -27,6 +27,18 @@ public class IncomeRepository : IIncomeRepository
         return await _context.Incomes.Where(i => i.BudgetId == budgetId).ToListAsync();
     }
     
+    public async Task<decimal> GetCurrentMonthAmountAsync(int budgetId)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var currentYear = DateTime.Now.Year;
+
+        return await _context.Incomes
+            .Where(i => i.BudgetId == budgetId 
+                        && i.Date.Month == currentMonth 
+                        && i.Date.Year == currentYear)
+            .SumAsync(i => i.Amount);
+    }
+    
     public async Task<bool> AddAsync(Income income)
     {
         await _context.Incomes.AddAsync(income);
