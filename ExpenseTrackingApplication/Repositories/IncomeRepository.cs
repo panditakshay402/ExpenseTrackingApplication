@@ -26,13 +26,6 @@ public class IncomeRepository : IIncomeRepository
     {
         return await _context.Incomes.Where(i => i.BudgetId == budgetId).ToListAsync();
     }
-
-    public async Task<IEnumerable<Income>> GetByCategoryAsync(int budgetId, string subCategory)
-    {
-        return await _context.Incomes
-            .Where(i => i.BudgetId == budgetId && i.Category.ToString() == subCategory)
-            .ToListAsync();
-    }
     
     public async Task<bool> AddAsync(Income income)
     {
