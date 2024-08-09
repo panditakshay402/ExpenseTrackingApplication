@@ -36,7 +36,7 @@ namespace ExpenseTrackingApplication.Repositories
             var budget = await _context.BudgetCategories.FindAsync(budgetId);
             if (budget == null) return false;
 
-            budget.CurrentBalance += amount;
+            budget.CurrentSpending += amount;
             return await SaveAsync();
         }
 
