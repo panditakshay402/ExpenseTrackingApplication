@@ -2,6 +2,9 @@
 
 public enum BudgetCategoryType
 {
-    Expenses,
-    Incomes
+    Expense,
+    Income,
+    Saving,
+    Investment,
+    Other
 }
