@@ -66,7 +66,7 @@ public class BudgetCategoryController : Controller
             return NotFound();
         }
 
-        // Załaduj dane potrzebne do widoku edycji
+        // Load the category details into the view model
         var viewModel = new BudgetCategoryEditViewModel
         {
             Id = category.Id,
@@ -77,7 +77,7 @@ public class BudgetCategoryController : Controller
             BudgetId = category.BudgetId
         };
         
-        // Przygotuj listę typów kategorii dla rozwijanego menu
+        // Category type selection list
         ViewBag.CategoryTypes = new SelectList(Enum.GetValues(typeof(BudgetCategoryType))
                 .Cast<BudgetCategoryType>()
                 .Select(t => new { Value = t, Text = t.ToString() }),
@@ -93,7 +93,7 @@ public class BudgetCategoryController : Controller
     {
         if (id != viewModel.Id)
         {
-            return BadRequest(); // lub inny odpowiedni kod błędu
+            return BadRequest();
         }
 
         var category = await _budgetCategoryRepository.GetByIdAsync(id);
@@ -104,24 +104,24 @@ public class BudgetCategoryController : Controller
 
         if (viewModel.Type == BudgetCategoryType.Expense)
         {
-            // Pobierz sumę wydatków z bieżącego miesiąca
+            // Extract the current month's spending for the category
             viewModel.CurrentSpending = await _transactionRepository
                 .GetCurrentMonthAmountAsync(category.BudgetId);
         }
         else if (viewModel.Type == BudgetCategoryType.Income)
         {
-            // Pobierz sumę przychodów z bieżącego miesiąca
+            // Extract the current month's income for the category
             viewModel.CurrentSpending = await _incomeRepository
                 .GetCurrentMonthAmountAsync(category.BudgetId);
         }
 
         if (ModelState.IsValid)
         {
-            // Zaktualizuj kategorię budżetową na podstawie modelu widoku
+            // Update the category details
             category.Name = viewModel.Name;
             category.Limit = viewModel.Limit;
             category.Type = viewModel.Type;
-            category.CurrentSpending = viewModel.CurrentSpending; // Aktualizuj CurrentSpending na podstawie wartości z widoku
+            category.CurrentSpending = viewModel.CurrentSpending;
 
             if (await _budgetCategoryRepository.UpdateAsync(category))
             {
@@ -130,8 +130,7 @@ public class BudgetCategoryController : Controller
 
             ModelState.AddModelError("", "Error while updating category.");
         }
-
-        // Jeśli model nie jest ważny, zwróć widok z błędami walidacji
+        
         return View(viewModel);
     }
 
@@ -169,4 +168,37 @@ public class BudgetCategoryController : Controller
         return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
     }
     
+    // GET: BudgetCategory/Details/5
+    public async Task<IActionResult> Details(int id)
+    {
+        var category = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        var viewModel = new BudgetCategoryDetailsViewModel
+        {
+            Id = category.Id,
+            Name = category.Name,
+            Type = category.Type,
+            CurrentSpending = category.CurrentSpending,
+            Limit = category.Limit,
+            RemainingBalance = category.RemainingBalance
+        };
+
+        // Load the transactions or incomes for the category
+        if (category.Type == BudgetCategoryType.Expense)
+        {
+            viewModel.Transactions = (await _transactionRepository.GetByBudgetAsync(category.BudgetId)).ToList();
+        }
+        else if (category.Type == BudgetCategoryType.Income)
+        {
+            viewModel.Incomes = (await _incomeRepository.GetByBudgetAsync(category.BudgetId)).ToList();
+        }
+
+        return View(viewModel);
+    }
+
+
 }

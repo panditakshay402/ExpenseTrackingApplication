@@ -1,1 +1,67 @@
-﻿<h1>Category Details</h1>
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.ViewModels.BudgetCategoryDetailsViewModel
+
+<h2>Category Details</h2>
+
+<div>
+    <h3>@Model.Name</h3>
+    <p>Type: @Model.Type</p>
+    <p>Current Spending: @Model.CurrentSpending</p>
+    <p>Limit: @Model.Limit</p>
+    <p>Remaining Balance: @Model.RemainingBalance</p>
+</div>
+
+@if (Model.Type == BudgetCategoryType.Expense)
+{
+    <h4>Transactions</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <tr>
+                <td>@transaction.Date.ToShortDateString()</td>
+                <td>@transaction.Recipient</td>
+                <td>@transaction.Amount</td>
+                <td>@transaction.Category</td>
+                <td>@transaction.Description</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else if (Model.Type == BudgetCategoryType.Income)
+{
+    <h4>Incomes</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var income in Model.Incomes)
+        {
+            <tr>
+                <td>@income.Date.ToShortDateString()</td>
+                <td>@income.Source</td>
+                <td>@income.Amount</td>
+                <td>@income.Category</td>
+                <td>@income.Description</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
