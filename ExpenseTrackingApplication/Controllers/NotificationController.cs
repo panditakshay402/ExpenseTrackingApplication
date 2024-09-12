@@ -1,4 +1,6 @@
-﻿using ExpenseTrackingApplication.Data;
+﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,17 +10,18 @@ namespace ExpenseTrackingApplication.Controllers;
 [Authorize]
 public class NotificationController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly INotificationService _notificationService;
 
-    public NotificationController(ApplicationDbContext context)
+    public NotificationController(INotificationService notificationService)
     {
-        _context = context;
+        _notificationService = notificationService;
     }
 
-    // GET: Notifications
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public JsonResult GetNotifications()
     {
-        var notifications = await _context.Notifications.ToListAsync();
-        return View(notifications);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var notifications = _notificationService.GetUserNotifications(userId);
+        return Json(notifications);
     }
 }
