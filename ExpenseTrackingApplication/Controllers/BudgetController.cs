@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
@@ -16,12 +17,14 @@ public class BudgetController : Controller
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
+    private readonly INotificationService _notificationService;
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, INotificationService notificationService)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
+        _notificationService = notificationService;
     }
     
     // GET: Budget
@@ -66,6 +69,14 @@ public class BudgetController : Controller
 
         if (await _budgetRepository.AddAsync(newBudget))
         {
+            // Create a notification for the user after successfully adding a budget
+            _notificationService.CreateNotification(
+                userId,
+                "New Budget Created",
+                $"A new budget '{newBudgetName}' has been successfully created.",
+                NotificationType.Budget
+            );
+            
             return RedirectToAction(nameof(Index));
         }
 
