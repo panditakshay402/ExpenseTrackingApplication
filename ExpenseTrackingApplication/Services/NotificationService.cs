@@ -33,9 +33,10 @@ public class NotificationService : INotificationService
     public List<Notification> GetUserNotifications(string appUserId)
     {
         return _context.Notifications
-            .Where(n => n.AppUserId == appUserId && !n.IsRead)
+            .Where(n => n.AppUserId == appUserId)
             .ToList();
     }
+
 
     public void MarkAsRead(int notificationId)
     {
@@ -46,4 +47,28 @@ public class NotificationService : INotificationService
             _context.SaveChanges();
         }
     }
+    
+    // Check if the user has unread notifications
+    public bool HasUnreadNotifications(string appUserId)
+    {
+        return _context.Notifications
+            .Any(n => n.AppUserId == appUserId && !n.IsRead);
+    }
+    
+    public async Task<Notification?> GetNotificationByIdAsync(int notificationId)
+    {
+        return await _context.Notifications.FindAsync(notificationId);
+    }
+    
+    public async Task<bool> DeleteAsync(Notification notification)
+    {
+        _context.Notifications.Remove(notification);
+        return await SaveAsync();
+    }
+
+    public async Task<bool> SaveAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+
 }

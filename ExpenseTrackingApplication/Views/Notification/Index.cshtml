@@ -5,24 +5,62 @@
 <table class="table">
     <thead>
     <tr>
-        <th>AppUserId</th>
+        <th>Type</th>
         <th>Topic</th>
         <th>Message</th>
-        <th>Type</th>
         <th>Date</th>
         <th>Read</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>@item.AppUserId</td>
-            <td>@item.Topic</td>
-            <td>@item.Message</td>
-            <td>@item.Type</td>
-            <td>@item.Date</td>
-            <td>@item.IsRead</td>
-        </tr>
+    @foreach (var item in Model.OrderByDescending(n => n.Date)) // Sort by date
+    {
+    <tr>
+        <td>@item.Type</td>
+        <td>@item.Topic</td>
+        <td>@item.Message</td>
+        <td>@item.Date.ToString("g")</td>
+        <td>
+            @if (item.IsRead)
+            {
+            <span>Read</span>
+            }
+            else
+            {
+            <form asp-action="MarkAsRead" asp-controller="Notification" method="post" style="display:inline;">
+                <input type="hidden" name="notificationId" value="@item.Id" />
+                <input type="checkbox" onchange="this.form.submit()" /> Mark as read
+            </form>
+            }
+        </td>
+        <td>
+            <form asp-action="Delete" asp-controller="Notification" method="post" style="display:inline;">
+                <input type="hidden" name="notificationId" value="@item.Id" />
+                <button type="submit" class="btn btn-link">
+                    <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726214680/icons/bin.png" alt="Delete" style="width: 24px; height: 24px;" />
+                </button>
+            </form>
+        </td>
+    </tr>
     }
     </tbody>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('input[type="checkbox"]').change(function() {
+        var notificationId = $(this).siblings('input[name="notificationId"]').val();
+        $.ajax({
+            url: '@Url.Action("MarkAsRead", "Notification")',
+            type: 'POST',
+            data: { notificationId: notificationId },
+            success: function(result) {
+                // Opcjonalnie: aktualizacja UI po pomyślnym oznaczeniu powiadomienia jako przeczytane
+                location.reload(); // Opcjonalnie: przeładuj stronę, aby zobaczyć zmiany
+            }
+        });
+    });
+});
+</script>

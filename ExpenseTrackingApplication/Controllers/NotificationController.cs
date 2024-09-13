@@ -17,11 +17,50 @@ public class NotificationController : Controller
         _notificationService = notificationService;
     }
 
-    [HttpGet]
-    public JsonResult GetNotifications()
+    public IActionResult Index()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var notifications = _notificationService.GetUserNotifications(userId);
-        return Json(notifications);
+        return View(notifications);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> MarkAsRead(int notificationId)
+    {
+        var notification = await _notificationService.GetNotificationByIdAsync(notificationId);
+        if (notification != null)
+        {
+            notification.IsRead = true;
+            await _notificationService.SaveAsync();
+        }
+
+        return Json(new { success = true });
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(int notificationId)
+    {
+        var notification = await _notificationService.GetNotificationByIdAsync(notificationId);
+        if (notification != null)
+        {
+            await _notificationService.DeleteAsync(notification);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpGet]
+    public IActionResult GetUnreadNotifications()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Json(new { hasUnread = false });
+        }
+
+        var hasUnreadNotifications = _notificationService.HasUnreadNotifications(userId);
+
+        return Json(new { hasUnread = hasUnreadNotifications });
     }
 }

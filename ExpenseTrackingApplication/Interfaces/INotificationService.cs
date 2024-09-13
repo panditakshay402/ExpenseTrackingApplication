@@ -8,4 +8,8 @@ public interface INotificationService
     void CreateNotification(string appUserId, string topic, string message, NotificationType type);
     List<Notification> GetUserNotifications(string appUserId);
     void MarkAsRead(int notificationId);
+    bool HasUnreadNotifications(string appUserId);
+    Task<Notification?> GetNotificationByIdAsync(int notificationId);
+    Task<bool> DeleteAsync(Notification notification);
+    Task<bool> SaveAsync();
 }
