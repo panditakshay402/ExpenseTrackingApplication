@@ -56,7 +56,7 @@ $(document).ready(function() {
             url: '@Url.Action("MarkAsRead", "Notification")',
             type: 'POST',
             data: { notificationId: notificationId },
-            success: function(result) {
+            success: function() {
                 // OPT: UI update after successfully marking a notification as read 
                 location.reload(); // OPT: reload the page to see the changes
             }
