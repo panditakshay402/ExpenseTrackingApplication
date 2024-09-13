@@ -48,7 +48,6 @@ public class BudgetController : Controller
     public async Task<IActionResult> AddNewBudget()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
         if (userId == null)
         {
             return NotFound();
@@ -73,7 +72,7 @@ public class BudgetController : Controller
             _notificationService.CreateNotification(
                 userId,
                 "New Budget Created",
-                $"A new budget '{newBudgetName}' has been successfully created.",
+                $"A new budget {newBudgetName} has been successfully created.",
                 NotificationType.Budget
             );
             
@@ -99,6 +98,12 @@ public class BudgetController : Controller
     [HttpPost, ActionName("DeleteBudget")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return NotFound();
+        }
+        
         var budget = await _budgetRepository.GetByIdAsync(id);
         if (budget == null)
         {
@@ -110,7 +115,6 @@ public class BudgetController : Controller
         {
             await _transactionRepository.DeleteAsync(transaction);
         }
-
         // Remove related incomes
         foreach (var income in budget.Incomes.ToList())
         {
@@ -118,6 +122,14 @@ public class BudgetController : Controller
         }
         
         await _budgetRepository.DeleteAsync(budget);
+        
+        _notificationService.CreateNotification(
+            userId,
+            "Budget Removed",
+            $"{budget.Name} has been successfully removed.",
+            NotificationType.Budget
+        );
+        
         return RedirectToAction("Index");
     }
     

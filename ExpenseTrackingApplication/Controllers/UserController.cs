@@ -15,13 +15,15 @@ public class UserController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IPhotoService _photoService;
+    private readonly INotificationService _notificationService;
 
-    public UserController(IUserRepository userRepository, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPhotoService photoService)
+    public UserController(IUserRepository userRepository, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPhotoService photoService, INotificationService notificationService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
         _signInManager = signInManager;
         _photoService = photoService;
+        _notificationService = notificationService;
     }
 
     [HttpGet]

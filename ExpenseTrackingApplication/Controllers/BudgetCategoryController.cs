@@ -17,13 +17,15 @@ public class BudgetCategoryController : Controller
     private readonly IBudgetRepository _budgetRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
+    private readonly INotificationService _notificationService;
 
-    public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository, IBudgetRepository budgetRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
+    public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository, IBudgetRepository budgetRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, INotificationService notificationService)
     {
         _budgetCategoryRepository = budgetCategoryRepository;
         _budgetRepository = budgetRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
+        _notificationService = notificationService;
     }
     
     // GET: BudgetCategory/AddNewBudgetCategory

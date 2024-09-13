@@ -13,10 +13,12 @@ public class TransactionController : Controller
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IBudgetRepository _budgetRepository;
-    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository)
+    private readonly INotificationService _notificationService;
+    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, INotificationService notificationService)
     {
         _transactionRepository = transactionRepository;
         _budgetRepository = budgetRepository;
+        _notificationService = notificationService;
     }
     
     // GET: Transaction/Create

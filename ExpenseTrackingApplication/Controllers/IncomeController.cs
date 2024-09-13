@@ -12,10 +12,12 @@ public class IncomeController : Controller
 {
     private readonly IIncomeRepository _incomeRepository;
     private readonly IBudgetRepository _budgetRepository;
-    public IncomeController(IIncomeRepository incomeRepository, IBudgetRepository budgetRepository)
+    private readonly INotificationService _notificationService;
+    public IncomeController(IIncomeRepository incomeRepository, IBudgetRepository budgetRepository, INotificationService notificationService)
     {
         _incomeRepository = incomeRepository;
         _budgetRepository = budgetRepository;
+        _notificationService = notificationService;
     }
     
     // GET: Income/Create
