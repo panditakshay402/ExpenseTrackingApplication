@@ -57,8 +57,8 @@ $(document).ready(function() {
             type: 'POST',
             data: { notificationId: notificationId },
             success: function(result) {
-                // Opcjonalnie: aktualizacja UI po pomyślnym oznaczeniu powiadomienia jako przeczytane
-                location.reload(); // Opcjonalnie: przeładuj stronę, aby zobaczyć zmiany
+                // OPT: UI update after successfully marking a notification as read 
+                location.reload(); // OPT: reload the page to see the changes
             }
         });
     });
