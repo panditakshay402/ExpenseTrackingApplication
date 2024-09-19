@@ -10,4 +10,6 @@ public class AppUser : IdentityUser
     public string? AvatarUrl { get; set; }
     public Currency PreferredCurrency { get; set; }
     public DateTime RegistrationDate { get; set; }
+    public DateTime? LastLogin { get; set; }
+    public bool IsBlocked { get; set; } = false;
 }
