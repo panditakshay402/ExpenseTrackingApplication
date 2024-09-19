@@ -1,0 +1,11 @@
+﻿@model AppUser
+
+<h2>Welcome, @Model.UserName</h2>
+<p>Email: @Model.Email</p>
+<p>Account Created: @Model.RegistrationDate</p>
+
+<h3>Manage Sections</h3>
+<ul>
+    <li><a asp-controller="Management" asp-action="ManageUsers">Manage Users</a></li>
+    <li><a asp-controller="Management" asp-action="ManageNotifications">View Notifications</a></li>
+</ul>
