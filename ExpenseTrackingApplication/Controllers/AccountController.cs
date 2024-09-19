@@ -42,10 +42,21 @@ public class AccountController : Controller
         
         if(user != null)
         {
+            if (user.IsBlocked)
+            {
+                _logger.LogWarning($"Login failed: User with email {loginViewModel.Email} is blocked.");
+                TempData["Error"] = "Your account is blocked. Please contact support.";
+                return View(loginViewModel);
+            }
+            
             // User is found, check password
             var passwordCheck= await _signInManager.CheckPasswordSignInAsync(user, loginViewModel.Password, false);
             if (passwordCheck.Succeeded)
             {
+                // Update LastLogin timestamp
+                user.LastLogin = DateTime.UtcNow;
+                await _userManager.UpdateAsync(user);
+                
                 // Password is correct, sign in
                 var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
                 if (result.Succeeded)
