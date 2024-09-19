@@ -41,6 +41,13 @@
                 <ul class="navbar-nav">
                     @if (User.Identity is { IsAuthenticated: true })
                     {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Management" asp-action="Index">Management</a>
+                            </li>
+                        }
+                        
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Notification" asp-action="Index">
                                 <img id="notificationIcon" src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726138443/icons/notification.png" alt="Notifications" style="width: 24px; height: 24px;" />
