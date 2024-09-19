@@ -1,7 +1,11 @@
 ﻿using System.Security.Claims;
 using ExpenseTrackingApplication.Interfaces;
+using ExpenseTrackingApplication.Models;
+using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackingApplication.Controllers;
 
@@ -9,10 +13,11 @@ namespace ExpenseTrackingApplication.Controllers;
 public class ManagementController : Controller
 {
     private readonly IUserRepository _userRepository;
-    
-    public ManagementController(IUserRepository userRepository)
+    private readonly UserManager<AppUser> _userManager;
+    public ManagementController(IUserRepository userRepository, UserManager<AppUser> userManager)
     {
         _userRepository = userRepository;
+        _userManager = userManager;
     }
     
     public async Task<IActionResult> Index()
@@ -28,11 +33,43 @@ public class ManagementController : Controller
         return View(adminProfile);
     }
 
-    public IActionResult ManageUsers()
+    public async Task<IActionResult> ManageUsers()
     {
-        return View();
-    }
+        var users = await _userManager.Users.ToListAsync();
+        var userList = users.Select(user => new ManageUsersViewModel
+        {
+            UserId = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            LastLogin = user.LastLogin ?? DateTime.MinValue, // Ensure LastLogin is tracked in your User model
+            IsBlocked = user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.Now
+        }).ToList();
 
+        return View(userList);
+    }
+    
+    public async Task<IActionResult> BlockUser(string userId, bool block)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            if (block)
+            {
+                // Block user
+                user.LockoutEnabled = true;
+                user.LockoutEnd = DateTimeOffset.MaxValue;
+            }
+            else
+            {
+                // Unblock user
+                user.LockoutEnd = null;
+            }
+            await _userManager.UpdateAsync(user);
+        }
+
+        return RedirectToAction("ManageUsers");
+    }
+    
     public IActionResult ManageNotifications()
     {
         return View();

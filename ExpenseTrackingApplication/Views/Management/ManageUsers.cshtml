@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<ExpenseTrackingApplication.ViewModels.ManageUsersViewModel>
+
+<h2>Manage Users</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>User Name</th>
+        <th>Email</th>
+        <th>Last Login</th>
+        <th>Blocked</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>@user.LastLogin.ToString("g")</td>
+            <td>@user.IsBlocked ? "Yes" : "No"</td>
+            <td>
+                <form asp-action="BlockUser" asp-controller="Management" method="post">
+                    <input type="hidden" name="userId" value="@user.UserId" />
+                    <button type="submit" name="block" value="true" class="btn btn-danger">Block</button>
+                    <button type="submit" name="block" value="false" class="btn btn-success">Unblock</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

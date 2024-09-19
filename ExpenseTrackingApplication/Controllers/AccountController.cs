@@ -65,10 +65,14 @@ public class AccountController : Controller
                     return RedirectToAction("Index", "Home");
                 }
             }
-            // Password is incorrect
-            _logger.LogWarning($"Login failed: Wrong credentials for user {user.Email}.");
-            TempData["Error"] = "Wrong credentials. Please, try again";
-            return View(loginViewModel);
+            else
+            {
+                // Password is incorrect
+                _logger.LogWarning($"Login failed: Wrong credentials for user {user.Email}.");
+                TempData["Error"] = "Wrong credentials. Please, try again";
+                return View(loginViewModel);
+            }
+            
         }
         // User is not found
         _logger.LogWarning($"Login failed: User with email {loginViewModel.Email} not found.");
