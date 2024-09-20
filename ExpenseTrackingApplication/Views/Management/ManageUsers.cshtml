@@ -19,7 +19,7 @@
         <tr>
             <td>@user.UserName</td>
             <td>@user.Email</td>
-            <td>@user.LastLogin.ToString("g")</td>
+            <td>@(user.LastLogin.HasValue ? user.LastLogin.Value.ToString("g") : "Never logged in")</td>
             <td>@user.IsBlocked ? "Yes" : "No"</td>
             <td>
                 <form asp-action="BlockUser" asp-controller="Management" method="post">

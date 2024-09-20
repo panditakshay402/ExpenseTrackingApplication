@@ -41,7 +41,7 @@ public class ManagementController : Controller
             UserId = user.Id,
             UserName = user.UserName,
             Email = user.Email,
-            LastLogin = user.LastLogin ?? DateTime.MinValue, // Ensure LastLogin is tracked in your User model
+            LastLogin = user.LastLogin ?? null,
             IsBlocked = user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.Now
         }).ToList();
 

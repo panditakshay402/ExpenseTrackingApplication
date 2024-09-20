@@ -41,12 +41,13 @@ public class AccountController : Controller
         var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
         
         if(user != null)
-        {
-            if (user.IsBlocked)
+        {   
+            // Ensure the IsBlocked message is shown before checking password
+            if (user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.Now)
             {
-                _logger.LogWarning($"Login failed: User with email {loginViewModel.Email} is blocked.");
+                _logger.LogWarning($"Login failed: User {user.Email} is blocked.");
                 TempData["Error"] = "Your account is blocked. Please contact support.";
-                return View(loginViewModel);
+                return View(loginViewModel);  // Return immediately to prevent overriding error message
             }
             
             // User is found, check password
@@ -65,13 +66,11 @@ public class AccountController : Controller
                     return RedirectToAction("Index", "Home");
                 }
             }
-            else
-            {
-                // Password is incorrect
-                _logger.LogWarning($"Login failed: Wrong credentials for user {user.Email}.");
-                TempData["Error"] = "Wrong credentials. Please, try again";
-                return View(loginViewModel);
-            }
+            
+            // Password is incorrect
+            _logger.LogWarning($"Login failed: Wrong credentials for user {user.Email}.");
+            TempData["Error"] = "Wrong credentials. Please, try again";
+            return View(loginViewModel);
             
         }
         // User is not found
