@@ -70,6 +70,37 @@ public class ManagementController : Controller
         return RedirectToAction("ManageUsers");
     }
     
+    public async Task<IActionResult> BulkAction(string bulkAction, List<string> selectedUsers)
+    {
+        if (selectedUsers != null && selectedUsers.Count > 0)
+        {
+            foreach (var userId in selectedUsers)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    if (bulkAction == "block")
+                    {
+                        user.LockoutEnabled = true;
+                        user.LockoutEnd = DateTimeOffset.MaxValue;
+                    }
+                    else if (bulkAction == "unblock")
+                    {
+                        user.LockoutEnd = null;
+                    }
+                    else if (bulkAction == "notify")
+                    {
+                        // Implement the notification logic here
+                    }
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+        }
+
+        return RedirectToAction("ManageUsers");
+    }
+
+    
     public IActionResult ManageNotifications()
     {
         return View();
