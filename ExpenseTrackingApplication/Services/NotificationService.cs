@@ -30,6 +30,12 @@ public class NotificationService : INotificationService
         _context.SaveChanges();
     }
     
+    public async Task CreateAsync(Notification notification)
+    {
+        await _context.Notifications.AddAsync(notification);
+        await _context.SaveChangesAsync();
+    }
+    
     public List<Notification> GetUserNotifications(string appUserId)
     {
         return _context.Notifications

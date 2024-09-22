@@ -51,5 +51,34 @@
         <button type="submit" name="bulkAction" value="block" class="btn btn-danger">Block Selected</button>
         <button type="submit" name="bulkAction" value="unblock" class="btn btn-success">Unblock Selected</button>
         <button type="submit" name="bulkAction" value="notify" class="btn btn-info">Send Notification to Selected</button>
+        <button type="button" class="btn btn-primary" id="sendBulkNotification">Send Notification</button>
     </div>
 </form>
+
+<script>
+    document.getElementById('sendBulkNotification').addEventListener('click', function () {
+        var selectedUsers = [];
+        document.querySelectorAll('input[type=checkbox]:checked').forEach(function (checkbox) {
+            selectedUsers.push(checkbox.value);
+        });
+
+        if (selectedUsers.length > 0) {
+            var form = document.createElement('form');
+            form.method = 'GET';
+            form.action = '@Url.Action("CreateBulkNotification", "Notification")';
+
+            selectedUsers.forEach(function (userId) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'userIds';
+                input.value = userId;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            alert("Please select at least one user.");
+        }
+    });
+</script>

@@ -7,5 +7,8 @@ public enum NotificationType
     Income,
     Transaction,
     Account,
+    System,
+    User,
+    Admin,
     Other
 }
