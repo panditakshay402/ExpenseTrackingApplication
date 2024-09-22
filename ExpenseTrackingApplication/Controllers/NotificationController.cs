@@ -76,6 +76,16 @@ public class NotificationController : Controller
         return View(model);
     }
     
+    [HttpGet]
+    public async Task<IActionResult> CreateBulkNotification()
+    {
+        var users = await _userManager.Users.ToListAsync();
+        ViewBag.Users = users;
+        var model = new NotificationBulkViewModel();
+    
+        return View(model);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Delete(int notificationId)
     {
@@ -114,4 +124,5 @@ public class NotificationController : Controller
 
         return Json(new { hasUnread = hasUnreadNotifications });
     }
+    
 }

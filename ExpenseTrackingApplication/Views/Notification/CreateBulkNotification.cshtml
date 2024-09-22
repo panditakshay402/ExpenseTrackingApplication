@@ -1,0 +1,42 @@
+﻿@using ExpenseTrackingApplication.Data.Enum
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ExpenseTrackingApplication.ViewModels.NotificationBulkViewModel
+
+<h2>Create Bulk Notifications</h2>
+
+<form asp-action="CreateBulkNotification" method="post">
+    <div class="form-group">
+        <label>Select Users</label>
+        <select asp-for="UserIds" class="form-control" multiple="multiple">
+            @foreach (var user in ViewBag.Users)
+            {
+                <option value="@user.Id">@user.Email (@user.UserName)</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Topic"></label>
+        <input asp-for="Topic" class="form-control" />
+        <span asp-validation-for="Topic" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Message"></label>
+        <textarea asp-for="Message" class="form-control"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-control">
+            @foreach (var type in Enum.GetValues(typeof(NotificationType)))
+            {
+                <option value="@type">@type</option>
+            }
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send Bulk Notifications</button>
+</form>
