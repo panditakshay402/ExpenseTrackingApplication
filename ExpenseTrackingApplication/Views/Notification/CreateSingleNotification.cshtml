@@ -1,16 +1,20 @@
-﻿@using ExpenseTrackingApplication.Data.Enum
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model ExpenseTrackingApplication.ViewModels.NotificationCreateViewModel
+﻿@model ExpenseTrackingApplication.Models.Notification
 
-<h2>Create Notification for @Model.Email</h2>
+@{
+    ViewData["Title"] = "Create Notification";
+}
+
+<h2>Create Notification</h2>
 
 <form asp-action="CreateSingleNotification" method="post">
-    <input type="hidden" asp-for="Email" />
+    <input type="hidden" name="userId" value="@ViewBag.UserId" />
 
     <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" readonly />
-        <span asp-validation-for="Email" class="text-danger"></span>
+        <label asp-for="Type" class="control-label"></label>
+        <select asp-for="Type" class="form-control" asp-items="ViewBag.NotificationType">
+            <option value="">Select Type</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -21,19 +25,8 @@
 
     <div class="form-group">
         <label asp-for="Message"></label>
-        <textarea asp-for="Message" class="form-control"></textarea>
+        <textarea asp-for="Message" class="form-control" rows="4"></textarea>
         <span asp-validation-for="Message" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Type"></label>
-        <select asp-for="Type" class="form-control">
-            @foreach (var type in Enum.GetValues(typeof(NotificationType)))
-            {
-            <option value="@type">@type</option>
-            }
-        </select>
-        <span asp-validation-for="Type" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Send Notification</button>

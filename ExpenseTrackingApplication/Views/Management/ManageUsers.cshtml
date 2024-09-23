@@ -4,11 +4,14 @@
 <h2>Manage Users</h2>
 
 <form asp-action="BulkAction" asp-controller="Management" method="post">
+    <div class="form-group">
+        <button type="submit" name="bulkAction" value="block" class="btn btn-primary">Send Notifications to ALL</button>
+    </div>
+    
     <table class="table">
         <thead>
         <tr>
-            <th>Select</th>
-            <th>User Name</th>
+            <th>UserName</th>
             <th>Email</th>
             <th>Last Login</th>
             <th>Blocked</th>
@@ -18,67 +21,29 @@
         <tbody>
         @foreach (var user in Model)
         {
-        <tr>
-            <td>
-                <input type="checkbox" name="selectedUsers" value="@user.UserId" />
-            </td>
-            <td>@user.UserName</td>
-            <td>@user.Email</td>
-            <td>@(user.LastLogin.HasValue ? user.LastLogin.Value.ToString("g") : "Never logged in")</td>
-            <td>@user.IsBlocked ? "Yes" : "No"</td>
-            <td>
-                <form asp-action="BlockUser" asp-controller="Management" method="post">
-                    <input type="hidden" name="userId" value="@user.UserId" />
-                    @if (user.IsBlocked)
-                    {
-                        <button type="submit" name="block" value="false" class="btn btn-success">Unblock</button>
-                    }
-                    else
-                    {
-                        <button type="submit" name="block" value="true" class="btn btn-danger">Block</button>
-                    }
-                </form>
-                <a href="#" class="btn btn-link">
-                    <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726869120/icons/message.png" alt="Send Notification" style="width: 20px;"/>
-                </a>
-            </td>
-        </tr>
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@(user.LastLogin.HasValue ? user.LastLogin.Value.ToString("g") : "Never logged in")</td>
+                <td>@user.IsBlocked ? "Yes" : "No"</td>
+                <td>
+                    <form asp-action="BlockUser" asp-controller="Management" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId"/>
+                        @if (user.IsBlocked)
+                        {
+                            <button type="submit" name="block" value="false" class="btn btn-success">Unblock</button>
+                        }
+                        else
+                        {
+                            <button type="submit" name="block" value="true" class="btn btn-danger">Block</button>
+                        }
+                    </form>
+                    <a asp-action="CreateSingleNotification" asp-controller="Notification" asp-route-userId="@user.UserId" class="btn btn-link">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726869120/icons/message.png" alt="Send Notification" style="width: 20px;"/>
+                    </a>
+                </td>
+            </tr>
         }
         </tbody>
     </table>
-
-    <div class="form-group">
-        <button type="submit" name="bulkAction" value="block" class="btn btn-danger">Block Selected</button>
-        <button type="submit" name="bulkAction" value="unblock" class="btn btn-success">Unblock Selected</button>
-        <button type="submit" name="bulkAction" value="notify" class="btn btn-info">Send Notification to Selected</button>
-        <button type="button" class="btn btn-primary" id="sendBulkNotification">Send Notification</button>
-    </div>
 </form>
-
-<script>
-    document.getElementById('sendBulkNotification').addEventListener('click', function () {
-        var selectedUsers = [];
-        document.querySelectorAll('input[type=checkbox]:checked').forEach(function (checkbox) {
-            selectedUsers.push(checkbox.value);
-        });
-
-        if (selectedUsers.length > 0) {
-            var form = document.createElement('form');
-            form.method = 'GET';
-            form.action = '@Url.Action("CreateBulkNotification", "Notification")';
-
-            selectedUsers.forEach(function (userId) {
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'userIds';
-                input.value = userId;
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-        } else {
-            alert("Please select at least one user.");
-        }
-    });
-</script>

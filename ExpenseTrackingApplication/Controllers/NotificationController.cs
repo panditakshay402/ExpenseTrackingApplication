@@ -7,6 +7,7 @@ using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackingApplication.Controllers;
@@ -30,60 +31,31 @@ public class NotificationController : Controller
         return View(notifications);
     }
     
-    [HttpGet]
+    // GET: Notification/CreateSingleNotification
     public IActionResult CreateSingleNotification(string userId)
     {
-        var user = _userManager.FindByIdAsync(userId).Result;
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var model = new NotificationCreateViewModel
-        {
-            Email = user.Email
-        };
-
-        return View(model);
+        ViewBag.UserId = userId;
+        ViewBag.NotificationType = new SelectList(Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList());
+    
+        return View();
     }
-
+    
+    // POST: Notification/CreateSingleNotification
     [HttpPost]
-    public async Task<IActionResult> CreateSingleNotification(NotificationCreateViewModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateSingleNotification(string userId, [Bind("Type,Topic,Message")] Notification notification)
     {
         if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            notification.AppUserId = userId;
+
+            if (await _notificationService.AddAsync(notification))
             {
-                ModelState.AddModelError("", "User not found.");
-                return View(model);
+                return RedirectToAction("Index");
             }
-
-            var notification = new Notification
-            {
-                AppUserId = user.Id,
-                Topic = model.Topic,
-                Message = model.Message,
-                Type = NotificationType.User,
-                Date = DateTime.UtcNow,
-                IsRead = false
-            };
-
-            await _notificationService.CreateAsync(notification);
-            return RedirectToAction("ManageUsers", "Management");
         }
-
-        return View(model);
-    }
-    
-    [HttpGet]
-    public async Task<IActionResult> CreateBulkNotification()
-    {
-        var users = await _userManager.Users.ToListAsync();
-        ViewBag.Users = users;
-        var model = new NotificationBulkViewModel();
-    
-        return View(model);
+        ViewBag.UserId = userId;
+        return View(notification);
     }
     
     [HttpPost]
