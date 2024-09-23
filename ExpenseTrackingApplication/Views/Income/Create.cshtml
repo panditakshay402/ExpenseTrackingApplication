@@ -23,12 +23,10 @@
     </div>
     <div class="form-group">
         <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category" class="form-control">
-            @foreach (var category in Enum.GetValues(typeof(ExpenseTrackingApplication.Data.Enum.IncomeCategory)))
-            {
-                <option value="@category">@category</option>
-            }
+        <select asp-for="Category" class="form-control" asp-items="ViewBag.IncomeCategory">
+            <option value="">Select Category</option>
         </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Description" class="control-label"></label>

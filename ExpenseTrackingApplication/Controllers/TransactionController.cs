@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace ExpenseTrackingApplication.Controllers;
@@ -25,6 +27,7 @@ public class TransactionController : Controller
     public IActionResult Create(int budgetId)
     {
         ViewBag.BudgetId = budgetId;
+        ViewBag.TransactionCategory = new SelectList(Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList());
         return View();
     }
     
