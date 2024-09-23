@@ -1,10 +1,10 @@
 ﻿@model ExpenseTrackingApplication.Models.Notification
 
 @{
-    ViewData["Title"] = "Create Notification";
+ViewData["Title"] = "Send Single Notification";
 }
 
-<h2>Create Notification</h2>
+<h2>Send Notification to @ViewBag.UserName</h2>
 
 <form asp-action="CreateSingleNotification" method="post">
     <input type="hidden" name="userId" value="@ViewBag.UserId" />

@@ -33,8 +33,15 @@ public class NotificationController : Controller
     
     // GET: Notification/CreateSingleNotification
     public IActionResult CreateSingleNotification(string userId)
-    {
+    {   
+        var user = _userManager.FindByIdAsync(userId).Result;
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
         ViewBag.UserId = userId;
+        ViewBag.UserName = user.UserName;
         ViewBag.NotificationType = new SelectList(Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList());
     
         return View();
@@ -51,7 +58,7 @@ public class NotificationController : Controller
 
             if (await _notificationService.AddAsync(notification))
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageUsers", "Management");
             }
         }
         ViewBag.UserId = userId;
