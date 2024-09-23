@@ -13,11 +13,6 @@ ViewData["Title"] = "Edit Budget";
         <input asp-for="Budget.Name" class="form-control" />
         <span asp-validation-for="Budget.Name" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Budget.Balance" class="control-label"></label>
-        <input asp-for="Budget.Balance" class="form-control" readonly />
-        <span asp-validation-for="Budget.Balance" class="text-danger"></span>
-    </div>
     <button type="submit" class="btn btn-primary">Save New Name</button>
 </form>
 

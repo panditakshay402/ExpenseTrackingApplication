@@ -79,7 +79,7 @@ public class BudgetController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View("Index"); // Redirect to Index in case of failure
+        return View("Index");
     }
     
     // GET: Budget/Delete/{id}
