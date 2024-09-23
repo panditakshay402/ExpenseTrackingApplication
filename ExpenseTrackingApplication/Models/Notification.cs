@@ -8,9 +8,9 @@ public class Notification
 {
     [Key]
     public int Id { get; set; }
+    public NotificationType Type { get; set; }
     public string? Topic { get; set; }
     public string? Message { get; set; }
-    public NotificationType Type { get; set; }
     public DateTime Date { get; set; }
     public bool IsRead { get; set; }
     
