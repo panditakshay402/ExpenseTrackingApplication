@@ -82,7 +82,8 @@ public class BillController : Controller
             Name = bill.Name,
             Amount = bill.Amount,
             DueDate = bill.DueDate,
-            Frequency = bill.Frequency
+            Frequency = bill.Frequency,
+            BudgetId = bill.BudgetId
         };
         
         return View(viewModel);

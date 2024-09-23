@@ -1,0 +1,40 @@
+﻿@model ExpenseTrackingApplication.ViewModels.BillEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Bill";
+}
+
+<h2>Edit Bill</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DueDate" class="control-label"></label>
+        <input asp-for="DueDate" class="form-control" type="date" />
+        <span asp-validation-for="DueDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Frequency" class="control-label"></label>
+        <select asp-for="Frequency" class="form-control" asp-items="Html.GetEnumSelectList<ExpenseTrackingApplication.Data.Enum.BillFrequency>()">
+            <option value="">Select Frequency</option>
+        </select>
+        <span asp-validation-for="Frequency" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    
+    <div>
+        <a asp-controller="Budget" asp-action="Details" asp-route-id="@Model.BudgetId" class="btn btn-secondary">Back to Budget Details</a>
+    </div>
+</form>
