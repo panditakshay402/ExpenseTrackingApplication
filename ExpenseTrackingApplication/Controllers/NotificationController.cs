@@ -127,9 +127,11 @@ public class NotificationController : Controller
             notification.IsRead = true;
             await _notificationService.SaveAsync();
         }
-
-        return Json(new { success = true });
+        
+        return RedirectToAction("Index");
     }
+
+
     
     [HttpGet]
     public IActionResult GetUnreadNotifications()

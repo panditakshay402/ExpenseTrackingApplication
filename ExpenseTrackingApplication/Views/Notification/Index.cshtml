@@ -46,21 +46,3 @@
     }
     </tbody>
 </table>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('input[type="checkbox"]').change(function() {
-        var notificationId = $(this).siblings('input[name="notificationId"]').val();
-        $.ajax({
-            url: '@Url.Action("MarkAsRead", "Notification")',
-            type: 'POST',
-            data: { notificationId: notificationId },
-            success: function() {
-                // OPT: UI update after successfully marking a notification as read 
-                location.reload(); // OPT: reload the page to see the changes
-            }
-        });
-    });
-});
-</script>
