@@ -55,7 +55,9 @@ public class NotificationController : Controller
         if (ModelState.IsValid)
         {
             notification.AppUserId = userId;
-
+            notification.Date = DateTime.UtcNow;
+            notification.IsRead = false;
+            
             if (await _notificationService.AddAsync(notification))
             {
                 return RedirectToAction("ManageUsers", "Management");
@@ -64,6 +66,45 @@ public class NotificationController : Controller
         ViewBag.UserId = userId;
         return View(notification);
     }
+    
+    // GET: Notification/CreateAllNotification
+    public IActionResult CreateAllNotification()
+    {   
+        ViewBag.NotificationType = new SelectList(Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList());
+        return View();
+    }
+    
+    // POST: Notification/CreateAllNotification
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateAllNotification([Bind("Type,Topic,Message")] Notification notification)
+    {
+        if (ModelState.IsValid)
+        {
+            var users = await _userManager.Users.ToListAsync();
+        
+            foreach (var user in users)
+            {
+                var newNotification = new Notification
+                {
+                    AppUserId = user.Id,
+                    Type = notification.Type,
+                    Topic = notification.Topic,
+                    Message = notification.Message,
+                    Date = DateTime.UtcNow,
+                    IsRead = false
+                };
+
+                await _notificationService.AddAsync(newNotification);
+            }
+
+            return RedirectToAction("ManageUsers", "Management");
+        }
+
+        ViewBag.NotificationType = new SelectList(Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList());
+        return View(notification);
+    }
+
     
     [HttpPost]
     public async Task<IActionResult> Delete(int notificationId)

@@ -3,11 +3,11 @@
 
 <h2>Manage Users</h2>
 
-<form asp-action="BulkAction" asp-controller="Management" method="post">
+<form>
     <div class="form-group">
-        <button type="submit" name="bulkAction" value="block" class="btn btn-primary">Send Notifications to ALL</button>
+        <a asp-action="CreateAllNotification" asp-controller="Notification" class="btn btn-primary">Send Notifications to ALL</a>
     </div>
-    
+
     <table class="table">
         <thead>
         <tr>

@@ -1,0 +1,31 @@
+﻿@model ExpenseTrackingApplication.Models.Notification
+
+@{
+ViewData["Title"] = "Send Notification to ALL";
+}
+
+<h2>Send Notification to All</h2>
+
+<form asp-action="CreateAllNotification" method="post">
+    <div class="form-group">
+        <label asp-for="Type" class="control-label"></label>
+        <select asp-for="Type" class="form-control" asp-items="ViewBag.NotificationType">
+            <option value="">Select Type</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Topic"></label>
+        <input asp-for="Topic" class="form-control" />
+        <span asp-validation-for="Topic" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Message"></label>
+        <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send Notification</button>
+</form>
