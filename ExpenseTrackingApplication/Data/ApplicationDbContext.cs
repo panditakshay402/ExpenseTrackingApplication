@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<BudgetCategory> BudgetCategories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Income> Incomes { get; set; }
+    public DbSet<Bill> Bills { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Security> Securities { get; set; }
     
@@ -33,6 +34,11 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Incomes)
+            .WithOne(t => t.Budget)
+            .HasForeignKey(t => t.BudgetId);
+        
+        modelBuilder.Entity<Budget>()
+            .HasMany(b => b.Bills)
             .WithOne(t => t.Budget)
             .HasForeignKey(t => t.BudgetId);
 
@@ -59,6 +65,10 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<Income>()
+            .Property(i => i.Amount)
+            .HasColumnType("decimal(18,2)");
+        
+        modelBuilder.Entity<Bill>()
             .Property(i => i.Amount)
             .HasColumnType("decimal(18,2)");
         
