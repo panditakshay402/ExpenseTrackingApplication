@@ -1,7 +1,9 @@
-﻿using ExpenseTrackingApplication.Interfaces;
+﻿using ExpenseTrackingApplication.Data.Enum;
+using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ExpenseTrackingApplication.Controllers;
 
@@ -21,6 +23,7 @@ public class BillController : Controller
     public IActionResult Create(int budgetId)
     {
         ViewBag.BudgetId = budgetId;
+        ViewBag.BillFrequency = new SelectList(Enum.GetValues(typeof(BillFrequency)).Cast<BillFrequency>().ToList());
         return View();
     }
     
