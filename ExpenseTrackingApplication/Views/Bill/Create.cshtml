@@ -24,7 +24,7 @@
 
     <div class="form-group">
         <label asp-for="DueDate" class="control-label"></label>
-        <input asp-for="DueDate" class="form-control" type="date" />
+        <input asp-for="DueDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
         <span asp-validation-for="DueDate" class="text-danger"></span>
     </div>
 
@@ -40,5 +40,5 @@
 </form>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@ViewBag.BudgetId" class="btn btn-secondary">Back to Budget</a>
+    <a asp-controller="Budget" asp-action="Edit" asp-route-id="@ViewBag.BudgetId" class="btn btn-secondary">Back</a>
 </div>
