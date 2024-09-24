@@ -4,6 +4,7 @@ public enum NotificationType
 {
     Budget,
     BudgetCategory,
+    Bill,
     Income,
     Transaction,
     Account,
