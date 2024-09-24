@@ -116,6 +116,38 @@ ViewData["Title"] = "Budget Details";
     </table>
 </div>
 
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Bills</h4>
+        <div>
+            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Bill</a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>DueDate</th>
+            <th>Frequency</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bill in Model.Bills)
+        {
+        <tr>
+            <td>@bill.Name</td>
+            <td>@bill.Amount</td>
+            <td>@bill.DueDate.ToShortDateString()</td>
+            <td>@bill.Frequency.ToString()</td>
+            <td>@(bill.IsPaid ? "Paid" : "Unpaid")</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
 
 <div>
     <h4>Navigate to Another Budget</h4>

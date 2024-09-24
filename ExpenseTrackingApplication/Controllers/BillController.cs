@@ -109,7 +109,7 @@ public class BillController : Controller
             
             if (await _billRepository.UpdateAsync(bill))
             {
-                return RedirectToAction("Details", new { id = bill.BudgetId });
+                return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
             }
         }
         
@@ -141,7 +141,7 @@ public class BillController : Controller
         
         if (await _billRepository.DeleteAsync(bill))
         {
-            return RedirectToAction("Details", new { id = bill.BudgetId });
+            return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
         }
         
         return View(bill);

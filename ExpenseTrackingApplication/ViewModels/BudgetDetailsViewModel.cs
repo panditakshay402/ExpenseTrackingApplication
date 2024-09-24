@@ -7,6 +7,7 @@ public class BudgetDetailsViewModel
 {
     public Budget Budget { get; set; }
     public IEnumerable<CombinedEntryViewModel> CombinedEntries { get; set; }
+    public IEnumerable<Bill> Bills { get; set; }
     public IEnumerable<Budget> AllBudgets { get; set; }
     public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
     public decimal TotalTransactionAmount { get; set; }

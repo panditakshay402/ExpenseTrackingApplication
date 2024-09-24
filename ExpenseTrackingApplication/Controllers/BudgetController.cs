@@ -17,13 +17,15 @@ public class BudgetController : Controller
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
+    private readonly IBillRepository _billRepository;
     private readonly INotificationService _notificationService;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, INotificationService notificationService)
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationService notificationService)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
+        _billRepository = billRepository;
         _notificationService = notificationService;
     }
     
@@ -142,9 +144,10 @@ public class BudgetController : Controller
             return NotFound();
         }
 
-        // Get transactions and incomes for the budget
+        // Get transactions, incomes and bills for the budget
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
+        var bills = await _billRepository.GetByBudgetAsync(id);
         
         // Combine transactions and incomes into a single list
         var combinedEntries = transactions
@@ -180,6 +183,7 @@ public class BudgetController : Controller
         {
             Budget = budget,
             CombinedEntries = combinedEntries,
+            Bills = bills,
             // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
             BudgetCategories = budgetCategories,
@@ -202,12 +206,14 @@ public class BudgetController : Controller
 
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
+        var bills = await _billRepository.GetByBudgetAsync(id);
 
         var viewModel = new BudgetEditViewModel
         {
             Budget = budget,
             Transactions = transactions,
-            Incomes = incomes
+            Incomes = incomes,
+            Bills = bills
         };
 
         return View(viewModel);
@@ -217,7 +223,7 @@ public class BudgetController : Controller
     // POST: Budget/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Balance")] Budget budget)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Budget budget)
     {
         if (id != budget.Id)
         {
@@ -258,7 +264,8 @@ public class BudgetController : Controller
         {
             Budget = await _budgetRepository.GetByIdAsync(id),
             Transactions = await _transactionRepository.GetByBudgetAsync(id),
-            Incomes = await _incomeRepository.GetByBudgetAsync(id)
+            Incomes = await _incomeRepository.GetByBudgetAsync(id),
+            Bills = await _billRepository.GetByBudgetAsync(id)
         };
         return View(viewModel);
     }

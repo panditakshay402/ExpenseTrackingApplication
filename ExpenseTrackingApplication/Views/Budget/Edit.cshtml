@@ -16,69 +16,116 @@ ViewData["Title"] = "Edit Budget";
     <button type="submit" class="btn btn-primary">Save New Name</button>
 </form>
 
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Transactions</h4>
+        <div>
+            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-success">Add Transaction</a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <tr>
+                <td>@transaction.Date.ToShortDateString()</td>
+                <td>@transaction.Recipient</td>
+                <td>@transaction.Amount</td>
+                <td>@transaction.Category</td>
+                <td>@transaction.Description</td>
+                <td>
+                    <a asp-controller="Transaction" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Incomes</h4>
+        <div>
+            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var income in Model.Incomes)
+        {
+            <tr>
+                <td>@income.Date.ToShortDateString()</td>
+                <td>@income.Source</td>
+                <td>@income.Amount</td>
+                <td>@income.Category</td>
+                <td>@income.Description</td>
+                <td>
+                    <a asp-controller="Income" asp-action="Edit" asp-route-id="@income.Id" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Income" asp-action="Delete" asp-route-id="@income.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
-<h4>Transactions</h4>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Recipient</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var transaction in Model.Transactions)
-    {
-    <tr>
-        <td>@transaction.Date.ToShortDateString()</td>
-        <td>@transaction.Recipient</td>
-        <td>@transaction.Amount</td>
-        <td>@transaction.Category</td>
-        <td>@transaction.Description</td>
-        <td>
-            <a asp-controller="Transaction" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-warning">Edit</a>
-            <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.Id" class="btn btn-danger">Delete</a>
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
-<a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-success">Add Transaction</a>
-
-<h4>Incomes</h4>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Source</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var income in Model.Incomes)
-    {
-    <tr>
-        <td>@income.Date.ToShortDateString()</td>
-        <td>@income.Source</td>
-        <td>@income.Amount</td>
-        <td>@income.Category</td>
-        <td>@income.Description</td>
-        <td>
-            <a asp-controller="Income" asp-action="Edit" asp-route-id="@income.Id" class="btn btn-warning">Edit</a>
-            <a asp-controller="Income" asp-action="Delete" asp-route-id="@income.Id" class="btn btn-danger">Delete</a>
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
-<a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+<div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Bills</h4>
+        <div>
+            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Bill</a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>DueDate</th>
+            <th>Frequency</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bill in Model.Bills)
+        {
+            <tr>
+                <td>@bill.Name</td>
+                <td>@bill.Amount</td>
+                <td>@bill.DueDate.ToShortDateString()</td>
+                <td>@bill.Frequency.ToString()</td>
+                <td>@(bill.IsPaid ? "Paid" : "Unpaid")</td>
+                <td>
+                    <a asp-controller="Bill" asp-action="Edit" asp-route-id="@bill.Id" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Bill" asp-action="Delete" asp-route-id="@bill.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
 <div>
     <a asp-action="Details" asp-route-id="@Model.Budget.Id" class="btn btn-secondary">Back to Details</a>
