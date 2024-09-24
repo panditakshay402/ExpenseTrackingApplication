@@ -14,7 +14,7 @@ public class NotificationService : INotificationService
         _context = context;
     }
     
-    public void CreateNotification(string appUserId, string topic, string message, NotificationType type)
+    public async Task SendNotificationAsync(string appUserId, string topic, string message, NotificationType type)
     {
         var notification = new Notification
         {
@@ -26,9 +26,10 @@ public class NotificationService : INotificationService
             AppUserId = appUserId
         };
 
-        _context.Notifications.Add(notification);
-        _context.SaveChanges();
+        await _context.Notifications.AddAsync(notification);
+        await _context.SaveChangesAsync();
     }
+
     
     public async Task<bool> AddAsync(Notification notification)
     {

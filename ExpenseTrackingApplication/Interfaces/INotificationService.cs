@@ -5,7 +5,7 @@ namespace ExpenseTrackingApplication.Interfaces;
 
 public interface INotificationService
 {
-    void CreateNotification(string appUserId, string topic, string message, NotificationType type);
+    Task SendNotificationAsync(string appUserId, string topic, string message, NotificationType type);
     Task<bool> AddAsync(Notification notification);
     List<Notification> GetUserNotifications(string appUserId);
     void MarkAsRead(int notificationId);
