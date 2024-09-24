@@ -144,10 +144,10 @@ public class BudgetController : Controller
             return NotFound();
         }
 
-        // Get transactions, incomes and bills for the budget
+        // Get transactions and incomes for the budget
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
-        var bills = await _billRepository.GetByBudgetAsync(id);
+        
         
         // Combine transactions and incomes into a single list
         var combinedEntries = transactions
@@ -172,12 +172,25 @@ public class BudgetController : Controller
             .OrderByDescending(e => e.Date) // Sort by date
             .ToList();
         
-        // Get all budgets for the current user
+        // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
+        
+        // Get bills and send a notification to the user if a bill is due in 3 days
+        var bills = await _billRepository.GetByBudgetAsync(id);
+        foreach (var bill in bills)
+        {
+            if (!bill.IsPaid && bill.DueDate.Date == DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
+            {
+                await _notificationService.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
+                bill.ReminderSent = true;
+                await _billRepository.UpdateAsync(bill);
+            }
+        }
         
         // Get budget categories for the budget
         var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
+        // Get all budgets for the current user
+        var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
         
         var viewModel = new BudgetDetailsViewModel
         {
@@ -207,7 +220,7 @@ public class BudgetController : Controller
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
         var bills = await _billRepository.GetByBudgetAsync(id);
-
+        
         var viewModel = new BudgetEditViewModel
         {
             Budget = budget,
