@@ -1,4 +1,5 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
+﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
@@ -145,6 +146,35 @@ public class BillController : Controller
         }
         
         return View(bill);
+    }
+    
+    // POST: Bill/Pay/{id}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Pay(int id)
+    {
+        // TODO: Czy przy zapłaceniu ma powstawać transakcja?, później nowy Bill z nową datą do zapłacenia.
+        var bill = await _billRepository.GetByIdAsync(id);
+        if (bill == null)
+        {
+            return NotFound();
+        }
+
+        // Set the bill as paid
+        bill.IsPaid = true;
+
+        // Update the bill in the database
+        if (await _billRepository.UpdateAsync(bill))
+        {
+            // Send a notification to the user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _notificationService.SendNotificationAsync(userId, "Bill Payment", $"Bill {bill.Name} has been paid.", NotificationType.Bill);
+
+
+            return RedirectToAction("Details", "Budget", new { id = bill.BudgetId });
+        }
+
+        return View("Error");
     }
     
 }

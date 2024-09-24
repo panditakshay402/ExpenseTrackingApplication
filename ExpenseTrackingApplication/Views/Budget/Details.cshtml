@@ -131,6 +131,7 @@ ViewData["Title"] = "Budget Details";
             <th>DueDate</th>
             <th>Frequency</th>
             <th>Status</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -142,6 +143,19 @@ ViewData["Title"] = "Budget Details";
             <td>@bill.DueDate.ToShortDateString()</td>
             <td>@bill.Frequency.ToString()</td>
             <td>@(bill.IsPaid ? "Paid" : "Unpaid")</td>
+            <td>
+                @if (!bill.IsPaid)
+                {
+                <form asp-controller="Bill" asp-action="Pay" asp-route-id="@bill.Id" method="post">
+                    <button type="submit" class="btn btn-success">Pay</button>
+                </form>
+                }
+                else
+                {
+                <span class="text-muted">Already Paid</span>
+                }
+            </td>
+
         </tr>
         }
         </tbody>
