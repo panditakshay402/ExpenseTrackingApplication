@@ -146,6 +146,29 @@ public class BudgetController : Controller
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
         
+        // Combine transactions and incomes into a single list
+        var combinedEntries = transactions
+            .Select(t => new CombinedEntryViewModel
+            {
+                Date = t.Date,
+                Type = "Transaction",
+                RecipientOrSource = t.Recipient,
+                Amount = t.Amount,
+                Category = t.Category.ToString(),
+                Description = t.Description
+            })
+            .Concat(incomes.Select(i => new CombinedEntryViewModel
+            {
+                Date = i.Date,
+                Type = "Income",
+                RecipientOrSource = i.Source,
+                Amount = i.Amount,
+                Category = i.Category.ToString(),
+                Description = i.Description
+            }))
+            .OrderByDescending(e => e.Date) // Sort by date
+            .ToList();
+        
         // Get all budgets for the current user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
@@ -156,11 +179,12 @@ public class BudgetController : Controller
         var viewModel = new BudgetDetailsViewModel
         {
             Budget = budget,
-            Transactions = transactions,
-            Incomes = incomes,
+            CombinedEntries = combinedEntries,
             // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
             BudgetCategories = budgetCategories,
+            TotalTransactionAmount = transactions.Sum(t => t.Amount),
+            TotalIncomeAmount = incomes.Sum(i => i.Amount),
             BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
 

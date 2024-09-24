@@ -79,63 +79,43 @@ ViewData["Title"] = "Budget Details";
 
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Transactions</h4>
-        <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Transaction</a>
+        <h4>Transactions & Incomes</h4>
+        <div>
+            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Transaction</a>
+            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+        </div>
     </div>
     <table class="table">
         <thead>
         <tr>
             <th>Date</th>
-            <th>Recipient</th>
+            <th>Type</th> <!-- Transaction/Income -->
+            <th>Recipient/Source</th>
             <th>Amount</th>
             <th>Category</th>
             <th>Description</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var transaction in Model.Transactions)
+        @foreach (var entry in Model.CombinedEntries)
         {
-            <tr>
-                <td>@transaction.Date.ToShortDateString()</td>
-                <td>@transaction.Recipient</td>
-                <td>@transaction.Amount</td>
-                <td>@transaction.Category</td>
-                <td>@transaction.Description</td>
-            </tr>
+        <tr>
+            <td>@entry.Date.ToShortDateString()</td>
+            <td>
+                <span style="color:@(entry.Type == "Income" ? "green" : "red")">
+                    @entry.Type
+                </span>
+            </td>
+            <td>@entry.RecipientOrSource</td>
+            <td>@entry.Amount</td>
+            <td>@entry.Category</td>
+            <td>@entry.Description</td>
+        </tr>
         }
         </tbody>
     </table>
 </div>
 
-<div>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Incomes</h4>
-        <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Source</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var income in Model.Incomes)
-        {
-            <tr>
-                <td>@income.Date.ToShortDateString()</td>
-                <td>@income.Source</td>
-                <td>@income.Amount</td>
-                <td>@income.Category</td>
-                <td>@income.Description</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
 
 <div>
     <h4>Navigate to Another Budget</h4>
