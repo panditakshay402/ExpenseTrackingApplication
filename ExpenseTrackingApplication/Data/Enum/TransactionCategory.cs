@@ -20,6 +20,7 @@ public enum TransactionCategory
     PersonalCare,     // Personal care
     Household,        // Household expenses
     Subscriptions,    // Subscriptions (e.g., Netflix)
+    Bills,            // Bills (e.g., phone, internet)
     Donations,        // Donations
     Miscellaneous     // Miscellaneous
 }
