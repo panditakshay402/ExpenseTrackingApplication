@@ -6,6 +6,7 @@ public interface IBillRepository
 {
     Task<IEnumerable<Bill?>> GetAllAsync();
     Task<Bill?> GetByIdAsync(int id);
+    Task<IEnumerable<Bill>> GetByBudgetAsync(int budgetId);
     Task<bool> AddAsync(Bill bill);
     Task<bool> DeleteAsync(Bill bill);
     Task<bool> UpdateAsync(Bill bill);

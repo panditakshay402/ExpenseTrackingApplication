@@ -23,6 +23,11 @@ public class BillRepository : IBillRepository
     {
         return await _context.Bills.FirstOrDefaultAsync(t => t.Id == id);
     }
+    
+    public async Task<IEnumerable<Bill>> GetByBudgetAsync(int budgetId)
+    {
+        return await _context.Bills.Where(t => t.BudgetId == budgetId).ToListAsync();
+    }
 
     public async Task<bool> AddAsync(Bill bill)
     {
