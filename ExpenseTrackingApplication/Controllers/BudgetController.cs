@@ -71,7 +71,7 @@ public class BudgetController : Controller
         if (await _budgetRepository.AddAsync(newBudget))
         {
             // Create a notification for the user after successfully adding a budget
-            _notificationService.CreateNotification(
+           await _notificationService.SendNotificationAsync(
                 userId,
                 "New Budget Created",
                 $"A new budget {newBudgetName} has been successfully created.",
@@ -125,7 +125,7 @@ public class BudgetController : Controller
         
         await _budgetRepository.DeleteAsync(budget);
         
-        _notificationService.CreateNotification(
+        await _notificationService.SendNotificationAsync(
             userId,
             "Budget Removed",
             $"{budget.Name} has been successfully removed.",
