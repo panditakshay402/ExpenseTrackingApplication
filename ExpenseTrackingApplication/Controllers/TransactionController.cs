@@ -15,12 +15,14 @@ public class TransactionController : Controller
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IBudgetRepository _budgetRepository;
+    private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly INotificationService _notificationService;
-    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, INotificationService notificationService)
+    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationService notificationService)
     {
         _transactionRepository = transactionRepository;
         _budgetRepository = budgetRepository;
         _notificationService = notificationService;
+        _budgetCategoryRepository = budgetCategoryRepository;
     }
     
     // GET: Transaction/Create
@@ -47,6 +49,20 @@ public class TransactionController : Controller
                 {
                     budget.Balance -= transaction.Amount;
                     await _budgetRepository.UpdateAsync(budget);
+                    await _budgetCategoryRepository.UpdateCurrentAmountAsync(budgetId);
+                    
+                    // Check if any expense categories exceed their limits for this budget
+                    if (await _budgetCategoryRepository.CheckExpensesExceedingLimitAsync(budgetId))
+                    {
+                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        await _notificationService.SendNotificationAsync(
+                            userId,
+                            "Budget Limit Exceeded",
+                            "One or more of your expense categories have exceeded their limits.",
+                            NotificationType.Budget
+                        );
+                        
+                    }
                 }
                 
                 return RedirectToAction("Edit", "Budget", new { id = budgetId });

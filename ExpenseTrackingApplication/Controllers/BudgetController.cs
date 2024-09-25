@@ -143,7 +143,7 @@ public class BudgetController : Controller
         {
             return NotFound();
         }
-
+        
         // Get transactions and incomes for the budget
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
@@ -201,7 +201,8 @@ public class BudgetController : Controller
         // Sort bills by due date
         var sortedBills = bills.OrderBy(b => b.DueDate).ToList();
         
-        // Get budget categories for the budget
+        // Update current amounts for budget categories before getting them
+        await _budgetCategoryRepository.UpdateCurrentAmountAsync(id);
         var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
         // Get all budgets for the current user
         var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
