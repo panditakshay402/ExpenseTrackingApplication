@@ -1,4 +1,5 @@
 ﻿using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,15 +32,61 @@ namespace ExpenseTrackingApplication.Repositories
                 .ToListAsync();
         }
         
-        public async Task<bool> UpdateBalanceAsync(int budgetId, decimal amount)
+        public async Task<bool> UpdateCurrentAmountAsync(int budgetId)
         {
-            var budget = await _context.BudgetCategories.FindAsync(budgetId);
-            if (budget == null) return false;
+            var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1); // Last day of the month
 
-            budget.CurrentSpending += amount;
+            var expenseCategories = await _context.BudgetCategories
+                .Where(bc => bc.BudgetId == budgetId && bc.Type == BudgetCategoryType.Expense)
+                .ToListAsync();
+
+            foreach (var category in expenseCategories)
+            {
+                var totalExpenses = await _context.Transactions
+                    .Where(t => t.BudgetId == budgetId && t.Date >= startOfMonth && t.Date <= endOfMonth) // Filter for current month
+                    .SumAsync(t => t.Amount);
+
+                category.CurrentAmount = totalExpenses; // Update CurrentAmount property
+
+                _context.BudgetCategories.Update(category);
+            }
+
+            var incomeCategories = await _context.BudgetCategories
+                .Where(bc => bc.BudgetId == budgetId && bc.Type == BudgetCategoryType.Income)
+                .ToListAsync();
+
+            foreach (var category in incomeCategories)
+            {
+                var totalIncome = await _context.Transactions
+                    .Where(t => t.BudgetId == budgetId && t.Date >= startOfMonth && t.Date <= endOfMonth) // Filter for current month
+                    .SumAsync(t => t.Amount);
+
+                category.CurrentAmount = totalIncome; // Update CurrentAmount property
+
+                _context.BudgetCategories.Update(category);
+            }
+
             return await SaveAsync();
         }
 
+        
+        public async Task<bool> CheckExpensesExceedingLimitAsync(int budgetId)
+        {
+            var expenseCategories = await _context.BudgetCategories
+                .Where(bc => bc.Type == BudgetCategoryType.Expense && bc.BudgetId == budgetId)
+                .ToListAsync();
+
+            foreach (var category in expenseCategories)
+            {
+                if (category.CurrentAmount > category.Limit)
+                {
+                    return true; // An expense category exceeds its limit
+                }
+            }
+
+            return false; // No categories exceed their limit
+        }
         
         public async Task<bool> AddAsync(BudgetCategory budgetCategory)
         {
