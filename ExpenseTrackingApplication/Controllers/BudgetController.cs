@@ -179,7 +179,7 @@ public class BudgetController : Controller
         var bills = await _billRepository.GetByBudgetAsync(id);
         foreach (var bill in bills)
         {
-            if (!bill.IsPaid && bill.DueDate.Date == DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
+            if (!bill.IsPaid && bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
             {
                 await _notificationService.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
                 bill.ReminderSent = true;
