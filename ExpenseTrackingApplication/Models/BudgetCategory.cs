@@ -16,11 +16,11 @@ public class BudgetCategory
     public BudgetCategoryType Type { get; set; }
     
     [Range(0, double.MaxValue, ErrorMessage = "Current spending must be a positive number.")]
-    public decimal CurrentSpending { get; set; }
+    public decimal CurrentAmount { get; set; }
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "Limit must be a positive number.")]
     public decimal Limit { get; set; }
-    public decimal RemainingBalance => Limit - CurrentSpending;
+    public decimal RemainingBalance => Limit - CurrentAmount;
     
     [ForeignKey("Budget")]
     public int BudgetId { get; set; }

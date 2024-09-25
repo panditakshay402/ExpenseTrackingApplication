@@ -45,7 +45,7 @@ public class BudgetCategoryController : Controller
         {
             Name = $"Category {categoryCount + 1}",
             Type = BudgetCategoryType.Expense,
-            CurrentSpending = 0,
+            CurrentAmount = 0,
             Limit = 0,
             BudgetId = budgetId
         };
@@ -74,7 +74,7 @@ public class BudgetCategoryController : Controller
             Id = category.Id,
             Name = category.Name,
             Type = category.Type,
-            CurrentSpending = category.CurrentSpending,
+            CurrentSpending = category.CurrentAmount,
             Limit = category.Limit,
             BudgetId = category.BudgetId
         };
@@ -123,7 +123,7 @@ public class BudgetCategoryController : Controller
             category.Name = viewModel.Name;
             category.Limit = viewModel.Limit;
             category.Type = viewModel.Type;
-            category.CurrentSpending = viewModel.CurrentSpending;
+            category.CurrentAmount = viewModel.CurrentSpending;
 
             if (await _budgetCategoryRepository.UpdateAsync(category))
             {
@@ -184,7 +184,7 @@ public class BudgetCategoryController : Controller
             Id = category.Id,
             Name = category.Name,
             Type = category.Type,
-            CurrentSpending = category.CurrentSpending,
+            CurrentSpending = category.CurrentAmount,
             Limit = category.Limit,
             RemainingBalance = category.RemainingBalance
         };

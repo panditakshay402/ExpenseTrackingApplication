@@ -53,7 +53,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<BudgetCategory>()
-            .Property(bc => bc.CurrentSpending)
+            .Property(bc => bc.CurrentAmount)
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<BudgetCategory>()

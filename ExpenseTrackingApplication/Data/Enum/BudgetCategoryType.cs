@@ -5,6 +5,5 @@ public enum BudgetCategoryType
     Expense,
     Income,
     Saving,
-    Investment,
-    Other
+    // TODO: jak będzie potrzeba rozszerzamy, np. Investment, Other etc.
 }
