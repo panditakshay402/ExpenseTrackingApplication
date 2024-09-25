@@ -198,6 +198,8 @@ public class BudgetController : Controller
                 }
             }
         }
+        // Sort bills by due date
+        var sortedBills = bills.OrderBy(b => b.DueDate).ToList();
         
         // Get budget categories for the budget
         var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
@@ -208,7 +210,7 @@ public class BudgetController : Controller
         {
             Budget = budget,
             CombinedEntries = combinedEntries,
-            Bills = bills,
+            Bills = sortedBills,
             // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
             BudgetCategories = budgetCategories,
