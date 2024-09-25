@@ -3,13 +3,12 @@
 public enum NotificationType
 {
     Budget,
-    BudgetCategory,
     Bill,
     Income,
     Transaction,
-    Account,
-    System,
-    User,
     Admin,
+    Account,
+    User,
+    System,
     Other
 }

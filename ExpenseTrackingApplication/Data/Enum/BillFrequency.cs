@@ -2,9 +2,8 @@
 
 public enum BillFrequency
 {
-    Monthly,
-    Quarterly,
-    Yearly,
     Weekly,
-    Daily
+    Monthly,
+    Yearly,
+    None
 }
