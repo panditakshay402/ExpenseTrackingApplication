@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
 using System.Threading.Tasks;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 
 namespace ExpenseTrackingApplication.Controllers;
@@ -87,6 +89,12 @@ public class UserController : Controller
         if (result.Succeeded)
         {
             await _signInManager.RefreshSignInAsync(user);
+            
+            // Send notification about successful profile update
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _notificationService.SendNotificationAsync(userId, "Profile Update", "Your profile has been successfully updated.", NotificationType.User);
+
+            
             return RedirectToAction("Index");
         }
 
@@ -114,6 +122,11 @@ public class UserController : Controller
         if (result.Succeeded)
         {
             await _signInManager.RefreshSignInAsync(user);
+            
+            // Send notification about successful avatar remove
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _notificationService.SendNotificationAsync(userId, "Avatar Remove", "Your profile picture has been successfully removed.", NotificationType.User);
+            
             return RedirectToAction("Index");
         }
 
