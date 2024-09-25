@@ -153,7 +153,7 @@ public class BillController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Pay(int id)
     {
-        // TODO: Czy przy zapłaceniu ma powstawać transakcja?, później nowy Bill z nową datą do zapłacenia.
+        // TODO: Czy przy zapłaceniu ma powstawać transakcja?
         var bill = await _billRepository.GetByIdAsync(id);
         if (bill == null)
         {
@@ -170,11 +170,46 @@ public class BillController : Controller
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _notificationService.SendNotificationAsync(userId, "Bill Payment", $"Bill {bill.Name} has been paid.", NotificationType.Bill);
 
+            // Check the frequency and create a new bill if it's recurring
+            if (bill.Frequency != BillFrequency.None)
+            {
+                // Calculate the new due date based on the frequency
+                DateTime newDueDate = bill.DueDate;
+                switch (bill.Frequency)
+                {
+                    case BillFrequency.Weekly:
+                        newDueDate = newDueDate.AddDays(7);
+                        break;
+                    case BillFrequency.Monthly:
+                        newDueDate = newDueDate.AddMonths(1);
+                        break;
+                    case BillFrequency.Yearly:
+                        newDueDate = newDueDate.AddYears(1);
+                        break;
+                }
+
+                // Create a new bill based on the existing one
+                var newBill = new Bill
+                {
+                    Name = bill.Name,
+                    Amount = bill.Amount,
+                    DueDate = newDueDate,
+                    Frequency = bill.Frequency,
+                    IsPaid = false,
+                    ReminderSent = false,
+                    OverdueReminderSent = false,
+                    BudgetId = bill.BudgetId
+                };
+
+                // Add the new bill to the repository
+                await _billRepository.AddAsync(newBill);
+            }
 
             return RedirectToAction("Details", "Budget", new { id = bill.BudgetId });
         }
 
         return View("Error");
     }
+
     
 }
