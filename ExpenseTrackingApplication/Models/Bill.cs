@@ -18,6 +18,7 @@ public class Bill
     public BillFrequency Frequency { get; set; }
     public bool IsPaid { get; set; }
     public bool ReminderSent { get; set; }
+    public bool OverdueReminderSent { get; set; }
     
     [ForeignKey("Budget")]
     public int BudgetId { get; set; }
