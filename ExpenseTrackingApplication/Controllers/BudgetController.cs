@@ -175,15 +175,27 @@ public class BudgetController : Controller
         // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
-        // Get bills and send a notification to the user if a bill is due in 3 days
+        // Get bills and send notifications to the user
         var bills = await _billRepository.GetByBudgetAsync(id);
         foreach (var bill in bills)
         {
-            if (!bill.IsPaid && bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
+            if (!bill.IsPaid)
             {
-                await _notificationService.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
-                bill.ReminderSent = true;
-                await _billRepository.UpdateAsync(bill);
+                // Notification for bills due in 3 days
+                if (bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
+                {
+                    await _notificationService.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
+                    bill.ReminderSent = true;
+                    await _billRepository.UpdateAsync(bill);
+                }
+
+                // Notification for overdue bills
+                if (bill.DueDate.Date < DateTime.Now.Date && !bill.OverdueReminderSent)
+                {
+                    await _notificationService.SendNotificationAsync(userId, "Overdue Bill Reminder", $"Your bill '{bill.Name}' is overdue!", NotificationType.Bill);
+                    bill.OverdueReminderSent = true;
+                    await _billRepository.UpdateAsync(bill);
+                }
             }
         }
         
