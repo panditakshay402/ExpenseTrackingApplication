@@ -24,7 +24,5 @@ public class BudgetCategory
     public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
     
-    // Navigation property for the join table
     public ICollection<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; set; } = new List<BudgetCategoryTransactionCategory>();
-    
 }
