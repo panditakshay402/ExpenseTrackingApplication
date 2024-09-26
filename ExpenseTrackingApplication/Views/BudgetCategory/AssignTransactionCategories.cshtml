@@ -1,0 +1,27 @@
+﻿@model ExpenseTrackingApplication.ViewModels.AssignTransactionCategoriesViewModel
+
+<h2>Assign transaction categories to Budget Category</h2>
+
+<form asp-action="AssignTransactionCategories" method="post">
+    <input type="hidden" asp-for="BudgetCategoryId" />
+
+    <div>
+        @if (Model.AllTransactionCategories != null && Model.AllTransactionCategories.Any())
+        {
+            foreach (var category in Model.AllTransactionCategories)
+            {
+                <div>
+                    <input type="checkbox" name="SelectedCategories" value="@category"
+                           @(Model.SelectedCategories != null && Model.SelectedCategories.Contains(category) ? "checked" : "") />
+                    @category
+                </div>
+            }
+        }
+        else
+        {
+            <p>No categories.</p>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

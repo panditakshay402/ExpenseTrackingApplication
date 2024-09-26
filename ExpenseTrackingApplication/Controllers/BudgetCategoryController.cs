@@ -109,6 +109,70 @@ public class BudgetCategoryController : Controller
         return View(viewModel);
     }
     
+    // GET: BudgetCategory/AssignTransactionCategories/5
+    public async Task<IActionResult> AssignTransactionCategories(int id)
+    {
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
+        {
+            return NotFound();
+        }
+
+        // Initialize the list of all transaction categories
+        var allTransactionCategories = Enum.GetValues(typeof(TransactionCategory))
+            .Cast<TransactionCategory>()
+            .ToList();
+
+        // Get the list of selected categories
+        var selectedCategories = budgetCategory.BudgetCategoryTransactionCategories
+            .Select(bctc => bctc.TransactionCategory)
+            .ToList();
+
+
+        var viewModel = new AssignTransactionCategoriesViewModel
+        {
+            BudgetCategoryId = id,
+            AllTransactionCategories = allTransactionCategories,
+            SelectedCategories = selectedCategories
+        };
+
+        return View(viewModel);
+    }
+    
+    // POST: BudgetCategory/AssignTransactionCategories
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AssignTransactionCategories(AssignTransactionCategoriesViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(model.BudgetCategoryId);
+            if (budgetCategory == null)
+            {
+                return NotFound();
+            }
+
+            // Clear the existing categories
+            budgetCategory.BudgetCategoryTransactionCategories.Clear();
+
+            // Add the selected categories
+            foreach (var category in model.SelectedCategories)
+            {
+                budgetCategory.BudgetCategoryTransactionCategories.Add(new BudgetCategoryTransactionCategory
+                {
+                    BudgetCategoryId = model.BudgetCategoryId,
+                    TransactionCategory = category
+                });
+            }
+
+            await _budgetCategoryRepository.UpdateAsync(budgetCategory);
+            return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
+        }
+
+        // If the model state is not valid, return the view with the model
+        return View(model);
+    }
+    
     // GET: BudgetCategory/Delete/5
     public async Task<IActionResult> Delete(int id)
     {
