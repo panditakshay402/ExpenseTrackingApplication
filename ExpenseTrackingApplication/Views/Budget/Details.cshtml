@@ -63,8 +63,7 @@ ViewData["Title"] = "Budget Details";
                     <div class="card-body">
                         <h5 class="card-title">@category.Name</h5>
                         <p class="card-text">
-                            <strong>Type:</strong> @category.Type<br/>
-                            <strong>Current Balance:</strong> @category.CurrentAmount<br/>
+                            <strong>Current Balance:</strong> @category.CurrentSpending<br/>
                             <strong>Limit:</strong> @category.Limit
                         </p>
                         <a class="btn btn-info" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
