@@ -40,6 +40,21 @@ public class TransactionRepository : ITransactionRepository
             .SumAsync(t => t.Amount);
     }
     
+    public async Task<decimal> GetCurrentMonthAmountForCategoriesAsync(int budgetId, List<TransactionCategory> transactionCategories)
+    {
+        // Get the start and end dates for the current month
+        var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        var endDate = startDate.AddMonths(1).AddDays(-1); // End date is the last day of the current month
+
+        // Calculate total spending for the specified budget ID, current month, and selected transaction categories
+        return await _context.Transactions
+            .Where(t => t.BudgetId == budgetId 
+                        && t.Date >= startDate 
+                        && t.Date <= endDate 
+                        && transactionCategories.Contains(t.Category)) // Filter by transaction categories
+            .SumAsync(t => t.Amount);
+    }
+    
     public async Task<bool> AddAsync(Transaction transaction)
     {
         await _context.Transactions.AddAsync(transaction);
@@ -62,4 +77,5 @@ public class TransactionRepository : ITransactionRepository
     {
         return await _context.SaveChangesAsync() > 0;
     }
+
 }
