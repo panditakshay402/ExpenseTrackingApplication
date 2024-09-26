@@ -1,4 +1,5 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
+﻿using System.ComponentModel.DataAnnotations;
+using ExpenseTrackingApplication.Data.Enum;
 using Microsoft.AspNetCore.Identity;
 
 namespace ExpenseTrackingApplication.Models;
@@ -11,5 +12,5 @@ public class AppUser : IdentityUser
     public Currency PreferredCurrency { get; set; }
     public DateTime RegistrationDate { get; set; }
     public DateTime? LastLogin { get; set; }
-    public bool IsBlocked { get; set; } = false;
+    public bool IsBlocked { get; set; }
 }
