@@ -8,16 +8,18 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        
+
     }
+
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetCategory> BudgetCategories { get; set; }
+    public DbSet<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Income> Incomes { get; set; }
     public DbSet<Bill> Bills { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Security> Securities { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -31,12 +33,12 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasMany(b => b.Transactions)
             .WithOne(t => t.Budget)
             .HasForeignKey(t => t.BudgetId);
-        
+
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Incomes)
             .WithOne(t => t.Budget)
             .HasForeignKey(t => t.BudgetId);
-        
+
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Bills)
             .WithOne(t => t.Budget)
@@ -46,14 +48,14 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasMany(b => b.BudgetCategories)
             .WithOne(bc => bc.Budget)
             .HasForeignKey(bc => bc.BudgetId);
-        
+
         // Configure precision and scale for decimal properties
         modelBuilder.Entity<Budget>()
             .Property(b => b.Balance)
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<BudgetCategory>()
-            .Property(bc => bc.CurrentAmount)
+            .Property(bc => bc.CurrentSpending)
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<BudgetCategory>()
@@ -67,11 +69,18 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         modelBuilder.Entity<Income>()
             .Property(i => i.Amount)
             .HasColumnType("decimal(18,2)");
-        
+
         modelBuilder.Entity<Bill>()
             .Property(i => i.Amount)
             .HasColumnType("decimal(18,2)");
-        
+
+        modelBuilder.Entity<BudgetCategoryTransactionCategory>()
+            .HasKey(bctc => new { bctc.BudgetCategoryId, bctc.TransactionCategory });
+
+        modelBuilder.Entity<BudgetCategoryTransactionCategory>()
+            .HasOne(bctc => bctc.BudgetCategory)
+            .WithMany(bc => bc.BudgetCategoryTransactionCategories)
+            .HasForeignKey(bctc => bctc.BudgetCategoryId);
+
     }
-    
 }
