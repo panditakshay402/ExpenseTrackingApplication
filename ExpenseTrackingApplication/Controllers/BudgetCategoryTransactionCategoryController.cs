@@ -11,11 +11,17 @@ public class BudgetCategoryTransactionCategoryController : Controller
 {
     private readonly IBudgetCategoryTransactionCategoryRepository _bCtcr;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
+    private readonly IBudgetRepository _budgetRepository;
+    private readonly ITransactionRepository _transactionRepository;
+    private readonly INotificationService _notificationService;
 
-    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcr, IBudgetCategoryRepository budgetCategoryRepository)
+    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcr, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationService notificationService, IBudgetRepository budgetRepository)
     {
         _bCtcr = bCtcr;
         _budgetCategoryRepository = budgetCategoryRepository;
+        _transactionRepository = transactionRepository;
+        _notificationService = notificationService;
+        _budgetRepository = budgetRepository;
     }
     
     // GET: BudgetCategoryTransactionCategory/AssignTransactionCategories
@@ -28,7 +34,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
             return RedirectToAction("Index", "Budget");
         }
         
-        var selectedCategories = await _bCtcr.GetByBudgetCategoryIdAsync(budgetCategoryId);
+        var selectedCategories = await _bCtcr.GetCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
         
         var viewModel = new AssignTransactionCategoriesViewModel
         {
@@ -51,7 +57,14 @@ public class BudgetCategoryTransactionCategoryController : Controller
             ModelState.AddModelError("", "Invalid budget category ID.");
             return RedirectToAction("Index", "Budget");
         }
-
+        
+        var budget = await _budgetRepository.GetByIdAsync(budgetCategory.BudgetId);
+        if (budget == null)
+        {
+            ModelState.AddModelError("", "Invalid budget ID.");
+            return RedirectToAction("Index", "Budget");
+        }
+        
         var selectedCategories = viewModel.SelectedCategories ?? new List<string>();
         
         await _bCtcr.ClearByBudgetCategoryIdAsync(viewModel.BudgetCategoryId);
@@ -65,7 +78,24 @@ public class BudgetCategoryTransactionCategoryController : Controller
             };
             await _bCtcr.AddAsync(bCtc);
         }
-
+        
+        var currentMonthSpending = await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetCategory.BudgetId, selectedCategories.Select(Enum.Parse<TransactionCategory>).ToList());
+        
+        // Update the current spending amount for the budget category
+        budgetCategory.CurrentSpending = currentMonthSpending;
+        await _budgetCategoryRepository.UpdateAsync(budgetCategory);
+        
+        if (budgetCategory.CurrentSpending > budgetCategory.Limit)
+        {
+            // Sent a notification to the user if the spending exceeds the limit
+            await _notificationService.SendNotificationAsync(
+                budget.AppUserId,
+                "Budget Limit Exceeded",
+                $"Your spending has exceeded the limit of {budgetCategory.Limit:C} for the category '{budgetCategory.Name}'.",
+                NotificationType.Budget
+            );
+        }
+        
         return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
     }
     
