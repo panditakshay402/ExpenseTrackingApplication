@@ -27,27 +27,38 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         modelBuilder.Entity<AppUser>()
             .HasMany(u => u.Budgets)
             .WithOne(b => b.AppUser)
-            .HasForeignKey(b => b.AppUserId);
+            .HasForeignKey(b => b.AppUserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Transactions)
             .WithOne(t => t.Budget)
-            .HasForeignKey(t => t.BudgetId);
+            .HasForeignKey(t => t.BudgetId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Incomes)
             .WithOne(t => t.Budget)
-            .HasForeignKey(t => t.BudgetId);
+            .HasForeignKey(t => t.BudgetId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.Bills)
             .WithOne(t => t.Budget)
-            .HasForeignKey(t => t.BudgetId);
+            .HasForeignKey(t => t.BudgetId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.BudgetCategories)
             .WithOne(bc => bc.Budget)
-            .HasForeignKey(bc => bc.BudgetId);
+            .HasForeignKey(bc => bc.BudgetId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<BudgetCategory>()
+            .HasMany(bc => bc.BudgetCategoryTransactionCategories)
+            .WithOne(bctc => bctc.BudgetCategory)
+            .HasForeignKey(bctc => bctc.BudgetCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure precision and scale for decimal properties
         modelBuilder.Entity<Budget>()
@@ -73,14 +84,6 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
         modelBuilder.Entity<Bill>()
             .Property(i => i.Amount)
             .HasColumnType("decimal(18,2)");
-
-        modelBuilder.Entity<BudgetCategoryTransactionCategory>()
-            .HasKey(bctc => new { bctc.BudgetCategoryId, bctc.TransactionCategory });
-
-        modelBuilder.Entity<BudgetCategoryTransactionCategory>()
-            .HasOne(bctc => bctc.BudgetCategory)
-            .WithMany(bc => bc.BudgetCategoryTransactionCategories)
-            .HasForeignKey(bctc => bctc.BudgetCategoryId);
 
     }
 }
