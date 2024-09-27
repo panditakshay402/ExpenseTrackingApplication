@@ -13,6 +13,5 @@ public class BudgetCategoryTransactionCategory
     public int BudgetCategoryId { get; set; }
     public BudgetCategory BudgetCategory { get; set; }
     
-    [ForeignKey("TransactionCategory")]
-    public TransactionCategory TransactionCategory  { get; set; }
+    public string TransactionCategory { get; set; }
 }
