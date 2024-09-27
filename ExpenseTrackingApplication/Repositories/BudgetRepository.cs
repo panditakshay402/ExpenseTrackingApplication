@@ -27,16 +27,6 @@ public class BudgetRepository : IBudgetRepository
         return await _context.Budgets.Where(b => b.AppUserId == userId).ToListAsync();
     }
     
-    public async Task<bool> UpdateBalanceAsync(int budgetId, decimal amount)
-    {
-        var budget = await _context.Budgets.FindAsync(budgetId);
-        if (budget == null) return false;
-
-        budget.Balance += amount;
-        return await SaveAsync();
-    }
-
-    
     public async Task<bool> AddAsync(Budget budget)
     {
         await _context.Budgets.AddAsync(budget);
