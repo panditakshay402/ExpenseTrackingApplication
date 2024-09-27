@@ -69,7 +69,7 @@ ViewData["Title"] = "Budget Details";
                         <a class="btn btn-primary" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
                         <a class="btn btn-warning" asp-controller="BudgetCategory" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
                         <a class="btn btn-danger" asp-controller="BudgetCategory" asp-action="Delete" asp-route-id="@category.Id">Delete</a>
-                        <a class="btn btn-info" asp-controller="BudgetCategory" asp-action="AssignTransactionCategories" asp-route-id="@category.Id">AssignTransactionsCategories</a>
+                        <a class="btn btn-info" asp-controller="BudgetCategoryTransactionCategory" asp-action="AssignTransactionCategories" asp-route-budgetCategoryId="@category.Id">AssignTransactionCategories</a>
                     </div>
                 </div>
             </div>
