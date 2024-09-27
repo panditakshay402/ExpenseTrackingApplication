@@ -24,7 +24,7 @@ public class BudgetCategoryTransactionCategoryRepository : IBudgetCategoryTransa
         return await _context.BudgetCategoryTransactionCategories.FirstOrDefaultAsync(bctc => bctc.Id == id);
     }
 
-    public async Task<List<BudgetCategoryTransactionCategory>> GetByBudgetCategoryIdAsync(int budgetCategoryId)
+    public async Task<List<BudgetCategoryTransactionCategory>> GetCategoriesByBudgetCategoryIdAsync(int budgetCategoryId)
     {
         return await _context.BudgetCategoryTransactionCategories
             .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId)
