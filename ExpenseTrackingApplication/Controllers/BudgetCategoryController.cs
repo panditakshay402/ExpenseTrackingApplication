@@ -14,7 +14,7 @@ namespace ExpenseTrackingApplication.Controllers;
 public class BudgetCategoryController : Controller
 {
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcr;
+    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
     private readonly IBudgetRepository _budgetRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
@@ -23,10 +23,10 @@ public class BudgetCategoryController : Controller
     public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository,
         IBudgetRepository budgetRepository, ITransactionRepository transactionRepository,
         IIncomeRepository incomeRepository, INotificationService notificationService,
-        IBudgetCategoryTransactionCategoryRepository budgetCategoryTransactionCategoryRepository)
+        IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _budgetCategoryRepository = budgetCategoryRepository;
-        _bCtcr = budgetCategoryTransactionCategoryRepository;
+        _bCtcRepository = bCtcRepository;
         _budgetRepository = budgetRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;

@@ -9,15 +9,15 @@ namespace ExpenseTrackingApplication.Controllers;
 
 public class BudgetCategoryTransactionCategoryController : Controller
 {
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcr;
+    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly IBudgetRepository _budgetRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly INotificationService _notificationService;
 
-    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcr, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationService notificationService, IBudgetRepository budgetRepository)
+    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationService notificationService, IBudgetRepository budgetRepository)
     {
-        _bCtcr = bCtcr;
+        _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
         _transactionRepository = transactionRepository;
         _notificationService = notificationService;
@@ -34,7 +34,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
             return RedirectToAction("Index", "Budget");
         }
         
-        var selectedCategories = await _bCtcr.GetCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
+        var selectedCategories = await _bCtcRepository.GetCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
         
         var viewModel = new AssignTransactionCategoriesViewModel
         {
@@ -67,7 +67,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
         
         var selectedCategories = viewModel.SelectedCategories ?? new List<string>();
         
-        await _bCtcr.ClearByBudgetCategoryIdAsync(viewModel.BudgetCategoryId);
+        await _bCtcRepository.ClearByBudgetCategoryIdAsync(viewModel.BudgetCategoryId);
 
         foreach (var category in selectedCategories)
         {
@@ -76,7 +76,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
                 BudgetCategoryId = viewModel.BudgetCategoryId,
                 TransactionCategory = category
             };
-            await _bCtcr.AddAsync(bCtc);
+            await _bCtcRepository.AddAsync(bCtc);
         }
         
         var currentMonthSpending = await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetCategory.BudgetId, selectedCategories.Select(Enum.Parse<TransactionCategory>).ToList());

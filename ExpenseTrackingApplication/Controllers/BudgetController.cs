@@ -15,14 +15,16 @@ public class BudgetController : Controller
 {
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
+    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
     private readonly IBillRepository _billRepository;
     private readonly INotificationService _notificationService;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationService notificationService)
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationService notificationService, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
+        _bCtcRepository = bCtcRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
         _billRepository = billRepository;

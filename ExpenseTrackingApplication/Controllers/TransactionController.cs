@@ -49,26 +49,14 @@ public class TransactionController : Controller
                 {
                     budget.Balance -= transaction.Amount;
                     await _budgetRepository.UpdateAsync(budget);
-                    //await _budgetCategoryRepository.UpdateCurrentAmountAsync(budgetId);
-                    //
-                    // // Check if any expense categories exceed their limits for this budget
-                    // if (await _budgetCategoryRepository.CheckExpensesExceedingLimitAsync(budgetId))
-                    // {
-                    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    //     await _notificationService.SendNotificationAsync(
-                    //         userId,
-                    //         "Budget Limit Exceeded",
-                    //         "One or more of your expense categories have exceeded their limits.",
-                    //         NotificationType.Budget
-                    //     );
-                    //     
-                    // }
+
                 }
                 
                 return RedirectToAction("Edit", "Budget", new { id = budgetId });
             }
         }
         ViewBag.BudgetId = budgetId;
+        ViewBag.TransactionCategory = new SelectList(Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList());
         return View(transaction);
     }
     
