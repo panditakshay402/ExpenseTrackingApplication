@@ -33,8 +33,9 @@ public class BudgetCategoryTransactionCategoryRepository : IBudgetCategoryTransa
     
     public async Task ClearByBudgetCategoryIdAsync(int budgetCategoryId)
     {
-        var categoriesToRemove = _context.BudgetCategoryTransactionCategories
-            .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId);
+        var categoriesToRemove = await _context.BudgetCategoryTransactionCategories
+            .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId)
+            .ToListAsync();
 
         _context.BudgetCategoryTransactionCategories.RemoveRange(categoriesToRemove);
         await _context.SaveChangesAsync();
