@@ -195,10 +195,14 @@ public class TransactionController : Controller
         // Update the budget balance
         budget.Balance += transaction.Amount;
         await _budgetRepository.UpdateAsync(budget);
-
+        
+        var date = transaction.Date;
+        var category = transaction.Category;
+        
         // Delete the transaction
         if (await _transactionRepository.DeleteAsync(transaction))
         {
+            await UpdateBcSpendings(budgetId, date, category);
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
 
