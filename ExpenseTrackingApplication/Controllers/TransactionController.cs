@@ -16,12 +16,14 @@ public class TransactionController : Controller
     private readonly ITransactionRepository _transactionRepository;
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
+    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
     private readonly INotificationService _notificationService;
-    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationService notificationService)
+    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationService notificationService, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _transactionRepository = transactionRepository;
         _budgetRepository = budgetRepository;
         _notificationService = notificationService;
+        _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
     }
     
@@ -41,6 +43,7 @@ public class TransactionController : Controller
         if (ModelState.IsValid)
         {
             transaction.BudgetId = budgetId;
+            var category = transaction.Category;
 
             if (await _transactionRepository.AddAsync(transaction))
             {
@@ -49,7 +52,7 @@ public class TransactionController : Controller
                 {
                     budget.Balance -= transaction.Amount;
                     await _budgetRepository.UpdateAsync(budget);
-
+                    await UpdateBcSpendings(budgetId, transaction.Date, category);
                 }
                 
                 return RedirectToAction("Edit", "Budget", new { id = budgetId });
@@ -152,6 +155,8 @@ public class TransactionController : Controller
         await _transactionRepository.UpdateAsync(transaction);
         await _budgetRepository.UpdateAsync(budget);
         
+        await UpdateBcSpendings(budget.Id, transaction.Date, transaction.Category);
+        
         return RedirectToAction("Edit", "Budget", new { id = transaction.BudgetId });
     }
     
@@ -199,5 +204,62 @@ public class TransactionController : Controller
 
         return RedirectToAction("Error", "Home");
     }
+    
+    public async Task UpdateBcSpendings(int budgetId, DateTime transactionDate, TransactionCategory category)
+    {
+        // Get all budget categories associated with the budget
+        var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(budgetId);
+        
+        // Set the start and end date of the current month
+        var now = DateTime.Now;
+        var startDate = new DateTime(now.Year, now.Month, 1);
+        var endDate = startDate.AddMonths(1).AddDays(-1);
+        
+        // Check if the transaction date is within the current month
+        if (transactionDate < startDate || transactionDate > endDate)
+        {
+            // If the transaction date is not within the current month, return
+            return;
+        }
+        
+        foreach (var budgetCategory in budgetCategories)
+        {
+            // Get the transaction categories associated with the budget category
+            var transactionCategories = await _bCtcRepository.GetCategoriesByBudgetCategoryIdAsync(budgetCategory.Id);
+            
+            // Convert the transaction categories to a list of TransactionCategory
+            var transactionCategoryList = transactionCategories
+                .Select(bctc => Enum.Parse<TransactionCategory>(bctc.TransactionCategory))
+                .ToList();
+            
+            // Check if the transaction category is associated with the budget category
+            if (transactionCategoryList.Contains(category))
+            {
+                // Get the current month spending for the budget category
+                var currentMonthSpending =
+                    await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetId,
+                        transactionCategoryList);
 
+                // Update the current spending for the budget category
+                budgetCategory.CurrentSpending = currentMonthSpending;
+                await _budgetCategoryRepository.UpdateAsync(budgetCategory);
+
+                // Check if the current spending exceeds the limit
+                if (budgetCategory.CurrentSpending > budgetCategory.Limit)
+                {
+                    var budget = await _budgetRepository.GetByIdAsync(budgetId);
+                    if (budget != null)
+                    {
+                        await _notificationService.SendNotificationAsync(
+                            budget.AppUserId,
+                            "Budget Limit Exceeded",
+                            $"Your spending has exceeded the limit of {budgetCategory.Limit:C} for the category '{budgetCategory.Name}'.",
+                            NotificationType.Budget
+                        );
+                    }
+                }
+            }
+        }
+        
+    }
 }
