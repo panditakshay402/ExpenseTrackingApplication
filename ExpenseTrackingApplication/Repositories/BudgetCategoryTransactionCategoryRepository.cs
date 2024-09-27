@@ -30,7 +30,16 @@ public class BudgetCategoryTransactionCategoryRepository : IBudgetCategoryTransa
             .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId)
             .ToListAsync();
     }
+    
+    public async Task ClearByBudgetCategoryIdAsync(int budgetCategoryId)
+    {
+        var categoriesToRemove = _context.BudgetCategoryTransactionCategories
+            .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId);
 
+        _context.BudgetCategoryTransactionCategories.RemoveRange(categoriesToRemove);
+        await _context.SaveChangesAsync();
+    }
+    
     public async Task<bool> AddAsync(BudgetCategoryTransactionCategory bCtc)
     {
         await _context.BudgetCategoryTransactionCategories.AddAsync(bCtc);
