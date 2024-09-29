@@ -154,7 +154,13 @@ public class BudgetCategoryController : Controller
         var categories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(id);
         var transactions = await _transactionRepository.GetTransactionsByCategoriesAsync(budgetCategory.BudgetId, categories);
         
-        return View();
+        var viewModel = new BudgetCategoryDetailsViewModel
+        {
+            BudgetCategory = budgetCategory,
+            CategoryTransactions = transactions
+        };
+        
+        return View(viewModel);
     }
 
 

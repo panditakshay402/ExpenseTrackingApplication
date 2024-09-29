@@ -5,8 +5,7 @@ namespace ExpenseTrackingApplication.ViewModels;
 
 public class BudgetCategoryDetailsViewModel
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public decimal Limit { get; set; }
+    public BudgetCategory BudgetCategory { get; set; }
+    public IEnumerable<Transaction> CategoryTransactions { get; set; }
 }
 
