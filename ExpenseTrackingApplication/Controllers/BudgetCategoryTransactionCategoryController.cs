@@ -34,13 +34,13 @@ public class BudgetCategoryTransactionCategoryController : Controller
             return RedirectToAction("Index", "Budget");
         }
         
-        var selectedCategories = await _bCtcRepository.GetCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
+        var selectedCategories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
         
         var viewModel = new AssignTransactionCategoriesViewModel
         {
             BudgetCategoryId = budgetCategoryId,
             AllTransactionCategories = Enum.GetNames(typeof(TransactionCategory)).ToList(),
-            SelectedCategories = selectedCategories.Select(bctc => bctc.TransactionCategory).ToList()
+            SelectedCategories = selectedCategories.Select(c => c.ToString()).ToList()
         };
 
         return View(viewModel);
