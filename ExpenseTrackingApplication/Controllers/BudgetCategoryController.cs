@@ -145,11 +145,14 @@ public class BudgetCategoryController : Controller
     // GET: BudgetCategory/Details/5
     public async Task<IActionResult> Details(int id)
     {
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
         {
             return NotFound();
         }
+        
+        var categories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(id);
+        var transactions = await _transactionRepository.GetTransactionsByCategoriesAsync(budgetCategory.BudgetId, categories);
         
         return View();
     }

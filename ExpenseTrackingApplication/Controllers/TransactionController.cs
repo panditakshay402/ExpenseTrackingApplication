@@ -52,7 +52,7 @@ public class TransactionController : Controller
                 {
                     budget.Balance -= transaction.Amount;
                     await _budgetRepository.UpdateAsync(budget);
-                    await UpdateBcSpendings(budgetId, transaction.Date, category);
+                    await UpdateBcSpending(budgetId, transaction.Date, category);
                 }
                 
                 return RedirectToAction("Edit", "Budget", new { id = budgetId });
@@ -155,7 +155,7 @@ public class TransactionController : Controller
         await _transactionRepository.UpdateAsync(transaction);
         await _budgetRepository.UpdateAsync(budget);
         
-        await UpdateBcSpendings(budget.Id, transaction.Date, transaction.Category);
+        await UpdateBcSpending(budget.Id, transaction.Date, transaction.Category);
         
         return RedirectToAction("Edit", "Budget", new { id = transaction.BudgetId });
     }
@@ -202,14 +202,14 @@ public class TransactionController : Controller
         // Delete the transaction
         if (await _transactionRepository.DeleteAsync(transaction))
         {
-            await UpdateBcSpendings(budgetId, date, category);
+            await UpdateBcSpending(budgetId, date, category);
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
 
         return RedirectToAction("Error", "Home");
     }
     
-    public async Task UpdateBcSpendings(int budgetId, DateTime transactionDate, TransactionCategory category)
+    public async Task UpdateBcSpending(int budgetId, DateTime transactionDate, TransactionCategory category)
     {
         // Get all budget categories associated with the budget
         var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(budgetId);
@@ -229,20 +229,15 @@ public class TransactionController : Controller
         foreach (var budgetCategory in budgetCategories)
         {
             // Get the transaction categories associated with the budget category
-            var transactionCategories = await _bCtcRepository.GetCategoriesByBudgetCategoryIdAsync(budgetCategory.Id);
-            
-            // Convert the transaction categories to a list of TransactionCategory
-            var transactionCategoryList = transactionCategories
-                .Select(bctc => Enum.Parse<TransactionCategory>(bctc.TransactionCategory))
-                .ToList();
+            var transactionCategories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(budgetCategory.Id);
             
             // Check if the transaction category is associated with the budget category
-            if (transactionCategoryList.Contains(category))
+            if (transactionCategories.Contains(category))
             {
                 // Get the current month spending for the budget category
                 var currentMonthSpending =
                     await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetId,
-                        transactionCategoryList);
+                        transactionCategories);
 
                 // Update the current spending for the budget category
                 budgetCategory.CurrentSpending = currentMonthSpending;

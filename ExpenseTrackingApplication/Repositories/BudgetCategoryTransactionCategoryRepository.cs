@@ -1,4 +1,5 @@
 ﻿using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,17 @@ public class BudgetCategoryTransactionCategoryRepository : IBudgetCategoryTransa
     {
         return await _context.BudgetCategoryTransactionCategories.FirstOrDefaultAsync(bctc => bctc.Id == id);
     }
-
-    public async Task<List<BudgetCategoryTransactionCategory>> GetCategoriesByBudgetCategoryIdAsync(int budgetCategoryId)
+    
+    public async Task<List<TransactionCategory>> GetTransactionCategoriesByBudgetCategoryIdAsync(int budgetCategoryId)
     {
-        return await _context.BudgetCategoryTransactionCategories
+        var budgetCategoryTransactionCategories = await _context.BudgetCategoryTransactionCategories
             .Where(bctc => bctc.BudgetCategoryId == budgetCategoryId)
             .ToListAsync();
+
+        // Return list of TransactionCategory
+        return budgetCategoryTransactionCategories
+            .Select(bctc => Enum.Parse<TransactionCategory>(bctc.TransactionCategory))
+            .ToList();
     }
     
     public async Task ClearByBudgetCategoryIdAsync(int budgetCategoryId)
