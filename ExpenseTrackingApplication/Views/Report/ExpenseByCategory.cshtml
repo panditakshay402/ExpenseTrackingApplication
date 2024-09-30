@@ -1,0 +1,21 @@
+﻿@model ExpenseTrackingApplication.ViewModels.ExpenseByCategoryViewModel
+
+<h2>Expenses by Category</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Total Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var expense in Model.ExpensesByCategory)
+    {
+        <tr>
+            <td>@expense.Category</td>
+            <td>@expense.TotalAmount</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -69,7 +69,7 @@ public class ReportController : Controller
             return View(model);
         }
 
-        var summary = await GetMonthlySummaryAsync(budget.Id, model.Year, model.Month);
+        var summary = await GetMonthlySummaryAsync(model.BudgetId, model.Year, model.Month);
         return View("MonthlySummary", summary);
     }
     
@@ -103,26 +103,61 @@ public class ReportController : Controller
         };
     }
     
-    // public async Task<ExpenseByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
-    // {
-    //     var transactions = await _transactionRepository.GetByDateRangeAsync(budgetId, startDate, endDate);
-    //         
-    //     var expensesByCategory = transactions
-    //         .Where(t => t.Type == TransactionType.Expense)
-    //         .GroupBy(t => t.Category)
-    //         .Select(group => new CategoryExpense
-    //         {
-    //             Category = group.Key,
-    //             TotalAmount = group.Sum(t => t.Amount)
-    //         })
-    //         .ToList();
-    //         
-    //     return new ExpenseByCategoryViewModel
-    //     {
-    //         ExpensesByCategory = expensesByCategory
-    //     };
-    // }
-    //
+    // GET: Report/CreateMonthlySummary
+    public async Task<IActionResult> CreateExpenseByCategory()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var budgets = await _budgetRepository.GetBudgetByUserAsync(user.Id);
+
+        var model = new CreateExpenseByCategoryViewModel
+        {
+            AvailableBudgets = budgets.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            }).ToList()
+        };
+
+        return View(model);
+    }
+    
+    // POST: Report/CreateExpenseByCategory
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateExpenseByCategory([Bind("BudgetId,StartDate,EndDate")] CreateExpenseByCategoryViewModel model)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(model.BudgetId);
+        if (budget == null)
+        {
+            ModelState.AddModelError("", "Selected budget not found.");
+            return View(model);
+        }
+            
+        var expenseReport = await GetExpensesByCategoryAsync(model.BudgetId, model.StartDate, model.EndDate);
+        return View("ExpenseByCategory", expenseReport);
+    }
+
+    
+    public async Task<ExpenseByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
+    {
+        var transactions = await _transactionRepository.GetByDateRangeAsync(budgetId, startDate, endDate);
+
+        var expensesByCategory = transactions
+            .GroupBy(t => t.Category)
+            .Select(group => new CategoryExpense
+            {
+                Category = group.Key,
+                TotalAmount = group.Sum(t => t.Amount)
+            })
+            .ToList();
+
+        return new ExpenseByCategoryViewModel
+        {
+            ExpensesByCategory = expensesByCategory
+        };
+    }
+
+    
     // public async Task<List<MonthlyTrendViewModel>> GetSpendingTrendsAsync(int budgetId, DateTime startDate, DateTime endDate)
     // {
     //     var trends = new List<MonthlyTrendViewModel>();
