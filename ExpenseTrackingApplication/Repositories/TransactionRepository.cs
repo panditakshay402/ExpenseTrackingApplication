@@ -34,7 +34,13 @@ public class TransactionRepository : ITransactionRepository
             .Where(t => t.BudgetId == budgetId && transactionCategories.Contains(t.Category))
             .ToListAsync();
     }
-
+    
+    public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(int budgetId, DateTime startDate, DateTime endDate)
+    {
+        return await _context.Transactions
+            .Where(t => t.BudgetId == budgetId && t.Date >= startDate && t.Date <= endDate)
+            .ToListAsync();
+    }
     
     public async Task<decimal> GetCurrentMonthAmountAsync(int budgetId)
     {

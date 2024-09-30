@@ -7,6 +7,7 @@ public interface IIncomeRepository
     Task<IEnumerable<Income?>> GetAllAsync();
     Task<Income?> GetByIdAsync(int id);
     Task<IEnumerable<Income>> GetByBudgetAsync(int budgetId);
+    Task<IEnumerable<Income>> GetByDateRangeAsync(int budgetId, DateTime startDate, DateTime endDate);
     Task<decimal> GetCurrentMonthAmountAsync(int budgetId);
     Task<bool> AddAsync(Income income);
     Task<bool> DeleteAsync(Income income);
