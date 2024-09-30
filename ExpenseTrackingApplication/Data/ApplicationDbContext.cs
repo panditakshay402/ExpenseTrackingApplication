@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<Income> Incomes { get; set; }
     public DbSet<Bill> Bills { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Security> Securities { get; set; }
+    public DbSet<Report> Reports { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +28,12 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasMany(u => u.Budgets)
             .WithOne(b => b.AppUser)
             .HasForeignKey(b => b.AppUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<AppUser>()
+            .HasMany(u => u.Reports)
+            .WithOne(r => r.AppUser)
+            .HasForeignKey(r => r.AppUserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
