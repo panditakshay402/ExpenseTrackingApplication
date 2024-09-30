@@ -22,11 +22,19 @@ public class ReportRepository : IReportRepository
         return await _context.Reports.FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<IEnumerable<Report>> GetByUserAsync(string appUserId)
+    public async Task<IEnumerable<Report>> GetByBudgetAsync(int budgetId)
     {
-        return await _context.Reports.Where(r => r.AppUserId == appUserId).ToListAsync();
+        return await _context.Reports.Where(r => r.BudgetId == budgetId).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<Report>> GetReportsByBudgetsAsync(IEnumerable<int> budgetIds)
+    {
+        return await _context.Reports
+            .Where(r => budgetIds.Contains(r.BudgetId))
+            .ToListAsync();
     }
 
+    
     public async Task<bool> AddAsync(Report report)
     {
         await _context.Reports.AddAsync(report);
