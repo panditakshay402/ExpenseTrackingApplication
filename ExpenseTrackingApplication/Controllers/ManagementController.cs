@@ -16,12 +16,12 @@ public class ManagementController : Controller
 {
     private readonly IUserRepository _userRepository;
     private readonly UserManager<AppUser> _userManager;
-    private readonly INotificationService _notificationService;
-    public ManagementController(IUserRepository userRepository, UserManager<AppUser> userManager, INotificationService notificationService)
+    private readonly INotificationRepository _notificationRepository;
+    public ManagementController(IUserRepository userRepository, UserManager<AppUser> userManager, INotificationRepository notificationRepository)
     {
         _userRepository = userRepository;
         _userManager = userManager;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
     }
     
     public async Task<IActionResult> Index()

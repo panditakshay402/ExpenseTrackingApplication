@@ -18,11 +18,11 @@ public class BudgetCategoryController : Controller
     private readonly IBudgetRepository _budgetRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
-    private readonly INotificationService _notificationService;
+    private readonly INotificationRepository _notificationRepository;
 
     public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository,
         IBudgetRepository budgetRepository, ITransactionRepository transactionRepository,
-        IIncomeRepository incomeRepository, INotificationService notificationService,
+        IIncomeRepository incomeRepository, INotificationRepository notificationRepository,
         IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _budgetCategoryRepository = budgetCategoryRepository;
@@ -30,7 +30,7 @@ public class BudgetCategoryController : Controller
         _budgetRepository = budgetRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
     }
     
     // GET: BudgetCategory/AddNewBudgetCategory

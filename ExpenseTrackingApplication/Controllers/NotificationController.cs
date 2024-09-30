@@ -15,19 +15,19 @@ namespace ExpenseTrackingApplication.Controllers;
 [Authorize]
 public class NotificationController : Controller
 {
-    private readonly INotificationService _notificationService;
+    private readonly INotificationRepository _notificationRepository;
     private readonly UserManager<AppUser> _userManager;
 
-    public NotificationController(INotificationService notificationService, UserManager<AppUser> userManager)
+    public NotificationController(INotificationRepository notificationRepository, UserManager<AppUser> userManager)
     {
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
         _userManager = userManager;
     }
 
     public IActionResult Index()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var notifications = _notificationService.GetUserNotifications(userId);
+        var notifications = _notificationRepository.GetUserNotifications(userId);
         return View(notifications);
     }
     
@@ -58,7 +58,7 @@ public class NotificationController : Controller
             notification.Date = DateTime.UtcNow;
             notification.IsRead = false;
             
-            if (await _notificationService.AddAsync(notification))
+            if (await _notificationRepository.AddAsync(notification))
             {
                 return RedirectToAction("ManageUsers", "Management");
             }
@@ -95,7 +95,7 @@ public class NotificationController : Controller
                     IsRead = false
                 };
 
-                await _notificationService.AddAsync(newNotification);
+                await _notificationRepository.AddAsync(newNotification);
             }
 
             return RedirectToAction("ManageUsers", "Management");
@@ -109,10 +109,10 @@ public class NotificationController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(int notificationId)
     {
-        var notification = await _notificationService.GetNotificationByIdAsync(notificationId);
+        var notification = await _notificationRepository.GetNotificationByIdAsync(notificationId);
         if (notification != null)
         {
-            await _notificationService.DeleteAsync(notification);
+            await _notificationRepository.DeleteAsync(notification);
         }
 
         return RedirectToAction(nameof(Index));
@@ -121,11 +121,11 @@ public class NotificationController : Controller
     [HttpPost]
     public async Task<IActionResult> MarkAsRead(int notificationId)
     {
-        var notification = await _notificationService.GetNotificationByIdAsync(notificationId);
+        var notification = await _notificationRepository.GetNotificationByIdAsync(notificationId);
         if (notification != null)
         {
             notification.IsRead = true;
-            await _notificationService.SaveAsync();
+            await _notificationRepository.SaveAsync();
         }
         
         return RedirectToAction("Index");
@@ -142,7 +142,7 @@ public class NotificationController : Controller
             return Json(new { hasUnread = false });
         }
 
-        var hasUnreadNotifications = _notificationService.HasUnreadNotifications(userId);
+        var hasUnreadNotifications = _notificationRepository.HasUnreadNotifications(userId);
 
         return Json(new { hasUnread = hasUnreadNotifications });
     }

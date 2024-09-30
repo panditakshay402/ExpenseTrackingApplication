@@ -12,12 +12,12 @@ public class BillController : Controller
 {
     private readonly IBillRepository _billRepository;
     private readonly IBudgetRepository _budgetRepository;
-    private readonly INotificationService _notificationService;
-    public BillController(IBillRepository billRepository, INotificationService notificationService, IBudgetRepository budgetRepository)
+    private readonly INotificationRepository _notificationRepository;
+    public BillController(IBillRepository billRepository, INotificationRepository notificationRepository, IBudgetRepository budgetRepository)
     {
         _billRepository = billRepository;
         _budgetRepository = budgetRepository;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
     }
     
     // GET: Bill/Create
@@ -168,7 +168,7 @@ public class BillController : Controller
         {
             // Send a notification to the user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _notificationService.SendNotificationAsync(userId, "Bill Payment", $"Bill {bill.Name} has been paid.", NotificationType.Bill);
+            await _notificationRepository.SendNotificationAsync(userId, "Bill Payment", $"Bill {bill.Name} has been paid.", NotificationType.Bill);
 
             // Check the frequency and create a new bill if it's recurring
             if (bill.Frequency != BillFrequency.None)

@@ -17,15 +17,15 @@ public class UserController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IPhotoService _photoService;
-    private readonly INotificationService _notificationService;
+    private readonly INotificationRepository _notificationRepository;
 
-    public UserController(IUserRepository userRepository, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPhotoService photoService, INotificationService notificationService)
+    public UserController(IUserRepository userRepository, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPhotoService photoService, INotificationRepository notificationRepository)
     {
         _userRepository = userRepository;
         _userManager = userManager;
         _signInManager = signInManager;
         _photoService = photoService;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
     }
 
     [HttpGet]
@@ -92,7 +92,7 @@ public class UserController : Controller
             
             // Send notification about successful profile update
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _notificationService.SendNotificationAsync(userId, "Profile Update", "Your profile has been successfully updated.", NotificationType.User);
+            await _notificationRepository.SendNotificationAsync(userId, "Profile Update", "Your profile has been successfully updated.", NotificationType.User);
 
             
             return RedirectToAction("Index");
@@ -125,7 +125,7 @@ public class UserController : Controller
             
             // Send notification about successful avatar remove
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _notificationService.SendNotificationAsync(userId, "Avatar Remove", "Your profile picture has been successfully removed.", NotificationType.User);
+            await _notificationRepository.SendNotificationAsync(userId, "Avatar Remove", "Your profile picture has been successfully removed.", NotificationType.User);
             
             return RedirectToAction("Index");
         }

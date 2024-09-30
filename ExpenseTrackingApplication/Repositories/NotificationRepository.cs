@@ -3,13 +3,13 @@ using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 
-namespace ExpenseTrackingApplication.Services;
+namespace ExpenseTrackingApplication.Repositories;
 
-public class NotificationService : INotificationService
+public class NotificationRepository : INotificationRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public NotificationService(ApplicationDbContext context)
+    public NotificationRepository(ApplicationDbContext context)
     {
         _context = context;
     }

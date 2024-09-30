@@ -19,8 +19,8 @@ public class BudgetController : Controller
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
     private readonly IBillRepository _billRepository;
-    private readonly INotificationService _notificationService;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationService notificationService, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
+    private readonly INotificationRepository _notificationRepository;
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationRepository notificationRepository, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
@@ -28,7 +28,7 @@ public class BudgetController : Controller
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
         _billRepository = billRepository;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
     }
     
     // GET: Budget
@@ -73,7 +73,7 @@ public class BudgetController : Controller
         if (await _budgetRepository.AddAsync(newBudget))
         {
             // Create a notification for the user after successfully adding a budget
-           await _notificationService.SendNotificationAsync(
+           await _notificationRepository.SendNotificationAsync(
                 userId,
                 "New Budget Created",
                 $"A new budget {newBudgetName} has been successfully created.",
@@ -127,7 +127,7 @@ public class BudgetController : Controller
         
         await _budgetRepository.DeleteAsync(budget);
         
-        await _notificationService.SendNotificationAsync(
+        await _notificationRepository.SendNotificationAsync(
             userId,
             "Budget Removed",
             $"{budget.Name} has been successfully removed.",
@@ -186,7 +186,7 @@ public class BudgetController : Controller
                 // Notification for bills due in 3 days
                 if (bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
                 {
-                    await _notificationService.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
+                    await _notificationRepository.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
                     bill.ReminderSent = true;
                     await _billRepository.UpdateAsync(bill);
                 }
@@ -194,7 +194,7 @@ public class BudgetController : Controller
                 // Notification for overdue bills
                 if (bill.DueDate.Date < DateTime.Now.Date && !bill.OverdueReminderSent)
                 {
-                    await _notificationService.SendNotificationAsync(userId, "Overdue Bill Reminder", $"Your bill '{bill.Name}' is overdue!", NotificationType.Bill);
+                    await _notificationRepository.SendNotificationAsync(userId, "Overdue Bill Reminder", $"Your bill '{bill.Name}' is overdue!", NotificationType.Bill);
                     bill.OverdueReminderSent = true;
                     await _billRepository.UpdateAsync(bill);
                 }

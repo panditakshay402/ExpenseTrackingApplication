@@ -3,7 +3,7 @@ using ExpenseTrackingApplication.Models;
 
 namespace ExpenseTrackingApplication.Interfaces;
 
-public interface INotificationService
+public interface INotificationRepository
 {
     Task SendNotificationAsync(string appUserId, string topic, string message, NotificationType type);
     Task<bool> AddAsync(Notification notification);

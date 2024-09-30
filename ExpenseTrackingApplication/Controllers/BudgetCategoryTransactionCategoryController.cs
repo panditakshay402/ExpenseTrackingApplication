@@ -13,14 +13,14 @@ public class BudgetCategoryTransactionCategoryController : Controller
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly IBudgetRepository _budgetRepository;
     private readonly ITransactionRepository _transactionRepository;
-    private readonly INotificationService _notificationService;
+    private readonly INotificationRepository _notificationRepository;
 
-    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationService notificationService, IBudgetRepository budgetRepository)
+    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationRepository notificationRepository, IBudgetRepository budgetRepository)
     {
         _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
         _transactionRepository = transactionRepository;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
         _budgetRepository = budgetRepository;
     }
     
@@ -88,7 +88,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
         if (budgetCategory.CurrentSpending > budgetCategory.Limit)
         {
             // Sent a notification to the user if the spending exceeds the limit
-            await _notificationService.SendNotificationAsync(
+            await _notificationRepository.SendNotificationAsync(
                 budget.AppUserId,
                 "Budget Limit Exceeded",
                 $"Your spending has exceeded the limit of {budgetCategory.Limit:C} for the category '{budgetCategory.Name}'.",

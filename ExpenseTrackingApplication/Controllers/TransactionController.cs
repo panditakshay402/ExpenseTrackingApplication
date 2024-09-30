@@ -17,12 +17,12 @@ public class TransactionController : Controller
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
-    private readonly INotificationService _notificationService;
-    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationService notificationService, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
+    private readonly INotificationRepository _notificationRepository;
+    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationRepository notificationRepository, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
     {
         _transactionRepository = transactionRepository;
         _budgetRepository = budgetRepository;
-        _notificationService = notificationService;
+        _notificationRepository = notificationRepository;
         _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
     }
@@ -249,7 +249,7 @@ public class TransactionController : Controller
                     var budget = await _budgetRepository.GetByIdAsync(budgetId);
                     if (budget != null)
                     {
-                        await _notificationService.SendNotificationAsync(
+                        await _notificationRepository.SendNotificationAsync(
                             budget.AppUserId,
                             "Budget Limit Exceeded",
                             $"Your spending has exceeded the limit of {budgetCategory.Limit:C} for the category '{budgetCategory.Name}'.",
