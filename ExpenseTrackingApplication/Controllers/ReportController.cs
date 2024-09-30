@@ -136,7 +136,6 @@ public class ReportController : Controller
         var expenseReport = await GetExpensesByCategoryAsync(model.BudgetId, model.StartDate, model.EndDate);
         return View("ExpenseByCategory", expenseReport);
     }
-
     
     public async Task<ExpenseByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
     {
@@ -157,24 +156,51 @@ public class ReportController : Controller
         };
     }
 
+    // GET: Report/CreateTrendAnalysis
+    public async Task<IActionResult> CreateTrendAnalysis()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var budgets = await _budgetRepository.GetBudgetByUserAsync(user.Id);
+
+        var model = new CreateTrendAnalysisViewModel
+        {
+            AvailableBudgets = budgets.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            }).ToList()
+        };
+
+        return View(model);
+    }
     
-    // public async Task<List<MonthlyTrendViewModel>> GetSpendingTrendsAsync(int budgetId, DateTime startDate, DateTime endDate)
-    // {
-    //     var trends = new List<MonthlyTrendViewModel>();
-    //
-    //     for (var date = startDate; date <= endDate; date = date.AddMonths(1))
-    //     {
-    //         var summary = await GetMonthlySummaryAsync(budgetId, date.Year, date.Month);
-    //         trends.Add(new MonthlyTrendViewModel
-    //         {
-    //             Month = date.ToString("MMM yyyy"),
-    //             TotalExpenses = summary.TotalExpenses,
-    //             TotalIncome = summary.TotalIncome
-    //         });
-    //     }
-    //
-    //     return trends;
-    // }
+    // POST: Report/CreateTrendAnalysis
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateTrendAnalysis([Bind("BudgetId")] CreateTrendAnalysisViewModel model)
+    {
+        var trendData = await GetTrendAnalysisAsync(model.BudgetId);
+        return View("TrendAnalysis", trendData);
+    }
+    
+    public async Task<TrendAnalysisViewModel> GetTrendAnalysisAsync(int budgetId)
+    {
+        var transactions = await _transactionRepository.GetByBudgetAsync(budgetId);
+
+        var monthlySpending = transactions
+            .GroupBy(t => new { t.Date.Year, t.Date.Month })
+            .Select(group => new MonthlySpending
+            {
+                Month = new DateTime(group.Key.Year, group.Key.Month, 1).ToString("MMMM yyyy"),
+                TotalSpent = group.Sum(t => t.Amount)
+            })
+            .ToList();
+    
+        return new TrendAnalysisViewModel
+        {
+            MonthlySpendingData = monthlySpending
+        };
+    }
 
 
 }

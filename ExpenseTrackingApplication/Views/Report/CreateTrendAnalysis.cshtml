@@ -1,0 +1,12 @@
+﻿@model ExpenseTrackingApplication.ViewModels.CreateTrendAnalysisViewModel
+
+<h2>Create Trend Analysis</h2>
+
+<form asp-action="CreateTrendAnalysis" method="post">
+    <div class="form-group">
+        <label asp-for="BudgetId"></label>
+        <select asp-for="BudgetId" asp-items="Model.AvailableBudgets" class="form-control"></select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Generate Trend Analysis</button>
+</form>

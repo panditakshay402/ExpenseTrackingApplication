@@ -1,0 +1,24 @@
+﻿@model ExpenseTrackingApplication.ViewModels.TrendAnalysisViewModel
+
+<h5 class="card-title">Trend Analysis Report</h5>
+<p class="card-text">
+    Analyze your spending patterns over time and identify trends to better manage your financial future.
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Month</th>
+        <th>Total Spent</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.MonthlySpendingData)
+    {
+        <tr>
+            <td>@item.Month</td>
+            <td>@item.TotalSpent.ToString("C")</td>
+        </tr>
+    }
+    </tbody>
+</table>
