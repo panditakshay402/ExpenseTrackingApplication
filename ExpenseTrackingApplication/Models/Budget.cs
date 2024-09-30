@@ -26,5 +26,6 @@ public class Budget
     public ICollection<Income> Incomes { get; set; } = new List<Income>();
     public ICollection<Bill> Bills { get; set; } = new List<Bill>();
     public ICollection<BudgetCategory> BudgetCategories { get; set; } = new List<BudgetCategory>();
+    public ICollection<Report>? Reports { get; set; } = new List<Report>();
 
 }

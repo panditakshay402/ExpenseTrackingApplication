@@ -23,17 +23,11 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
         modelBuilder.Entity<AppUser>()
             .HasMany(u => u.Budgets)
             .WithOne(b => b.AppUser)
             .HasForeignKey(b => b.AppUserId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<AppUser>()
-            .HasMany(u => u.Reports)
-            .WithOne(r => r.AppUser)
-            .HasForeignKey(r => r.AppUserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Budget>()
@@ -53,7 +47,13 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .WithOne(t => t.Budget)
             .HasForeignKey(t => t.BudgetId)
             .OnDelete(DeleteBehavior.Cascade);
-
+        
+        modelBuilder.Entity<Budget>()
+            .HasMany(b => b.Reports)
+            .WithOne(r => r.Budget)
+            .HasForeignKey(r => r.BudgetId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Budget>()
             .HasMany(b => b.BudgetCategories)
             .WithOne(bc => bc.Budget)
