@@ -12,19 +12,20 @@ namespace ExpenseTrackingApplication.Controllers;
 [Authorize]
 public class ReportController : Controller
 {
-    private readonly IReportService _reportService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IBudgetRepository _budgetRepository;
+    private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
 
-    public ReportController(IReportService reportService, UserManager<AppUser> userManager, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IIncomeRepository incomeRepository)
+    public ReportController(UserManager<AppUser> userManager, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IIncomeRepository incomeRepository, IBudgetCategoryRepository budgetCategoryRepository)
     {
-        _reportService = reportService;
         _userManager = userManager;
-        _transactionRepository = transactionRepository;
         _budgetRepository = budgetRepository;
+        _budgetCategoryRepository = budgetCategoryRepository;
+        _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
+        
     }
     
     public IActionResult Index()
