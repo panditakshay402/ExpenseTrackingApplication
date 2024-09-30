@@ -5,5 +5,5 @@ namespace ExpenseTrackingApplication.Interfaces;
 
 public interface IReportService
 {
-    Task<ReportResult> GenerateReportAsync(ReportSettingsViewModel settings);
+    
 }
