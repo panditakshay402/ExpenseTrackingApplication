@@ -1,65 +1,72 @@
-﻿@model ExpenseTrackingApplication.ViewModels.ReportSettingsViewModel
+﻿@model IEnumerable<ExpenseTrackingApplication.ViewModels.ReportViewModel>
 
-@{
-    ViewData["Title"] = "Generate Report";
-}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Choose a Report Type</h2>
 
-<h2>Generate Report</h2>
+    <div class="row">
+        <!-- Monthly Summary Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Summary Report</h5>
+                    <p class="card-text">
+                        This report provides an overview of your expenses and income for the selected month, helping you track your savings.
+                    </p>
+                    <a asp-controller="Report" asp-action="CreateMonthlySummary" class="btn btn-primary">Create Report</a>
+                </div>
+            </div>
+        </div>
 
-<form asp-action="GenerateReport" method="post">
-    <div class="form-group">
-        <label asp-for="Type">Report Type</label>
-        <select asp-for="Type" class="form-control">
-            <option value="MonthlySummary">Monthly Summary</option>
-            <option value="ExpensesByCategory">Expenses By Category</option>
-            <option value="TrendAnalysis">Trend Analysis</option>
-        </select>
-        <span asp-validation-for="Type" class="text-danger"></span>
+        <!-- Category Expense Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Category Expense Report</h5>
+                    <p class="card-text">
+                        This report breaks down your expenses by categories, showing how much you're spending on different areas like groceries, rent, etc.
+                    </p>
+                    <a asp-controller="Report" asp-action="CreateCategoryExpense" class="btn btn-primary">Create Report</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trend Analysis Report -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Trend Analysis Report</h5>
+                    <p class="card-text">
+                        Analyze your spending patterns over time and identify trends to better manage your financial future.
+                    </p>
+                    <a asp-controller="Report" asp-action="CreateTrendAnalysis" class="btn btn-primary">Create Report</a>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="StartDate">Start Date</label>
-        <input asp-for="StartDate" class="form-control" type="date" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
+<h2>Reports</h2>
 
-    <div class="form-group">
-        <label asp-for="EndDate">End Date</label>
-        <input asp-for="EndDate" class="form-control" type="date" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>
-            <input type="checkbox" asp-for="IncludeAllBudgets" />
-            Include All Budgets
-        </label>
-    </div>
-
-    <div class="form-group" id="budget-selection" style="display: none;">
-        <label>Select Budgets</label>
-        <select asp-for="SelectedBudgetIds" class="form-control" multiple>
-            @foreach (var budget in Model.AvailableBudgets)
-            {
-                <option value="@budget.Id">@budget.Name</option>
-            }
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Generate Report</button>
-</form>
-
-@section Scripts {
-    <script>
-        document.getElementById('IncludeAllBudgets').addEventListener('change', function () {
-            var budgetSelection = document.getElementById('budget-selection');
-            if (this.checked) {
-                budgetSelection.style.display = 'none';
-            } else {
-                budgetSelection.style.display = 'block';
-            }
-        });
-
-        document.getElementById('IncludeAllBudgets').dispatchEvent(new Event('change'));
-    </script>
-}
+<table class="table">
+    <thead>
+    <tr>
+        <th>Report Name</th>
+        <th>Report Type</th>
+        <th>Created At</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var report in Model)
+    {
+    <tr>
+        <td>@report.ReportName</td>
+        <td>@report.ReportType</td>
+        <td>@report.CreatedAt.ToString("yyyy-MM-dd")</td>
+        <td>
+            <a asp-action="ViewReport" asp-route-id="@report.ReportId" class="btn btn-primary">View</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>

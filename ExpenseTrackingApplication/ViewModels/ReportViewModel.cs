@@ -1,13 +1,11 @@
 ﻿using ExpenseTrackingApplication.Models;
 
-namespace ExpenseTrackingApplication.ViewModels
+namespace ExpenseTrackingApplication.ViewModels;
+
+public class ReportViewModel
 {
-    public class ReportViewModel
-    {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        
-        // List of transactions for the report
-        public List<Transaction>? Transactions { get; set; }
-    }
+    public int ReportId { get; set; }
+    public string ReportName { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string ReportType { get; set; }
 }

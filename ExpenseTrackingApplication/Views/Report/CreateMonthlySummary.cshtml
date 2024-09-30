@@ -1,0 +1,17 @@
+﻿@model ExpenseTrackingApplication.ViewModels.CreateMonthlySummaryViewModel
+
+<form asp-action="CreateMonthlySummary" method="post">
+    <div class="form-group">
+        <label asp-for="BudgetId">Select Budget</label>
+        <select asp-for="BudgetId" class="form-control" asp-items="Model.AvailableBudgets"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Year">Year</label>
+        <input asp-for="Year" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Month">Month</label>
+        <input asp-for="Month" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>

@@ -1,0 +1,78 @@
+﻿@model ExpenseTrackingApplication.ViewModels.MonthlySummaryViewModel
+
+@{
+ViewData["Title"] = "Monthly Summary";
+}
+
+<h1>Monthly Summary</h1>
+
+<div class="summary-info">
+    <h2>Summary for @Model.Year-@Model.Month</h2>
+    <p><strong>Total Income:</strong> @Model.TotalIncome.ToString("C")</p>
+    <p><strong>Total Expenses:</strong> @Model.TotalExpenses.ToString("C")</p>
+    <p><strong>Net Savings:</strong> @Model.NetSavings.ToString("C")</p>
+</div>
+
+<h2>Transactions</h2>
+@if (Model.Transactions.Any())
+{
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var transaction in Model.Transactions)
+    {
+    <tr>
+        <td>@transaction.Date.ToShortDateString()</td>
+        <td>@transaction.Category</td>
+        <td>@transaction.Amount.ToString("C")</td>
+        <td>@transaction.Description</td>
+    </tr>
+    }
+    </tbody>
+</table>
+}
+else
+{
+<p>No transactions found for this month.</p>
+}
+
+<h2>Incomes</h2>
+@if (Model.Incomes.Any())
+{
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var income in Model.Incomes)
+    {
+    <tr>
+        <td>@income.Date.ToShortDateString()</td>
+        <td>@income.Category</td>
+        <td>@income.Amount.ToString("C")</td>
+        <td>@income.Description</td>
+    </tr>
+    }
+    </tbody>
+</table>
+}
+else
+{
+<p>No incomes found for this month.</p>
+}
+
+<div>
+    <a asp-controller="Report" asp-action="Index" class="btn btn-secondary">Back to Reports</a>
+</div>
