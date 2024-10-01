@@ -1,5 +1,4 @@
-﻿using ExpenseTrackingApplication.Data;
-using ExpenseTrackingApplication.Data.Enum;
+﻿using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 
 namespace ExpenseTrackingApplication.Controllers;
 
@@ -50,7 +48,6 @@ public class ReportController : Controller
             ReportName = report.ReportName,
             CreatedAt = report.CreatedDate,
             ReportType = report.Type.ToString(),
-            Data = report.Data
         }).ToList();
 
         // Return the view with the list of reports
@@ -93,7 +90,17 @@ public class ReportController : Controller
         // Generate the monthly summary
         var summary = await GetMonthlySummaryAsync(model.BudgetId, model.Year, model.Month);
         
-        // TODO: add creating report and saving it to the database
+        // Create a new report
+        var report = new Report
+        {
+            Type = ReportType.MonthlySummary,
+            ReportName = $"Monthly Summary for {model.Month}/{model.Year}",
+            CreatedDate = DateTime.Now,
+            BudgetId = model.BudgetId,
+            DateOne = new DateTime(model.Year, model.Month, 1),  // Ser DateOne as the month beginning
+            DateTwo = new DateTime(model.Year, model.Month, 1).AddMonths(1).AddDays(-1) // Set DateTwo as the month end
+        };
+        await _reportRepository.AddAsync(report);
         
         // Redirect to the index or another action after creating the report
         return View("MonthlySummary", summary);

@@ -14,9 +14,12 @@ public class Report
     public string? ReportName { get; set; }
     public DateTime CreatedDate { get; set; }
     
-    public string Data { get; set; }
-    
     [ForeignKey("Budget")]
     public int BudgetId { get; set; }
     public Budget Budget { get; set; }
+    
+    // Two generic date fields to store year/month or date range
+    public DateTime? DateOne { get; set; }  // Could store Year or StartDate
+    public DateTime? DateTwo { get; set; }  // Could store Month or EndDate
+    
 }
