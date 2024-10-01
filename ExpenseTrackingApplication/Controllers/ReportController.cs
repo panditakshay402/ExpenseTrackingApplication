@@ -1,4 +1,5 @@
 ﻿using ExpenseTrackingApplication.Data;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
@@ -6,39 +7,59 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace ExpenseTrackingApplication.Controllers;
 
 [Authorize]
 public class ReportController : Controller
 {
+    private readonly IReportRepository _reportRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
 
-    public ReportController(UserManager<AppUser> userManager, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IIncomeRepository incomeRepository, IBudgetCategoryRepository budgetCategoryRepository)
+    public ReportController(IReportRepository reportRepository, UserManager<AppUser> userManager, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
     {
         _userManager = userManager;
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
+        _reportRepository = reportRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
         
     }
     
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        // Mock list of reports, replace with repository logic to fetch real reports.
-        var reports = new List<ReportViewModel>
-        {
-            
-        };
-    
-        return View(reports);
-    }
+        // Get the current user
+        var user = await _userManager.GetUserAsync(User);
 
+        // Retrieve budgets for the current user
+        var budgets = await _budgetRepository.GetBudgetByUserAsync(user.Id);
+    
+        // Retrieve reports for the budgets of the current user
+        var reports = await _reportRepository.GetReportsByBudgetsAsync(budgets.Select(b => b.Id));
+
+        // Map the retrieved reports to a view model
+        var reportViewModels = reports.Select(report => new ReportViewModel
+        {
+            ReportId = report.Id,
+            ReportName = report.ReportName,
+            CreatedAt = report.CreatedDate,
+            ReportType = report.Type.ToString(),
+            Data = report.Data
+        }).ToList();
+
+        // Return the view with the list of reports
+        return View(reportViewModels);
+    }
+    
+    // TODO: Koniecznie, pododawać modelstate.valid do wszystkich akcji, do trend analisys dodać incomes, potestować jeszcze i poprawić widoki,
+    // ponieważ wywala jak coś źle się wpisze (np. miesiąc)
+    
     // GET: Report/CreateMonthlySummary
     public async Task<IActionResult> CreateMonthlySummary()
     {
@@ -68,8 +89,13 @@ public class ReportController : Controller
             ModelState.AddModelError("", "Selected budget not found.");
             return View(model);
         }
-
+        
+        // Generate the monthly summary
         var summary = await GetMonthlySummaryAsync(model.BudgetId, model.Year, model.Month);
+        
+        // TODO: add creating report and saving it to the database
+        
+        // Redirect to the index or another action after creating the report
         return View("MonthlySummary", summary);
     }
     
