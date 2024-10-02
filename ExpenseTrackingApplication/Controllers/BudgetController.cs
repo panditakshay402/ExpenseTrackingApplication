@@ -239,7 +239,8 @@ public class BudgetController : Controller
         
         var viewModel = new BudgetEditViewModel
         {
-            Budget = budget,
+            Id = id,
+            Name = budget.Name,
             Transactions = transactions,
             Incomes = incomes,
             Bills = bills
@@ -258,45 +259,49 @@ public class BudgetController : Controller
         {
             return NotFound();
         }
-
-        if (ModelState.IsValid)
+        
+        if (!ModelState.IsValid)
         {
-            try
-            {
-                var budgetToUpdate = await _budgetRepository.GetByIdAsync(budget.Id);
-                if (budgetToUpdate == null)
-                {
-                    return NotFound();
-                }
+            // Fetch budget edit view model
+            var budgetModel = await _budgetRepository.GetByIdAsync(id);
+            var transactions = await _transactionRepository.GetByBudgetAsync(id);
+            var incomes = await _incomeRepository.GetByBudgetAsync(id);
+            var bills = await _billRepository.GetByBudgetAsync(id);
 
-                budgetToUpdate.Name = budget.Name;
-
-                await _budgetRepository.UpdateAsync(budgetToUpdate);
-                await _budgetRepository.SaveAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+            var viewModel = new BudgetEditViewModel
             {
-                if (!await BudgetExists(budget.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Edit), new { id = budget.Id });
+                Id = budgetModel.Id,
+                Name = budgetModel.Name,
+                Transactions = transactions,
+                Incomes = incomes,
+                Bills = bills
+            };
+            return View(viewModel);
         }
 
-        // Re-fetch transactions and incomes in case of error
-        var viewModel = new BudgetEditViewModel
+        try
         {
-            Budget = await _budgetRepository.GetByIdAsync(id),
-            Transactions = await _transactionRepository.GetByBudgetAsync(id),
-            Incomes = await _incomeRepository.GetByBudgetAsync(id),
-            Bills = await _billRepository.GetByBudgetAsync(id)
-        };
-        return View(viewModel);
+            var budgetToUpdate = await _budgetRepository.GetByIdAsync(budget.Id);
+            if (budgetToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            budgetToUpdate.Name = budget.Name;
+
+            await _budgetRepository.UpdateAsync(budgetToUpdate);
+            await _budgetRepository.SaveAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = budget.Id });
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await BudgetExists(budget.Id))
+            {
+                return NotFound();
+            }
+            throw; // Re-throw the exception for further handling or logging
+        }
     }
     
     private async Task<bool> BudgetExists(int id)

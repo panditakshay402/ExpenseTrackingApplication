@@ -8,7 +8,7 @@ public class Budget
     [Key]
     public int Id { get; set; }
     
-    [Required]
+    [Required (ErrorMessage = "Name is required.")]
     [MaxLength(100)]
     public string Name { get; set; } = "Budget";
     

@@ -4,14 +4,14 @@
 ViewData["Title"] = "Edit Budget";
 }
 
-<h2>Edit Budget: @Model.Budget.Name</h2>
+<h2>Edit Budget: @Model.Name</h2>
 
-<form asp-controller="Budget" asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Budget.Id" />
+<form method="post" asp-action="Edit">
+    @Html.AntiForgeryToken()
     <div class="form-group">
-        <label asp-for="Budget.Name" class="control-label"></label>
-        <input asp-for="Budget.Name" class="form-control" />
-        <span asp-validation-for="Budget.Name" class="text-danger"></span>
+        <label asp-for="Name" class="control-label">Budget Name</label>
+        <input asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Save New Name</button>
 </form>
@@ -20,7 +20,7 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Transactions</h4>
         <div>
-            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-success">Add Transaction</a>
+            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-success">Add Transaction</a>
         </div>
     </div>
     <table class="table">
@@ -57,7 +57,7 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Incomes</h4>
         <div>
-            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-info">Add Income</a>
         </div>
     </div>
     <table class="table">
@@ -94,7 +94,7 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Bills</h4>
         <div>
-            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Bill</a>
+            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-warning">Add Bill</a>
         </div>
     </div>
     <table class="table">
@@ -128,5 +128,9 @@ ViewData["Title"] = "Edit Budget";
 </div>
 
 <div>
-    <a asp-action="Details" asp-route-id="@Model.Budget.Id" class="btn btn-secondary">Back to Details</a>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back to Details</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
