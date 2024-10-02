@@ -168,7 +168,17 @@ public class ReportController : Controller
             
         var expenseReport = await GetExpensesByCategoryAsync(model.BudgetId, model.StartDate, model.EndDate);
         
-        
+        // Create a new report
+        var report = new Report
+        {
+            Type = ReportType.ExpensesByCategory,
+            ReportName = $"Expenses By Category for {budget.Name}",
+            CreatedDate = DateTime.Now,
+            BudgetId = model.BudgetId,
+            DateOne = model.StartDate,
+            DateTwo = model.EndDate
+        };
+        await _reportRepository.AddAsync(report);
         
         return View("ExpensesByCategory", expenseReport);
     }
@@ -215,6 +225,23 @@ public class ReportController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateTrendAnalysis([Bind("BudgetId")] CreateTrendAnalysisViewModel model)
     {
+        var budget = await _budgetRepository.GetByIdAsync(model.BudgetId);
+        if (budget == null)
+        {
+            ModelState.AddModelError("", "Selected budget not found.");
+            return View(model);
+        }
+        
+        // Create a new report
+        var report = new Report
+        {
+            Type = ReportType.TrendAnalysis,
+            ReportName = $"Trend Analysis for {budget.Name}",
+            CreatedDate = DateTime.Now,
+            BudgetId = model.BudgetId,
+        };
+        await _reportRepository.AddAsync(report);
+        
         var trendData = await GetTrendAnalysisAsync(model.BudgetId);
         return View("TrendAnalysis", trendData);
     }
@@ -237,6 +264,67 @@ public class ReportController : Controller
             MonthlySpendingData = monthlySpending
         };
     }
+    
+    // TODO: minus taki że jak ktoś stworzy jakiś raport i dokona zmian w budżecie to raport będzie z nowymi danymi
+    // a nie z tymi tylko, które były jego przy tworzeniu, ale może zostać? Logistycznie lepiej, niż zapisywać każdą transakcję, income itp.
+    public async Task<IActionResult> ViewReport(int id)
+    {
+        var report = await _reportRepository.GetByIdAsync(id);
+        if (report == null)
+        {
+            return NotFound();
+        }
+        
+        // Check report type and return the appropriate view
+        switch (report.Type)
+        {
+            case ReportType.MonthlySummary:
+                var monthlySummary = await GetMonthlySummaryAsync(report.BudgetId, report.DateOne.Value.Year, report.DateOne.Value.Month);
+                return View("MonthlySummary", monthlySummary);
+        
+            case ReportType.ExpensesByCategory:
+                var expenseReport = await GetExpensesByCategoryAsync(report.BudgetId, report.DateOne.Value, report.DateTwo.Value);
+                return View("ExpensesByCategory", expenseReport);
+        
+            case ReportType.TrendAnalysis:
+                var trendAnalysis = await GetTrendAnalysisAsync(report.BudgetId);
+                return View("TrendAnalysis", trendAnalysis);
+        
+            default:
+                return BadRequest("Unknown report type.");
+        }
+    }
+    
+    // GET: Report/Delete/{id}
+    public async Task<IActionResult> Delete(int id)
+    {
+        var report = await _reportRepository.GetByIdAsync(id);
+        if (report == null)
+        {
+            return NotFound();
+        }
 
-
+        return View(report);
+    }
+    
+    // POST: Report/Delete/{id}
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var report = await _reportRepository.GetByIdAsync(id);
+        if (report == null)
+        {
+            return NotFound();
+        }
+        
+        var result = await _reportRepository.DeleteAsync(report);
+        if (result)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        
+        ModelState.AddModelError("", "Error while deleting category.");
+        return RedirectToAction(nameof(Index));
+    }
 }

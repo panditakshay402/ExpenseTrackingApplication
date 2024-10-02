@@ -65,8 +65,12 @@
         <td>@report.CreatedAt.ToString("yyyy-MM-dd")</td>
         <td>
             <a asp-action="ViewReport" asp-route-id="@report.ReportId" class="btn btn-primary">View</a>
+            <a asp-action="Delete" asp-route-id="@report.ReportId" class="btn btn-danger ml-2">
+                <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726214680/icons/bin.png" alt="Delete" style="width: 16px; height: 16px;" />
+            </a>
         </td>
     </tr>
     }
     </tbody>
 </table>
+
