@@ -89,24 +89,30 @@ public class BudgetCategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, BudgetCategoryEditViewModel viewModel)
     {
+        if (id != viewModel.Id)
+        {
+            return NotFound();
+        }
+
         var category = await _budgetCategoryRepository.GetByIdAsync(id);
         if (category == null)
         {
             return NotFound();
         }
-        
-        if (ModelState.IsValid)
+    
+        if (!ModelState.IsValid)
         {
-            // Update the category with the new values
-            category.Name = viewModel.Name;
-            category.Limit = viewModel.Limit;
-
-            // Update the category in the database
-            await _budgetCategoryRepository.UpdateAsync(category);
-            return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
+            ModelState.AddModelError("", "Failed to update the budget category. Please correct the errors and try again.");
+            return View(viewModel);
         }
 
-        return View(viewModel);
+        // Update the category with the new values
+        category.Name = viewModel.Name;
+        category.Limit = viewModel.Limit;
+
+        // Update the category in the database
+        await _budgetCategoryRepository.UpdateAsync(category);
+        return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
     }
     
     // GET: BudgetCategory/Delete/5

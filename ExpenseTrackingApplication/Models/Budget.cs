@@ -9,7 +9,7 @@ public class Budget
     public int Id { get; set; }
     
     [Required (ErrorMessage = "Name is required.")]
-    [MaxLength(100)]
+    [StringLength(25, ErrorMessage = "The Budget name must be at most 25 characters long.")]
     public string Name { get; set; } = "Budget";
     
     [Required]

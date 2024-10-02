@@ -9,7 +9,7 @@ public class BudgetCategory
     public int Id { get; set; }
 
     [Required]
-    [MaxLength(100)]
+    [StringLength(50, ErrorMessage = "The Budget Category name must be at most 50 characters long.")]
     public string Name { get; set; }  = "Budget Category";
     
     [Required]
