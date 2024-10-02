@@ -26,33 +26,36 @@ public class IncomeController : Controller
     public IActionResult Create(int budgetId)
     {
         ViewBag.BudgetId = budgetId;
-        ViewBag.IncomeCategory = new SelectList(Enum.GetValues(typeof(IncomeCategory)).Cast<IncomeCategory>().ToList());
         return View();
     }
     
     // POST: Income/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int budgetId, [Bind("Id,Source,Amount,Date,Category,Description")] Income income)
+    public async Task<IActionResult> Create(int budgetId, [Bind("Source,Amount,Date,Category,Description")] Income income)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            income.BudgetId = budgetId;
-
-            if (await _incomeRepository.AddAsync(income))
-            {
-                var budget = await _budgetRepository.GetByIdAsync(budgetId);
-                if (budget != null)
-                {
-                    budget.Balance += income.Amount;
-                    await _budgetRepository.UpdateAsync(budget);
-                }
-                
-                return RedirectToAction("Edit", "Budget", new { id = budgetId });
-            }
+            ViewBag.BudgetId = budgetId;
+            return View(income); // Return the view with the error messages
         }
-        ViewBag.BudgetId = budgetId;
-        return View(income);
+        
+        income.BudgetId = budgetId;
+
+        if (await _incomeRepository.AddAsync(income))
+        {
+            var budget = await _budgetRepository.GetByIdAsync(budgetId);
+            if (budget != null)
+            {
+                budget.Balance += income.Amount;
+                await _budgetRepository.UpdateAsync(budget);
+            }
+                
+            return RedirectToAction("Edit", "Budget", new { id = budgetId });
+        }
+        
+        // If something went wrong
+        return RedirectToAction("Details", "Budget", new { id = budgetId });
     }
     
     // GET: Income/Details/{id}

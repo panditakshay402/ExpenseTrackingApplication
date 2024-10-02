@@ -1,4 +1,5 @@
-﻿@model ExpenseTrackingApplication.Models.Income
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.Models.Income
 
 @{
     ViewData["Title"] = "Create Income";
@@ -14,16 +15,18 @@
         <input asp-for="Source" class="form-control"/>
     </div>
     <div class="form-group">
-        <label asp-for="Amount" class="control-label"></label>
-        <input asp-for="Amount" class="form-control"/>
+        <label asp-for="Amount" class="control-label">Amount</label>
+        <input asp-for="Amount" class="form-control" type="number"/>
+        <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Date" class="control-label"></label>
         <input asp-for="Date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+        <span asp-validation-for="Date" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category" class="form-control" asp-items="ViewBag.IncomeCategory">
+        <select asp-for="Category" asp-items="@Html.GetEnumSelectList<IncomeCategory>()" class="form-control">
             <option value="">Select Category</option>
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
@@ -40,3 +43,7 @@
 <div>
     <a asp-controller="Budget" asp-action="Edit" asp-route-id="@ViewBag.BudgetId" class="btn btn-secondary">Back</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

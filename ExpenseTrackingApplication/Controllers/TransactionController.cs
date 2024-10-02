@@ -62,7 +62,7 @@ public class TransactionController : Controller
         }
 
         // If something went wrong
-        return RedirectToAction("Details", "Budget", new { id = transaction.BudgetId });
+        return RedirectToAction("Details", "Budget", new { id = budgetId });
     }
     
     // GET: Transaction/Details/{id}
@@ -122,7 +122,6 @@ public class TransactionController : Controller
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit transaction.");
-            
             return View("Edit", viewModel);
         }
 
