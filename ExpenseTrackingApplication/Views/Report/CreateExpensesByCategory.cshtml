@@ -2,6 +2,8 @@
 
 <h2>Create Expense by Category</h2>
 
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form asp-action="CreateExpensesByCategory" method="post">
     <div class="form-group">
         <label asp-for="BudgetId"></label>
@@ -19,4 +21,5 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Generate Report</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
 </form>

@@ -54,9 +54,6 @@ public class ReportController : Controller
         return View(reportViewModels);
     }
     
-    // TODO: Koniecznie, pododawać modelstate.valid do wszystkich akcji, do trend analisys dodać incomes, potestować jeszcze i poprawić widoki,
-    // ponieważ wywala jak coś źle się wpisze (np. miesiąc)
-    
     // GET: Report/CreateMonthlySummary
     public async Task<IActionResult> CreateMonthlySummary()
     {
@@ -163,6 +160,30 @@ public class ReportController : Controller
         if (budget == null)
         {
             ModelState.AddModelError("", "Selected budget not found.");
+            return View(model);
+        }
+        
+        // Dates validation
+        if (model.StartDate.Year < 2000 || model.EndDate.Year < 2000)
+        {
+            ModelState.AddModelError("", "Dates must be reasonable (after year 2000).");
+        }
+        if (model.StartDate > model.EndDate)
+        {
+            ModelState.AddModelError("", "Start date must be earlier than end date.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var budgets = await _budgetRepository.GetBudgetByUserAsync(user.Id);
+
+            model.AvailableBudgets = budgets.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            }).ToList();
+
             return View(model);
         }
             
@@ -327,4 +348,5 @@ public class ReportController : Controller
         ModelState.AddModelError("", "Error while deleting category.");
         return RedirectToAction(nameof(Index));
     }
+    
 }
