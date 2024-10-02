@@ -137,12 +137,12 @@ public class ReportController : Controller
     }
     
     // GET: Report/CreateMonthlySummary
-    public async Task<IActionResult> CreateExpenseByCategory()
+    public async Task<IActionResult> CreateExpensesByCategory()
     {
         var user = await _userManager.GetUserAsync(User);
         var budgets = await _budgetRepository.GetBudgetByUserAsync(user.Id);
 
-        var model = new CreateExpenseByCategoryViewModel
+        var model = new CreateExpensesByCategoryViewModel
         {
             AvailableBudgets = budgets.Select(b => new SelectListItem
             {
@@ -157,7 +157,7 @@ public class ReportController : Controller
     // POST: Report/CreateExpenseByCategory
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateExpenseByCategory([Bind("BudgetId,StartDate,EndDate")] CreateExpenseByCategoryViewModel model)
+    public async Task<IActionResult> CreateExpensesByCategory([Bind("BudgetId,StartDate,EndDate")] CreateExpensesByCategoryViewModel model)
     {
         var budget = await _budgetRepository.GetByIdAsync(model.BudgetId);
         if (budget == null)
@@ -167,23 +167,26 @@ public class ReportController : Controller
         }
             
         var expenseReport = await GetExpensesByCategoryAsync(model.BudgetId, model.StartDate, model.EndDate);
-        return View("ExpenseByCategory", expenseReport);
+        
+        
+        
+        return View("ExpensesByCategory", expenseReport);
     }
     
-    public async Task<ExpenseByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
+    public async Task<ExpensesByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
     {
         var transactions = await _transactionRepository.GetByDateRangeAsync(budgetId, startDate, endDate);
 
         var expensesByCategory = transactions
             .GroupBy(t => t.Category)
-            .Select(group => new CategoryExpense
+            .Select(group => new CategoryExpenses
             {
                 Category = group.Key,
                 TotalAmount = group.Sum(t => t.Amount)
             })
             .ToList();
 
-        return new ExpenseByCategoryViewModel
+        return new ExpensesByCategoryViewModel
         {
             ExpensesByCategory = expensesByCategory
         };

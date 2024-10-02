@@ -2,12 +2,12 @@
 
 namespace ExpenseTrackingApplication.ViewModels;
 
-public class ExpenseByCategoryViewModel
+public class ExpensesByCategoryViewModel
 {
-    public List<CategoryExpense> ExpensesByCategory { get; set; } = new List<CategoryExpense>();
+    public List<CategoryExpenses> ExpensesByCategory { get; set; } = new List<CategoryExpenses>();
 }
 
-public class CategoryExpense
+public class CategoryExpenses
 {
     public TransactionCategory Category { get; set; }
     public decimal TotalAmount { get; set; }

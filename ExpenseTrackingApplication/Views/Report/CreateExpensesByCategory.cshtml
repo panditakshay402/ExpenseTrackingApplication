@@ -1,8 +1,8 @@
-﻿@model ExpenseTrackingApplication.ViewModels.CreateExpenseByCategoryViewModel
+﻿@model ExpenseTrackingApplication.ViewModels.CreateExpensesByCategoryViewModel
 
 <h2>Create Expense by Category</h2>
 
-<form asp-action="CreateExpenseByCategory" method="post">
+<form asp-action="CreateExpensesByCategory" method="post">
     <div class="form-group">
         <label asp-for="BudgetId"></label>
         <select asp-for="BudgetId" asp-items="Model.AvailableBudgets" class="form-control"></select>

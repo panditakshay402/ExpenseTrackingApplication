@@ -2,7 +2,7 @@
 
 namespace ExpenseTrackingApplication.ViewModels;
 
-public class CreateExpenseByCategoryViewModel
+public class CreateExpensesByCategoryViewModel
 {
     public int BudgetId { get; set; }
     public DateTime StartDate { get; set; } = DateTime.Today.AddDays(-(DateTime.Today.Day - 1));
