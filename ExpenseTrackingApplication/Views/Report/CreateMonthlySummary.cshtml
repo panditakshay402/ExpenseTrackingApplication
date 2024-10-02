@@ -5,13 +5,28 @@
         <label asp-for="BudgetId">Select Budget</label>
         <select asp-for="BudgetId" class="form-control" asp-items="Model.AvailableBudgets"></select>
     </div>
+
     <div class="form-group">
         <label asp-for="Year">Year</label>
-        <input asp-for="Year" class="form-control" />
+        <select asp-for="Year" class="form-control">
+            @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 10; i--)
+            {
+                var year = i;
+                <option value="@year">@year</option>
+            }
+        </select>
     </div>
+
     <div class="form-group">
         <label asp-for="Month">Month</label>
-        <input asp-for="Month" class="form-control" />
+        <select asp-for="Month" class="form-control">
+            @for (int i = 1; i <= 12; i++)
+            {
+                var month = i;
+                <option value="@month">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</option>
+            }
+        </select>
     </div>
+    
     <button type="submit" class="btn btn-primary">Generate Report</button>
 </form>
