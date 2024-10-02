@@ -31,7 +31,6 @@ public class TransactionController : Controller
     public IActionResult Create(int budgetId)
     {
         ViewBag.BudgetId = budgetId;
-        ViewBag.TransactionCategory = new SelectList(Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList());
         return View();
     }
     
@@ -40,27 +39,30 @@ public class TransactionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(int budgetId, [Bind("Recipient,Amount,Date,Category,Description")] Transaction transaction)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            transaction.BudgetId = budgetId;
-            var category = transaction.Category;
-
-            if (await _transactionRepository.AddAsync(transaction))
-            {
-                var budget = await _budgetRepository.GetByIdAsync(budgetId);
-                if (budget != null)
-                {
-                    budget.Balance -= transaction.Amount;
-                    await _budgetRepository.UpdateAsync(budget);
-                    await UpdateBcSpending(budgetId, transaction.Date, category);
-                }
-                
-                return RedirectToAction("Edit", "Budget", new { id = budgetId });
-            }
+            ViewBag.BudgetId = budgetId;
+            return View(transaction); // Return the view with the error messages
         }
-        ViewBag.BudgetId = budgetId;
-        ViewBag.TransactionCategory = new SelectList(Enum.GetValues(typeof(TransactionCategory)).Cast<TransactionCategory>().ToList());
-        return View(transaction);
+    
+        transaction.BudgetId = budgetId;
+        var category = transaction.Category;
+
+        if (await _transactionRepository.AddAsync(transaction))
+        {
+            var budget = await _budgetRepository.GetByIdAsync(budgetId);
+            if (budget != null)
+            {
+                budget.Balance -= transaction.Amount;
+                await _budgetRepository.UpdateAsync(budget);
+                await UpdateBcSpending(budgetId, transaction.Date, category);
+            }
+        
+            return RedirectToAction("Edit", "Budget", new { id = budgetId });
+        }
+
+        // If something went wrong
+        return RedirectToAction("Details", "Budget", new { id = transaction.BudgetId });
     }
     
     // GET: Transaction/Details/{id}
@@ -120,6 +122,7 @@ public class TransactionController : Controller
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit transaction.");
+            
             return View("Edit", viewModel);
         }
 

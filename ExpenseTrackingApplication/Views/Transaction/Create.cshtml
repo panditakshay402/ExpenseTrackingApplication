@@ -1,4 +1,5 @@
-﻿@model ExpenseTrackingApplication.Models.Transaction
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.Models.Transaction
 
 @{
     ViewData["Title"] = "Create Transaction";
@@ -10,26 +11,28 @@
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="BudgetId" value="@ViewBag.BudgetId"/>
     <div class="form-group">
-        <label asp-for="Recipient" class="control-label"></label>
+        <label asp-for="Recipient" class="control-label">Recipient</label>
         <input asp-for="Recipient" class="form-control"/>
     </div>
     <div class="form-group">
-        <label asp-for="Amount" class="control-label"></label>
-        <input asp-for="Amount" class="form-control"/>
+        <label asp-for="Amount" class="control-label">Amount</label>
+        <input asp-for="Amount" class="form-control" type="number"/>
+        <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Date" class="control-label"></label>
+        <label asp-for="Date" class="control-label">Date</label>
         <input asp-for="Date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+        <span asp-validation-for="Date" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category" class="form-control" asp-items="ViewBag.TransactionCategory">
-            <option value="">Select Category</option>
+        <label asp-for="Category" class="control-label">Transaction Category</label>
+        <select asp-for="Category" class="form-control" asp-items="@Html.GetEnumSelectList<TransactionCategory>()">
+            <option selected="selected" value="">Select Category</option>
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
+        <label asp-for="Description" class="control-label">Description</label>
         <input asp-for="Description" class="form-control"/>
     </div>
     <div class="form-group">
@@ -40,3 +43,7 @@
 <div>
     <a asp-controller="Budget" asp-action="Edit" asp-route-id="@ViewBag.BudgetId" class="btn btn-secondary">Back</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

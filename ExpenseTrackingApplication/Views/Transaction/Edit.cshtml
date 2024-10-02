@@ -12,11 +12,10 @@
     <div class="form-group">
         <label asp-for="Recipient" class="control-label">Recipient</label>
         <input asp-for="Recipient" class="form-control"/>
-        <span asp-validation-for="Recipient" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Amount" class="control-label">Amount</label>
-        <input asp-for="Amount" class="form-control"/>
+        <input asp-for="Amount" class="form-control" type="number"/>
         <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -26,15 +25,14 @@
     </div>
     <div class="form-group">
         <label asp-for="Category" class="control-label">Transaction Category</label>
-        <select asp-for="Category" asp-items="@Html.GetEnumSelectList<TransactionCategory>()" class="form-control">
-            <option selected="selected" value="">--Select--</option>
+        <select asp-for="Category" class="form-control" asp-items="@Html.GetEnumSelectList<TransactionCategory>()">
+            <option selected="selected" value="">Select Category</option>
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="Description" class="control-label">Description</label>
         <input asp-for="Description" class="form-control"/>
-        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary"/>
@@ -44,3 +42,7 @@
 <div>
     <a asp-controller="Budget" asp-action="Details" asp-route-id="@Model.BudgetId" class="btn btn-secondary">Back to Budget Details</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
