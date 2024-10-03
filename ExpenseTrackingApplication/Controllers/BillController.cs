@@ -21,8 +21,15 @@ public class BillController : Controller
     }
     
     // GET: Bill/Create
-    public IActionResult Create(int budgetId)
+    public async Task<IActionResult> Create(int budgetId)
     {
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         ViewBag.BudgetId = budgetId;
         return View();
     }
@@ -67,7 +74,14 @@ public class BillController : Controller
         {
             return NotFound();
         }
-
+    
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         return View(bill);
     }
     
@@ -78,6 +92,13 @@ public class BillController : Controller
         if (bill == null)
         {
             return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         var billViewModel = new BillEditViewModel
@@ -126,7 +147,14 @@ public class BillController : Controller
         {
             return NotFound();
         }
-
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         return View(bill);
     }
     
@@ -154,7 +182,6 @@ public class BillController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Pay(int id)
     {
-        // TODO: Czy przy zapłaceniu ma powstawać transakcja?
         var bill = await _billRepository.GetByIdAsync(id);
         if (bill == null)
         {
@@ -212,5 +239,20 @@ public class BillController : Controller
         return View("Error");
     }
 
-    
+    // Check if the user owns the budget
+    private async Task<IActionResult?> CheckUserOwnership(int budgetId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound(); // Return 404 if user is not logged in
+        }
+        
+        if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
+        {
+            return NotFound(); // Return 404 if the user does not own the budget
+        }
+
+        return null; // Return null if the user owns the budget
+    }
 }
