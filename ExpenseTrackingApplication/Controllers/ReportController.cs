@@ -1,4 +1,5 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
+﻿using System.Security.Claims;
+using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
@@ -286,14 +287,19 @@ public class ReportController : Controller
         };
     }
     
-    // TODO: minus taki że jak ktoś stworzy jakiś raport i dokona zmian w budżecie to raport będzie z nowymi danymi
-    // a nie z tymi tylko, które były jego przy tworzeniu, ale może zostać? Logistycznie lepiej, niż zapisywać każdą transakcję, income itp.
     public async Task<IActionResult> ViewReport(int id)
     {
         var report = await _reportRepository.GetByIdAsync(id);
         if (report == null)
         {
             return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(report.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         // Check report type and return the appropriate view
@@ -324,7 +330,14 @@ public class ReportController : Controller
         {
             return NotFound();
         }
-
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(report.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         return View(report);
     }
     
@@ -349,4 +362,20 @@ public class ReportController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    // Check if the user owns the budget
+    private async Task<IActionResult?> CheckUserOwnership(int budgetId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound(); // Return 404 if user is not logged in
+        }
+        
+        if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
+        {
+            return NotFound(); // Return 404 if the user does not own the budget
+        }
+
+        return null; // Return null if the user owns the budget
+    }
 }
