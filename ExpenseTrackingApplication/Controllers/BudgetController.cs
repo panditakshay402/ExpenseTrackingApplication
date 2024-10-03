@@ -300,17 +300,6 @@ public class BudgetController : Controller
             return NotFound();
         }
         
-        // Remove related transactions
-        foreach (var transaction in budget.Transactions.ToList())
-        {
-            await _transactionRepository.DeleteAsync(transaction);
-        }
-        // Remove related incomes
-        foreach (var income in budget.Incomes.ToList())
-        {
-            await _incomeRepository.DeleteAsync(income);
-        }
-        
         await _budgetRepository.DeleteAsync(budget);
         
         await _notificationRepository.SendNotificationAsync(
