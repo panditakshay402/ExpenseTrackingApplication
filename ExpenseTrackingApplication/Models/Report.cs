@@ -21,5 +21,4 @@ public class Report
     // Two generic date fields to store year/month or date range
     public DateTime? DateOne { get; set; }  // Could store Year or StartDate
     public DateTime? DateTwo { get; set; }  // Could store Month or EndDate
-    
 }

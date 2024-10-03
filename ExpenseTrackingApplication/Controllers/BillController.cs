@@ -24,7 +24,6 @@ public class BillController : Controller
     public IActionResult Create(int budgetId)
     {
         ViewBag.BudgetId = budgetId;
-        ViewBag.BillFrequency = new SelectList(Enum.GetValues(typeof(BillFrequency)).Cast<BillFrequency>().ToList());
         return View();
     }
     
@@ -33,23 +32,26 @@ public class BillController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(int budgetId, [Bind("Name,Amount,DueDate,Frequency")] Bill bill)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            bill.BudgetId = budgetId;
-
-            if (await _billRepository.AddAsync(bill))
-            {
-                var budget = await _budgetRepository.GetByIdAsync(budgetId);
-                if (budget != null)
-                {
-                    await _budgetRepository.UpdateAsync(budget);
-                }
-                
-                return RedirectToAction("Edit", "Budget", new { id = budgetId });
-            }
+            ModelState.AddModelError("", "Failed to create the bill. Please correct the errors and try again.");
+            return View(bill);
         }
-        ViewBag.BudgetId = budgetId;
-        return View(bill);
+        
+        bill.BudgetId = budgetId;
+
+        if (await _billRepository.AddAsync(bill))
+        {
+            var budget = await _budgetRepository.GetByIdAsync(budgetId);
+            if (budget != null)
+            {
+                await _budgetRepository.UpdateAsync(budget);
+            }
+                
+            return RedirectToAction("Edit", "Budget", new { id = budgetId });
+        }
+        
+        return RedirectToAction("Details", "Budget", new { id = budgetId });
     }
     
     // GET: Bill/Details/{id}
@@ -78,7 +80,7 @@ public class BillController : Controller
             return NotFound();
         }
         
-        var viewModel = new BillEditViewModel
+        var billViewModel = new BillEditViewModel
         {
             Name = bill.Name,
             Amount = bill.Amount,
@@ -87,34 +89,33 @@ public class BillController : Controller
             BudgetId = bill.BudgetId
         };
         
-        return View(viewModel);
+        return View(billViewModel);
     }
     
     // POST: Bill/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Name,Amount,DueDate,Frequency")] BillEditViewModel viewModel)
+    public async Task<IActionResult> Edit(int id, BillEditViewModel viewModel)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var bill = await _billRepository.GetByIdAsync(id);
-            if (bill == null)
-            {
-                return NotFound();
-            }
-            
-            bill.Name = viewModel.Name;
-            bill.Amount = viewModel.Amount;
-            bill.DueDate = viewModel.DueDate;
-            bill.Frequency = viewModel.Frequency;
-            
-            if (await _billRepository.UpdateAsync(bill))
-            {
-                return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
-            }
+            ModelState.AddModelError("", "Failed to update the bill. Please correct the errors and try again.");
+            return View(viewModel);
         }
         
-        return View(viewModel);
+        var bill = await _billRepository.GetByIdAsync(id);
+        if (bill == null)
+        {
+            return NotFound();
+        }
+
+        bill.Name = viewModel.Name;
+        bill.Amount = viewModel.Amount;
+        bill.DueDate = viewModel.DueDate;
+        bill.Frequency = viewModel.Frequency;
+
+        await _billRepository.UpdateAsync(bill);
+        return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
     }
     
     // GET: Bill/Delete/{id}

@@ -1,4 +1,5 @@
-﻿@model ExpenseTrackingApplication.Models.Bill
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.Models.Bill
 
 @{
     ViewData["Title"] = "Create Bill";
@@ -6,39 +7,42 @@
 
 <h2>Create Bill</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Create">
     @Html.AntiForgeryToken()
-    <input type="hidden" name="budgetId" value="@ViewBag.BudgetId" />
-
+    <input type="hidden" asp-for="BudgetId" value="@ViewBag.BudgetId" />
     <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
+        <label asp-for="Name" class="control-label">Name</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label asp-for="Amount" class="control-label"></label>
-        <input asp-for="Amount" class="form-control" />
+        <label asp-for="Amount" class="control-label">Amount</label>
+        <input asp-for="Amount" class="form-control" type="number"/>
         <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label asp-for="DueDate" class="control-label"></label>
+        <label asp-for="DueDate" class="control-label">DueDate</label>
         <input asp-for="DueDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
         <span asp-validation-for="DueDate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Frequency" class="control-label"></label>
-        <select asp-for="Frequency" class="form-control" asp-items="ViewBag.BillFrequency">
-            <option value="">Select Frequency</option>
+        <label asp-for="Frequency" class="control-label">Frequency</label>
+        <select asp-for="Frequency" asp-items="@Html.GetEnumSelectList<BillFrequency>()" class="form-control">
+            <option selected="selected" value="">Select Frequency</option>
         </select>
         <span asp-validation-for="Frequency" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create Bill</button>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary"/>
+    </div>
 </form>
 
 <div>
     <a asp-controller="Budget" asp-action="Edit" asp-route-id="@ViewBag.BudgetId" class="btn btn-secondary">Back</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
