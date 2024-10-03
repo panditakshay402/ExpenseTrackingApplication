@@ -11,4 +11,6 @@ public interface IBudgetRepository
     Task<bool> DeleteAsync(Budget budget);
     Task<bool> UpdateAsync(Budget budget);
     Task<bool> SaveAsync();
+    Task<bool> ExistsAsync(int budgetId);
+    Task<bool> UserOwnsBudgetAsync(int budgetId, string userId);
 }

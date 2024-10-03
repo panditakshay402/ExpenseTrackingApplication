@@ -49,4 +49,14 @@ public class BudgetRepository : IBudgetRepository
     {
         return await _context.SaveChangesAsync() > 0;
     }
+    
+    public async Task<bool> ExistsAsync(int budgetId)
+    {
+        return await _context.Budgets.AnyAsync(b => b.Id == budgetId);
+    }
+    
+    public async Task<bool> UserOwnsBudgetAsync(int budgetId, string userId)
+    {
+        return await _context.Budgets.AnyAsync(b => b.Id == budgetId && b.AppUserId == userId);
+    }
 }

@@ -86,57 +86,6 @@ public class BudgetController : Controller
         return View("Index");
     }
     
-    // GET: Budget/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
-    {
-        var budgetDetails = await _budgetRepository.GetByIdAsync(id);
-        if (budgetDetails == null)
-        {
-            return NotFound();
-        }
-    
-        return View(budgetDetails);
-    }
-    
-    // POST: Budget/Delete/{id}
-    [HttpPost, ActionName("DeleteBudget")]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-        {
-            return NotFound();
-        }
-        
-        var budget = await _budgetRepository.GetByIdAsync(id);
-        if (budget == null)
-        {
-            return NotFound();
-        }
-        
-        // Remove related transactions
-        foreach (var transaction in budget.Transactions.ToList())
-        {
-            await _transactionRepository.DeleteAsync(transaction);
-        }
-        // Remove related incomes
-        foreach (var income in budget.Incomes.ToList())
-        {
-            await _incomeRepository.DeleteAsync(income);
-        }
-        
-        await _budgetRepository.DeleteAsync(budget);
-        
-        await _notificationRepository.SendNotificationAsync(
-            userId,
-            "Budget Removed",
-            $"{budget.Name} has been successfully removed.",
-            NotificationType.Budget
-        );
-        
-        return RedirectToAction("Index");
-    }
-    
     // GET: Budget/Details/{id}
     public async Task<IActionResult> Details(int id)
     {
@@ -146,10 +95,16 @@ public class BudgetController : Controller
             return NotFound();
         }
         
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(id);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+
         // Get transactions and incomes for the budget
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
-        
         
         // Combine transactions and incomes into a single list
         var combinedEntries = transactions
@@ -175,7 +130,7 @@ public class BudgetController : Controller
             .ToList();
         
         // Get the ID of the currently logged-in user
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
         
         // Get bills and send notifications to the user
         var bills = await _billRepository.GetByBudgetAsync(id);
@@ -232,7 +187,14 @@ public class BudgetController : Controller
         {
             return NotFound();
         }
-
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(id);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         var transactions = await _transactionRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
         var bills = await _billRepository.GetByBudgetAsync(id);
@@ -248,7 +210,6 @@ public class BudgetController : Controller
 
         return View(viewModel);
     }
-
 
     // POST: Budget/Edit/{id}
     [HttpPost]
@@ -296,7 +257,7 @@ public class BudgetController : Controller
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await BudgetExists(budget.Id))
+            if (!await _budgetRepository.ExistsAsync(budget.Id))
             {
                 return NotFound();
             }
@@ -304,10 +265,78 @@ public class BudgetController : Controller
         }
     }
     
-    private async Task<bool> BudgetExists(int id)
+    // GET: Budget/Delete/{id}
+    public async Task<IActionResult> Delete(int id)
     {
+        var budgetDetails = await _budgetRepository.GetByIdAsync(id);
+        if (budgetDetails == null)
+        {
+            return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(id);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
+        return View(budgetDetails);
+    }
+    
+    // POST: Budget/Delete/{id}
+    [HttpPost, ActionName("DeleteBudget")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return NotFound();
+        }
+        
         var budget = await _budgetRepository.GetByIdAsync(id);
-        return budget != null;
+        if (budget == null)
+        {
+            return NotFound();
+        }
+        
+        // Remove related transactions
+        foreach (var transaction in budget.Transactions.ToList())
+        {
+            await _transactionRepository.DeleteAsync(transaction);
+        }
+        // Remove related incomes
+        foreach (var income in budget.Incomes.ToList())
+        {
+            await _incomeRepository.DeleteAsync(income);
+        }
+        
+        await _budgetRepository.DeleteAsync(budget);
+        
+        await _notificationRepository.SendNotificationAsync(
+            userId,
+            "Budget Removed",
+            $"{budget.Name} has been successfully removed.",
+            NotificationType.Budget
+        );
+        
+        return RedirectToAction("Index");
+    }
+    
+    private async Task<IActionResult?> CheckUserOwnership(int budgetId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound();
+        }
+        
+        if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
+        {
+            return Unauthorized(); // Return 401 Unauthorized if the user does not own the budget
+        }
+
+        return null; // Return null if the user owns the budget
     }
 
 }
