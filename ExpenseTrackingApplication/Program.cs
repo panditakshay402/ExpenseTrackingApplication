@@ -33,8 +33,20 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+    .AddCookie(options =>
+    {
+        // Set session expiration time 
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true; // Session will be extended if user interacts with the site
+        options.LoginPath = "/Account/Login"; // Path to login page
+        
+        // Cookie settings
+        options.Cookie.HttpOnly = true; // Cookies will not be available in JavaScript
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Cookies will only be used in HTTPS
+        options.Cookie.SameSite = SameSiteMode.Strict; // CSRF protection
+    });
 
 var app = builder.Build();
 
@@ -59,6 +71,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
