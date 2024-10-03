@@ -1,7 +1,6 @@
-﻿using ExpenseTrackingApplication.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.ReportViewModels;
 
 public class CreateMonthlySummaryViewModel
 {

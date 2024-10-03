@@ -7,6 +7,7 @@ using ExpenseTrackingApplication.ViewModels;
 using System.Threading.Tasks;
 using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
+using ExpenseTrackingApplication.ViewModels.UserViewModels;
 
 namespace ExpenseTrackingApplication.Controllers;
 

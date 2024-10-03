@@ -1,4 +1,4 @@
-﻿namespace ExpenseTrackingApplication.ViewModels;
+﻿namespace ExpenseTrackingApplication.ViewModels.ReportViewModels;
 
 public class TrendAnalysisViewModel
 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ExpenseTrackingApplication.Models;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 
 public class BudgetEditViewModel
 {

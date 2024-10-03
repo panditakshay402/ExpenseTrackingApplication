@@ -3,6 +3,7 @@ using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.Repositories;
 using ExpenseTrackingApplication.ViewModels;
+using ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTrackingApplication.Controllers;
@@ -85,7 +86,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
         budgetCategory.CurrentSpending = currentMonthSpending;
         await _budgetCategoryRepository.UpdateAsync(budgetCategory);
         
-        if (budgetCategory.CurrentSpending > budgetCategory.Limit)
+        if (budgetCategory.CurrentSpending > budgetCategory.Limit && budgetCategory.Limit > 0)
         {
             // Sent a notification to the user if the spending exceeds the limit
             await _notificationRepository.SendNotificationAsync(

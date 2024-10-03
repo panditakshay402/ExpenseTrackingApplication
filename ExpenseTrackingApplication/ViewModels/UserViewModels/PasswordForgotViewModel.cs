@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.UserViewModels;
 
 public class PasswordForgotViewModel
 {

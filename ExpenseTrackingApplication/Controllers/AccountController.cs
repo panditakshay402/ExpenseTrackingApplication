@@ -2,6 +2,7 @@
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels;
+using ExpenseTrackingApplication.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

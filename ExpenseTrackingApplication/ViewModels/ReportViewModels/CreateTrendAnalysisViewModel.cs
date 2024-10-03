@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.ReportViewModels;
 
 public class CreateTrendAnalysisViewModel
 {

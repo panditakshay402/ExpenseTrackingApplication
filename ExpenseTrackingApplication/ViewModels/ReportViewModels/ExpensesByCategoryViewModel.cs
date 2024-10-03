@@ -1,6 +1,6 @@
 ﻿using ExpenseTrackingApplication.Data.Enum;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.ReportViewModels;
 
 public class ExpensesByCategoryViewModel
 {

@@ -1,6 +1,6 @@
 ﻿using ExpenseTrackingApplication.Models;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.ReportViewModels;
 
 public class MonthlySummaryViewModel
 {

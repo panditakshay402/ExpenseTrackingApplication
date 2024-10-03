@@ -1,7 +1,6 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
-using ExpenseTrackingApplication.Models;
+﻿using ExpenseTrackingApplication.Models;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 
 public class BudgetCategoryDetailsViewModel
 {

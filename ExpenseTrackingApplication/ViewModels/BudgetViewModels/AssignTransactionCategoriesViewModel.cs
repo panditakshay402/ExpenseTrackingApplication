@@ -1,6 +1,4 @@
-﻿using ExpenseTrackingApplication.Data.Enum;
-
-namespace ExpenseTrackingApplication.ViewModels;
+﻿namespace ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 
 public class AssignTransactionCategoriesViewModel
 {

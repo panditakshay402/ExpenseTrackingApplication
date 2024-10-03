@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ExpenseTrackingApplication.Data.Enum;
 
-namespace ExpenseTrackingApplication.ViewModels;
+namespace ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 
 public class TransactionEditViewModel
 {

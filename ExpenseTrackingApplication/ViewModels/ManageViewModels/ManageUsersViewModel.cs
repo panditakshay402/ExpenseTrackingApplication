@@ -1,4 +1,4 @@
-﻿namespace ExpenseTrackingApplication.ViewModels;
+﻿namespace ExpenseTrackingApplication.ViewModels.ManageViewModels;
 
 public class ManageUsersViewModel
 {

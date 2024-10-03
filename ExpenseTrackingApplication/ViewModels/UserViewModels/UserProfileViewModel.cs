@@ -1,4 +1,4 @@
-﻿namespace ExpenseTrackingApplication.ViewModels
+﻿namespace ExpenseTrackingApplication.ViewModels.UserViewModels
 {
     public class UserProfileViewModel
     {
