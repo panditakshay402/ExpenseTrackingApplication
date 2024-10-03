@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Income
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     [MaxLength(100)]
     public string? Source { get; set; }
     [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than zero.")]

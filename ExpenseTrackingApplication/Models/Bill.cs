@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Bill
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     [Required]
     [StringLength(50, ErrorMessage = "The Bill name must be at most 50 characters long.")]
     public string? Name { get; set; }

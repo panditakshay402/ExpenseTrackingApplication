@@ -6,7 +6,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Budget
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     
     [Required (ErrorMessage = "Name is required.")]
     [StringLength(25, ErrorMessage = "The Budget name must be at most 25 characters long.")]
@@ -22,10 +22,9 @@ public class Budget
     public AppUser? AppUser { get; set; }
     
     // Navigation properties
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-    public ICollection<Income> Incomes { get; set; } = new List<Income>();
-    public ICollection<Bill> Bills { get; set; } = new List<Bill>();
-    public ICollection<BudgetCategory> BudgetCategories { get; set; } = new List<BudgetCategory>();
-    public ICollection<Report>? Reports { get; set; } = new List<Report>();
-
+    public ICollection<Transaction> Transactions { get; init; } = new List<Transaction>();
+    public ICollection<Income> Incomes { get; init; } = new List<Income>();
+    public ICollection<Bill> Bills { get; init; } = new List<Bill>();
+    public ICollection<BudgetCategory> BudgetCategories { get; init; } = new List<BudgetCategory>();
+    public ICollection<Report>? Reports { get; init; } = new List<Report>();
 }

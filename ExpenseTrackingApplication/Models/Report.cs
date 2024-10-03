@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Report
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     public ReportType Type { get; set; }
     
     [MaxLength(100)]

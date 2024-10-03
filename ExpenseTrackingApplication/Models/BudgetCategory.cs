@@ -6,7 +6,7 @@ namespace ExpenseTrackingApplication.Models;
 public class BudgetCategory
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     [Required]
     [StringLength(50, ErrorMessage = "The Budget Category name must be at most 50 characters long.")]
@@ -24,5 +24,5 @@ public class BudgetCategory
     public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
     
-    public ICollection<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; set; } = new List<BudgetCategoryTransactionCategory>();
+    public ICollection<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; init; } = new List<BudgetCategoryTransactionCategory>();
 }

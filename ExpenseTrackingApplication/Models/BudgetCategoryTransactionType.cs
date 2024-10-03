@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class BudgetCategoryTransactionCategory
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     
     [ForeignKey("BudgetCategory")]
     public int BudgetCategoryId { get; set; }

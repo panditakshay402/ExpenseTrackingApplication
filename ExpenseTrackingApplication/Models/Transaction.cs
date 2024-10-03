@@ -7,7 +7,7 @@ namespace ExpenseTrackingApplication.Models;
 public class Transaction
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     [MaxLength(100)]
     public string? Recipient { get; set; }
     [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than zero.")]
