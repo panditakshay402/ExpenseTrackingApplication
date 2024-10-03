@@ -23,8 +23,15 @@ public class IncomeController : Controller
     }
     
     // GET: Income/Create
-    public IActionResult Create(int budgetId)
+    public async Task<IActionResult> Create(int budgetId)
     {
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         ViewBag.BudgetId = budgetId;
         return View();
     }
@@ -72,15 +79,12 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
-
-        var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
-        if (budget == null || budget.AppUserId != userId)
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
         {
-            return NotFound();
+            return ownershipCheckResult;
         }
-
         
         return View(income);
     }
@@ -92,6 +96,13 @@ public class IncomeController : Controller
         if (income == null)
         {
             return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         var incomeViewModel = new IncomeEditViewModel
@@ -125,10 +136,8 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                     ?? throw new ArgumentNullException(nameof(User), "User identifier not found");
         var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
-        if (budget == null || budget.AppUserId != userId)
+        if (budget == null)
         {
             return NotFound();
         }
@@ -157,13 +166,20 @@ public class IncomeController : Controller
     // GET: Income/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
-        var incomeDetails = await _incomeRepository.GetByIdAsync(id);
-        if (incomeDetails == null)
+        var income = await _incomeRepository.GetByIdAsync(id);
+        if (income == null)
         {
             return NotFound();
         }
         
-        return View(incomeDetails);
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
+        return View(income);
     }
     
     // POST: Income/Delete/{id}
@@ -177,7 +193,7 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        int budgetId = income.BudgetId;
+        var budgetId = income.BudgetId;
         
         // Get the budget associated with the income
         var budget = await _budgetRepository.GetByIdAsync(budgetId);
@@ -198,4 +214,20 @@ public class IncomeController : Controller
         return RedirectToAction("Error", "Home");
     }
     
+    // Check if the user owns the budget
+    private async Task<IActionResult?> CheckUserOwnership(int budgetId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound(); // Return 404 if user is not logged in
+        }
+        
+        if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
+        {
+            return NotFound(); // Return 404 if the user does not own the budget
+        }
+
+        return null; // Return null if the user owns the budget
+    }
 }

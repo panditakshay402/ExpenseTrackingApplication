@@ -15,16 +15,14 @@ public class BudgetController : Controller
 {
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IIncomeRepository _incomeRepository;
     private readonly IBillRepository _billRepository;
     private readonly INotificationRepository _notificationRepository;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationRepository notificationRepository, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationRepository notificationRepository)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
-        _bCtcRepository = bCtcRepository;
         _transactionRepository = transactionRepository;
         _incomeRepository = incomeRepository;
         _billRepository = billRepository;
@@ -36,7 +34,6 @@ public class BudgetController : Controller
     {
         // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
         if (userId == null)
         {
             return NotFound();
@@ -59,7 +56,7 @@ public class BudgetController : Controller
 
         // Get the current number of budgets
         var budgets = await _budgetRepository.GetBudgetByUserAsync(userId);
-        int newBudgetNumber = budgets.Count() + 1; // Calculate next number
+        var newBudgetNumber = budgets.Count() + 1; // Calculate next number
         
         var newBudgetName = $"Budget {newBudgetNumber}"; // Generate name
 
@@ -91,6 +88,13 @@ public class BudgetController : Controller
     {
         var budget = await _budgetRepository.GetByIdAsync(id);
         if (budget == null)
+        {
+            return NotFound();
+        }
+        
+        // Get the ID of the currently logged-in user
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
         {
             return NotFound();
         }
@@ -129,9 +133,6 @@ public class BudgetController : Controller
             .OrderByDescending(e => e.Date) // Sort by date
             .ToList();
         
-        // Get the ID of the currently logged-in user
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        
         // Get bills and send notifications to the user
         var bills = await _billRepository.GetByBudgetAsync(id);
         foreach (var bill in bills)
@@ -168,7 +169,6 @@ public class BudgetController : Controller
             Budget = budget,
             CombinedEntries = combinedEntries,
             Bills = sortedBills,
-            // TODO: Fix navigation to other budgets.
             AllBudgets = allBudgets,
             BudgetCategories = budgetCategories,
             TotalTransactionAmount = transactions.Sum(t => t.Amount),
@@ -323,17 +323,18 @@ public class BudgetController : Controller
         return RedirectToAction("Index");
     }
     
+    // Check if the user owns the budget
     private async Task<IActionResult?> CheckUserOwnership(int budgetId)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null)
         {
-            return NotFound();
+            return NotFound(); // Return 404 if user is not logged in
         }
         
         if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
         {
-            return Unauthorized(); // Return 401 Unauthorized if the user does not own the budget
+            return NotFound(); // Return 404 if the user does not own the budget
         }
 
         return null; // Return null if the user owns the budget

@@ -46,7 +46,7 @@ public class BudgetCategoryController : Controller
         var existingCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(budgetId);
         int categoryCount = existingCategories.Count();
 
-        var newCategory = new BudgetCategory
+        var budgetCategory = new BudgetCategory
         {
             Name = $"Category {categoryCount + 1}",
             CurrentSpending = 0,
@@ -56,35 +56,42 @@ public class BudgetCategoryController : Controller
 
         };
 
-        if (await _budgetCategoryRepository.AddAsync(newCategory))
+        if (await _budgetCategoryRepository.AddAsync(budgetCategory))
         {
-            return RedirectToAction("Edit", new { id = newCategory.Id });
+            return RedirectToAction("Edit", new { id = budgetCategory.Id });
         }
 
         ModelState.AddModelError("", "Error while creating category.");
         return RedirectToAction("Details", "Budget", new { id = budgetId });
     }
 
-    // GET: BudgetCategory/Edit/5
+    // GET: BudgetCategory/Edit/{id}
     public async Task<IActionResult> Edit(int id)
     {
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
         {
             return NotFound();
         }
         
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetCategory.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         var viewModel = new BudgetCategoryEditViewModel
         {
-            Id = category.Id,
-            Name = category.Name,
-            Limit = category.Limit
+            Id = budgetCategory.Id,
+            Name = budgetCategory.Name,
+            Limit = budgetCategory.Limit
         };
 
         return View(viewModel);
     }
 
-    // POST: BudgetCategory/Edit/5
+    // POST: BudgetCategory/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, BudgetCategoryEditViewModel viewModel)
@@ -94,8 +101,8 @@ public class BudgetCategoryController : Controller
             return NotFound();
         }
 
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
         {
             return NotFound();
         }
@@ -107,54 +114,68 @@ public class BudgetCategoryController : Controller
         }
 
         // Update the category with the new values
-        category.Name = viewModel.Name;
-        category.Limit = viewModel.Limit;
+        budgetCategory.Name = viewModel.Name;
+        budgetCategory.Limit = viewModel.Limit;
 
         // Update the category in the database
-        await _budgetCategoryRepository.UpdateAsync(category);
-        return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
+        await _budgetCategoryRepository.UpdateAsync(budgetCategory);
+        return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
     }
     
-    // GET: BudgetCategory/Delete/5
+    // GET: BudgetCategory/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
         {
             return NotFound();
         }
-
-        return View(category);
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetCategory.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
+        return View(budgetCategory);
     }
     
-    // POST: BudgetCategory/Delete/5
+    // POST: BudgetCategory/Delete/{id}
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var category = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
+        if (budgetCategory == null)
         {
             return NotFound();
         }
 
-        var result = await _budgetCategoryRepository.DeleteAsync(category);
+        var result = await _budgetCategoryRepository.DeleteAsync(budgetCategory);
         if (result)
         {
-            return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
+            return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
         }
 
         ModelState.AddModelError("", "Error while deleting category.");
-        return RedirectToAction("Details", "Budget", new { id = category.BudgetId });
+        return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
     }
     
-    // GET: BudgetCategory/Details/5
+    // GET: BudgetCategory/Details/{id}
     public async Task<IActionResult> Details(int id)
     {
         var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
         if (budgetCategory == null)
         {
             return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetCategory.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         var categories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(id);
@@ -169,6 +190,21 @@ public class BudgetCategoryController : Controller
         return View(viewModel);
     }
 
+    // Check if the user owns the budget
+    private async Task<IActionResult?> CheckUserOwnership(int budgetId)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound(); // Return 404 if user is not logged in
+        }
+        
+        if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))
+        {
+            return NotFound(); // Return 404 if the user does not own the budget
+        }
 
+        return null; // Return null if the user owns the budget
+    }
 
 }
