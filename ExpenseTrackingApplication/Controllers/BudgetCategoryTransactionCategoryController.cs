@@ -1,8 +1,6 @@
 ﻿using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
-using ExpenseTrackingApplication.Repositories;
-using ExpenseTrackingApplication.ViewModels;
 using ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 using Microsoft.AspNetCore.Mvc;
 

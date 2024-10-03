@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ExpenseTrackingApplication.Models;
-using ExpenseTrackingApplication.ViewModels;
-using System.Threading.Tasks;
 using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.ViewModels.UserViewModels;

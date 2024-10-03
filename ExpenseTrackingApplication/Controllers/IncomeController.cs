@@ -1,12 +1,9 @@
 ﻿using System.Security.Claims;
-using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
-using ExpenseTrackingApplication.ViewModels;
 using ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ExpenseTrackingApplication.Controllers;
 
