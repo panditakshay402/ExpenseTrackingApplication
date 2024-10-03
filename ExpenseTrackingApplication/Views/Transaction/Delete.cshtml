@@ -34,5 +34,8 @@
 <form method="post" asp-action="DeleteTransaction">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Details" asp-route-id="@Model.BudgetId" class="btn btn-secondary">Cancel</a>
 </form>
+
+<div>
+    <a asp-controller="Budget" asp-action="Edit" asp-route-id="@Model.BudgetId" class="btn btn-secondary">Back</a>
+</div>
