@@ -17,8 +17,11 @@
         <input asp-for="Limit" class="form-control" type="number"/>
         <span asp-validation-for="Limit" class="text-danger"></span>
     </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
+    
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-info" asp-controller="BudgetCategoryTransactionCategory" asp-action="AssignTransactionCategories" asp-route-budgetCategoryId="@Model.Id">Next</a>
+    </div>
 </form>
 
 @section Scripts {

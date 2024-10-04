@@ -116,7 +116,10 @@ public class BudgetCategoryController : Controller
 
         // Update the category in the database
         await _budgetCategoryRepository.UpdateAsync(budgetCategory);
-        return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
+        
+        return RedirectToAction("AssignTransactionCategories", "BudgetCategoryTransactionCategory", new { budgetCategoryId = viewModel.Id });
+
+
     }
     
     // GET: BudgetCategory/Delete/{id}
