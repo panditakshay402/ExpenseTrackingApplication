@@ -1,5 +1,34 @@
+/* General styles */
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #fdf7a2;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Transparent header with light green background */
+header {
+  background-color: rgba(144, 238, 144, 0.5) /* Light green with 50% opacity */
+}
+
+main {
+  background-color: #7c7cff;
+}
+
+footer {
+  background-color: #00d3ff;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
 }
 
 @media (min-width: 768px) {
@@ -10,15 +39,6 @@ html {
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
 }
 
 .card {

@@ -1,38 +1,71 @@
 ﻿@using System.Security.Claims
 @using ExpenseTrackingApplication.Utilities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
+@inject ExpenseTrackingApplication.Interfaces.IBudgetRepository BudgetRepository
+
+@{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var userBudgets = new List<Budget>();
+    
+    if (!string.IsNullOrEmpty(userId))
+    {
+        userBudgets = (await BudgetRepository.GetBudgetByUserAsync(userId)).ToList();
+    }
+}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - ExpenseTrackingApplication</title>
+    <title>@ViewData["Title"] - ExpensesTracker</title>
     
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/ExpenseTrackingApplication.styles.css" asp-append-version="true"/>
 </head>
 
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ExpenseTrackingApplication</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <nav class="navbar navbar-expand-sm navbar-light border-bottom mb-3">
+        <div class="container">
+            <div>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ExpensesTracker</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="budgetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Budget
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Index">Overview</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="AddNewBudget">Add New Budget</a></li>
+                            
+                            @foreach (var budget in userBudgets)
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Details" asp-route-id="@budget.Id">
+                                        @budget.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Budget" asp-action="Index">Budget</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Report" asp-action="Index">Report</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="reportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Report
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="Index">All Reports</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="CreateMonthlySummary">Monthly Summary</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="CreateExpensesByCategory">Expenses By Category</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="CreateTrendAnalysis">Trend Analysis</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -87,6 +120,7 @@
         </div>
     </nav>
 </header>
+
 <div class="container">
     <main role="main" class="pb-3">
         @RenderBody()
@@ -95,7 +129,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2024 - ExpenseTrackingApplication - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2024 - ExpensesTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
 </footer>
 

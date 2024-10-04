@@ -1,185 +1,26 @@
-﻿/* General styles */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
-
-/* Navbar brand */
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
-/* Link colors */
-a {
-  color: #0077cc;
-}
-
-/* Primary button */
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Borders */
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-/* Box shadow */
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-/* Button for accepting policy */
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
-}
-
-/* Footer */
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
-}
-
-/* Hero section */
-.hero {
-  background: url('/images/hero-bg.jpg') no-repeat center center/cover;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-  position: relative;
-  z-index: 1;
-}
-
-.hero:after {
-  content: "";
-  background-color: rgba(0, 0, 0, 0.5);
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-}
-
-.hero-content {
-  max-width: 600px;
-  padding: 20px;
-  animation: fadeInUp 1s ease-in-out;
-}
-
-.hero .display-4 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
-
-.hero .lead {
-  font-size: 1.25rem;
-  margin-bottom: 30px;
-}
-
-.btn-primary {
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-/* Features section */
-.features {
-  padding: 50px 0;
-}
-
-.feature-box {
-  padding: 20px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.feature-box:hover {
-  transform: translateY(-10px);
-}
-
-.feature-box i {
-  color: #007bff;
-  margin-bottom: 20px;
-}
-
-.feature-box h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.feature-box p {
-  font-size: 1rem;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .hero .display-4 {
-    font-size: 2.5rem;
-  }
-
-  .hero .lead {
-    font-size: 1rem;
-  }
-
-  .feature-box {
-    margin-bottom: 30px;
-  }
-}
+﻿/*Layout style*/
 
 .rounded-circle {
   border-radius: 50%;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa; /* bright background */
+}
+
+/* after hovering */
+.dropdown-item:hover {
+  background-color: #1b6ec2;
+  color: white;
+}
+
+/* Expanding menu on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+/* make the menu run smoothly on larger screens without any interruptions */
+.nav-item.dropdown:hover .dropdown-toggle {
+  color: #007bff;
 }

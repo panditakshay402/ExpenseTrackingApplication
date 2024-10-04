@@ -77,7 +77,7 @@ public class BudgetController : Controller
                 NotificationType.Budget
             );
             
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Edit), new { id = newBudget.Id });
         }
 
         return View("Index");
@@ -328,5 +328,5 @@ public class BudgetController : Controller
 
         return null; // Return null if the user owns the budget
     }
-
+    
 }
