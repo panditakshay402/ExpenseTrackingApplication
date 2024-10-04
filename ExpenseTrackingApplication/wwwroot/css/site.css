@@ -21,8 +21,10 @@ html, body {
 header {
   background-color: rgba(0, 182, 0, 0.5); /* Light green with 50% opacity */
   font-weight: bold; /* Bold font */
-  /*position: fixed;*/
-  /*width: 100%;*/
+  position: sticky;
+  top: 0; /* Stick to the top */
+  width: 100%;
+  z-index: 1000; /* Ensure it stays on top of other content */
 }
 
 main {
@@ -37,6 +39,7 @@ footer {
   white-space: nowrap;
   line-height: 60px;
   margin-top: 20px;
+  z-index: 999;
 }
 
 .footer-margin {
