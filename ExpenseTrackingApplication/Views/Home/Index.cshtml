@@ -1,7 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+ViewData["Title"] = "Home Page";
 }
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Expense Tracker</title>
+    <link rel="stylesheet" href="~/css/home.css" />
+</head>
+<body>
 <div class="hero">
     <div class="hero-content">
         <h1 class="display-4">Welcome to Expense Tracker</h1>
@@ -39,5 +48,8 @@
 </div>
 
 @section Scripts {
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 }
+
+</body>
+</html>

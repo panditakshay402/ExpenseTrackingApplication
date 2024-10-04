@@ -1,0 +1,15 @@
+﻿.hero {
+    background-color: #f8f9fa; /* Light grey background */
+    border-radius: 25px; /* Rounded corners */
+    padding: 50px; /* Increase padding for a larger box */
+    text-align: center; /* Center align text */
+    margin: 20px; /* Add margin */
+}
+
+.feature-box {
+    background-color: #ffffff; /* White background */
+    border-radius: 25px; /* Rounded corners */
+    padding: 20px; /* Add padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
+    margin: 10px; /* Add margin */
+}
