@@ -7,7 +7,7 @@ html {
 
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #fdf7a2;
+  background: linear-gradient(to left, #ff8b68, #a2f7fd); /* Gradient background */
   color: #333;
   margin: 0;
   padding: 0;
@@ -19,7 +19,7 @@ html, body {
 
 /* Transparent header with light green background */
 header {
-  background-color: rgba(0, 182, 0, 0.5); /* Light green with 50% opacity */
+  background-color: rgba(78, 220, 255, 0.75);
   font-weight: bold; /* Bold font */
   position: sticky;
   top: 0; /* Stick to the top */
@@ -32,7 +32,7 @@ main {
 }
 
 footer {
-  background-color: rgba(0, 182, 0, 0.5); /* Light green with 50% opacity */
+  background-color: rgb(52, 137, 202);
   position: relative;
   bottom: 0;
   width: 100%;
@@ -42,8 +42,8 @@ footer {
   z-index: 999;
 }
 
-.footer-margin {
-   /* Adjust the value as needed */
+footer.footer {
+  color: #ffffff !important;  /* White text color */
 }
 
 @media (min-width: 768px) {
