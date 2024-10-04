@@ -15,15 +15,16 @@ body {
 
 /* Transparent header with light green background */
 header {
-  background-color: rgba(144, 238, 144, 0.5) /* Light green with 50% opacity */
+  background-color: rgba(0, 182, 0, 0.5); /* Light green with 50% opacity */
+  font-weight: bold; /* Bold font */
 }
 
-main {
-  background-color: #7c7cff;
-}
+/*main {*/
+/*  background-color: #ffaaaa;*/
+/*}*/
 
 footer {
-  background-color: #00d3ff;
+  background-color: rgba(0, 182, 0, 0.5); /* Light green with 50% opacity */
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -49,16 +50,13 @@ footer {
   margin-bottom: 20px;
   transition: all 0.3s ease;
 }
-
 .card:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 .card-title {
   font-size: 1.25rem;
   margin-bottom: 10px;
 }
-
 .card-text {
   font-size: 1rem;
   margin-bottom: 10px;
@@ -67,7 +65,51 @@ footer {
 .balance.positive {
   color: green;
 }
-
 .balance.negative {
   color: red;
 }
+
+
+/*Layout style*/
+.rounded-circle {
+  border-radius: 50%;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa; /* bright background */
+  display: block;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out; /* Smooth transition */
+}
+
+/* after hovering */
+.dropdown-item:hover {
+  background-color: #1b6ec2;
+  color: white;
+}
+
+/* Expanding menu on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+  opacity: 1;
+}
+
+/* make the menu run smoothly on larger screens without any interruptions */
+.nav-item.dropdown:hover .dropdown-toggle {
+  color: #007bff;
+}
+
+/* Style for the dropdown arrow */
+.dropdown-toggle::after {
+  transition: transform 0.3s ease-in-out;
+  /*content: "\25BC"; !* Unicode for down arrow *!*/
+  margin-left: 0.3em;
+}
+
+/* Rotate arrow when dropdown is open */
+.nav-item.dropdown:hover .dropdown-toggle::after {
+  transform: rotate(180deg);
+}
+
+/* --------- */
