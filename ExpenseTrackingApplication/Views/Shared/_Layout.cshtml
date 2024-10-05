@@ -45,14 +45,13 @@
                         <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Index">Overview</a></li>
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="AddNewBudget">Add New Budget</a></li>
-                            
                             @foreach (var budget in userBudgets)
                             {
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Details" asp-route-id="@budget.Id">
-                                        @budget.Name
-                                    </a>
-                                </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Details" asp-route-id="@budget.Id">
+                                    @budget.Name
+                                </a>
+                            </li>
                             }
                         </ul>
                     </li>

@@ -89,41 +89,66 @@ footer.footer {
   border-radius: 50%;
 }
 
+/* Style for dropdown menu */
 .dropdown-menu {
-  background-color: #f8f9fa; /* bright background */
-  display: block;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out; /* Smooth transition */
+  background-color: #f8f9fa; /* Light menu background */
+  border-radius: 0.25rem; /* Rounded corners */
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow for depth */
 }
 
-/* after hovering */
+/* Style for menu items */
+.dropdown-item {
+  padding: 0.5rem 1rem; /* Adding space around text */
+  transition: background-color 0.2s ease-in-out; /* Smooth transition on hover */
+  border-bottom: 1px solid #c3c3c3; /* Light border between items */
+}
+
+/* Remove last item line */
+/*.dropdown-menu .dropdown-item:last-of-type {*/
+/*  border-bottom: none;*/
+/*}*/
+
+/* Change background color when hovering over a link */
 .dropdown-item:hover {
+  background-color: #1b6ec2; /* Hover Background Color */
+  color: white; /* Text in white for better readability */
+}
+
+/* Change color for active menu item */
+.dropdown-item.active {
+  background-color: #0056b3; /* Darker blue for active element */
+  color: white;
+  border-bottom: none;
+}
+
+/* Style for the arrow next to the dropdown list */
+.dropdown-toggle::after {
+  margin-left: 0.3em;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Rotating arrow animation when menu is expanded */
+.nav-item.dropdown .dropdown-toggle.show::after {
+  transform: rotate(180deg);
+}
+
+/* Text and background color when hovering over entire navigation link */
+.nav-item.dropdown .nav-link:hover {
   background-color: #1b6ec2;
   color: white;
 }
 
-/* Expanding menu on hover */
-.nav-item.dropdown:hover .dropdown-menu {
-  display: block;
-  margin-top: 0;
-  opacity: 1;
+.navbar {
+  padding: 0.5rem 1rem;
 }
 
-/* make the menu run smoothly on larger screens without any interruptions */
-.nav-item.dropdown:hover .dropdown-toggle {
+.navbar-brand {
+  font-weight: bold;
   color: #007bff;
 }
 
-/* Style for the dropdown arrow */
-.dropdown-toggle::after {
-  transition: transform 0.3s ease-in-out;
-  /*content: "\25BC"; !* Unicode for down arrow *!*/
-  margin-left: 0.3em;
-}
-
-/* Rotate arrow when dropdown is open */
-.nav-item.dropdown:hover .dropdown-toggle::after {
-  transform: rotate(180deg);
+.navbar-brand:hover {
+  color: #0056b3;
 }
 
 /* --------- */
