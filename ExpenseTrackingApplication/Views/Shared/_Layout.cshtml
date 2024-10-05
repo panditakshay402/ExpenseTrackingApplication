@@ -45,13 +45,18 @@
                         <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Index">Overview</a></li>
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="AddNewBudget">Add New Budget</a></li>
-                            @foreach (var budget in userBudgets)
+                            
+                            @if (User.Identity is { IsAuthenticated: true }) // Only show user's budgets if authenticated
                             {
-                            <li>
-                                <a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Details" asp-route-id="@budget.Id">
-                                    @budget.Name
-                                </a>
-                            </li>
+                                <li class="dropdown-item text-muted">Your Budgets:</li> // TODO: to ma się nie wliczać do nawigacji
+                                @foreach (var budget in userBudgets)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Details" asp-route-id="@budget.Id">
+                                            @budget.Name
+                                        </a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </li>
