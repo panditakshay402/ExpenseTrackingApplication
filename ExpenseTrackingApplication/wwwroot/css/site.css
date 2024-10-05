@@ -92,21 +92,30 @@ footer.footer {
 /* Style for dropdown menu */
 .dropdown-menu {
   background-color: #f8f9fa; /* Light menu background */
-  border-radius: 0.25rem; /* Rounded corners */
+  border-radius: 0.5rem; /* Rounded corners */
+  padding: 0.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow for depth */
+
+  /* Start hidden and slightly shifted */
+  opacity: 0;
+  transform: translateY(-10px); /* Move menu 10px upwards */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for both opacity and position */
+  pointer-events: none; /* Disable interaction when hidden */
+}
+
+/* When the menu is shown (via Bootstrap's .show class) */
+.nav-item.dropdown .dropdown-menu.show {
+  opacity: 1; /* Fully visible */
+  transform: translateY(0); /* No translation (back to original position) */
+  pointer-events: auto; /* Enable interaction when shown */
 }
 
 /* Style for menu items */
 .dropdown-item {
-  padding: 0.5rem 1rem; /* Adding space around text */
-  transition: background-color 0.2s ease-in-out; /* Smooth transition on hover */
-  border-bottom: 1px solid #c3c3c3; /* Light border between items */
+  padding: 0.75rem 1.5rem; /* Bigger space around text for larger items */
+  transition: background-color 0.2s ease-in-out, border-radius 0.2s ease-in-out; /* Smooth transition for hover and rounded corners */
+  border-radius: 0.3rem; /* Slight rounding on the edges of each item */
 }
-
-/* Remove last item line */
-/*.dropdown-menu .dropdown-item:last-of-type {*/
-/*  border-bottom: none;*/
-/*}*/
 
 /* Change background color when hovering over a link */
 .dropdown-item:hover {
@@ -114,11 +123,11 @@ footer.footer {
   color: white; /* Text in white for better readability */
 }
 
-/* Change color for active menu item */
+/* Change color and add rounded corners for active menu item */
 .dropdown-item.active {
   background-color: #0056b3; /* Darker blue for active element */
   color: white;
-  border-bottom: none;
+  border-radius: 0.3rem; /* Rounded corners for the active item */
 }
 
 /* Style for the arrow next to the dropdown list */
@@ -138,17 +147,21 @@ footer.footer {
   color: white;
 }
 
+/* Style for the main navigation bar */
 .navbar {
   padding: 0.5rem 1rem;
 }
 
+/* Style for the brand link */
 .navbar-brand {
   font-weight: bold;
   color: #007bff;
 }
 
+/* Change brand link color on hover */
 .navbar-brand:hover {
   color: #0056b3;
 }
+
 
 /* --------- */
