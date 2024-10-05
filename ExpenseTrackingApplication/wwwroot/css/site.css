@@ -91,7 +91,7 @@ footer.footer {
 
 /* Style for dropdown menu */
 .dropdown-menu {
-  background-color: #f8f9fa; /* Light menu background */
+  background: linear-gradient(to left, rgba(255, 139, 104, 0.75), rgba(162, 247, 253, 0.75)); /* Gradient with transparency */
   border-radius: 0.5rem; /* Rounded corners */
   padding: 0.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow for depth */
@@ -119,13 +119,13 @@ footer.footer {
 
 /* Change background color when hovering over a link */
 .dropdown-item:hover {
-  background-color: #1b6ec2; /* Hover Background Color */
+  background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
   color: white; /* Text in white for better readability */
 }
 
 /* Change color and add rounded corners for active menu item */
 .dropdown-item.active {
-  background-color: #0056b3; /* Darker blue for active element */
+  background-color: rgba(0, 86, 179, 0.8); /* Darker blue for active element */
   color: white;
   border-radius: 0.3rem; /* Rounded corners for the active item */
 }
@@ -143,7 +143,7 @@ footer.footer {
 
 /* Text and background color when hovering over entire navigation link */
 .nav-item.dropdown .nav-link:hover {
-  background-color: #1b6ec2;
+  background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
   color: white;
 }
 
@@ -152,16 +152,31 @@ footer.footer {
   padding: 0.5rem 1rem;
 }
 
-/* Style for the brand link */
-.navbar-brand {
-  font-weight: bold;
-  color: #007bff;
+/* Text and background color when hovering over the dropdown toggle */
+.nav-item.dropdown .dropdown-toggle:hover {
+  background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
+  color: white; /* Text in white */
+  border-radius: 0.3rem; /* Rounded corners for hover state */
 }
 
-/* Change brand link color on hover */
-.navbar-brand:hover {
-  color: #0056b3;
+/* Style for the active state of the dropdown toggle */
+.nav-item.dropdown .dropdown-toggle:focus,
+.nav-item.dropdown .dropdown-toggle.show {
+  background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent active color */
+  color: white; /* Text in white */
+  border-radius: 0.3rem; /* Rounded corners for active state */
 }
 
+/* Remove active background when dropdown is closed, but keep hover effect */
+.nav-item.dropdown .dropdown-toggle:not(.show):hover {
+  background-color: rgba(27, 110, 194, 0.8); /* Keep hover effect when not active */
+  color: white; /* Text in white */
+  border-radius: 0.3rem; /* Rounded corners for hover state */
+}
+
+/* Reset background when dropdown is closed (optional) */
+.nav-item.dropdown .dropdown-toggle:not(.show) {
+  background-color: transparent; /* Reset to transparent when not active */
+}
 
 /* --------- */
