@@ -12,6 +12,7 @@
 /* Style for dropdown menu */
 .dropdown-menu {
     background: linear-gradient(to left, rgba(255, 139, 104, 0.75), rgba(162, 247, 253, 0.75)); /* Gradient with transparency */
+    backdrop-filter: blur(8px); /* Background blur */
     border-radius: 0.5rem; /* Rounded corners */
     padding: 0.5rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow for depth */

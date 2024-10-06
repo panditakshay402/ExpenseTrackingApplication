@@ -1,7 +1,6 @@
 ﻿@using System.Security.Claims
 @using ExpenseTrackingApplication.Utilities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using System.Security.Claims
 @inject ExpenseTrackingApplication.Interfaces.IBudgetRepository BudgetRepository
 
 @{
@@ -37,7 +36,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between prevent-close">
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-dark" href="#" id="budgetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -72,8 +71,15 @@
                             <li><a class="dropdown-item" asp-area="" asp-controller="Report" asp-action="CreateTrendAnalysis">Trend Analysis</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Support" asp-action="Index">Support</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Support" asp-action="SendMail">Send Mail</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                        </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -143,6 +149,7 @@
 <script src="~/js/site.js" asp-append-version="true"></script>
 
 <script>
+    // Function to check notifications
     $(document).ready(function () {
         // Function to check notifications
         function checkNotifications() {
@@ -167,29 +174,39 @@
         setInterval(checkNotifications, 30000); // 30 seconds
     });
 
-    @* TODO: poprawic bo nie dziala gdy klikne np. poza budzetem *@ 
+    // Close dropdown menu when clicked outside of it
     $(document).ready(function () {
-        // Prevent dropdown from closing when clicking in the empty space within the navbar
-        $('.prevent-close').on('click', function (e) {
-            if ($(e.target).closest('.nav-link').length === 0 && $(e.target).closest('.dropdown-item').length === 0) {
-                e.stopPropagation();
+        // Click handle in site layout
+        $(document).on('click', function (e) {
+            var $dropdownMenu = $('.dropdown-menu.show');
+            var $budgetDropdown = $('#budgetDropdown');
+
+            // Check if the click was in the drop-down menu area or on the "Budget" button
+            if (
+                !$budgetDropdown.is(e.target) && // the "Budget" button was not clicked
+                !$budgetDropdown.has(e.target).length && // its area was not clicked
+                !$dropdownMenu.is(e.target) && // not clicked inside the dropdown menu
+                $dropdownMenu.has(e.target).length === 0 // no item was clicked inside the menu
+            ) {
+                // Close dropdown menu when clicked outside of it
+                $budgetDropdown.dropdown('hide');
             }
         });
 
-        // Close the dropdown when clicking outside the navbar but within the header
+        // Close drop-down navigation when clicked outside of it (e.g. header area)
         $('header').on('click', function (e) {
-            if ($(e.target).closest('.navbar').length === 0) {
+            if (!$(e.target).closest('.navbar').length) {
                 $('.navbar-collapse').collapse('hide');
             }
         });
 
-        // Close the dropdown when clicking within the navbar container
-        $('.navbar').on('click', function (e) {
-            if ($(e.target).closest('.nav-link').length === 0 && $(e.target).closest('.dropdown-item').length === 0) {
-                $('.navbar-collapse').collapse('hide');
-            }
+        // Stop propagating events within the dropdown menu to avoid closing it by accident
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
         });
     });
+
+
 </script>
 
 @await RenderSectionAsync("Scripts", required: false)
