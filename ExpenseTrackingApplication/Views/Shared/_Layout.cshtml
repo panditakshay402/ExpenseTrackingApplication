@@ -37,7 +37,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between prevent-close">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-dark" href="#" id="budgetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,6 +167,29 @@
         setInterval(checkNotifications, 30000); // 30 seconds
     });
 
+    @* TODO: poprawić bo nie działa gdy kliknę np. poza budżetem *@ 
+    $(document).ready(function () {
+        // Prevent dropdown from closing when clicking in the empty space within the navbar
+        $('.prevent-close').on('click', function (e) {
+            if ($(e.target).closest('.nav-link').length === 0 && $(e.target).closest('.dropdown-item').length === 0) {
+                e.stopPropagation();
+            }
+        });
+
+        // Close the dropdown when clicking outside the navbar but within the header
+        $('header').on('click', function (e) {
+            if ($(e.target).closest('.navbar').length === 0) {
+                $('.navbar-collapse').collapse('hide');
+            }
+        });
+
+        // Close the dropdown when clicking within the navbar container
+        $('.navbar').on('click', function (e) {
+            if ($(e.target).closest('.nav-link').length === 0 && $(e.target).closest('.dropdown-item').length === 0) {
+                $('.navbar-collapse').collapse('hide');
+            }
+        });
+    });
 </script>
 
 @await RenderSectionAsync("Scripts", required: false)
