@@ -32,19 +32,36 @@ main {
 }
 
 footer {
-  background-color: rgb(52, 137, 202);
+  background-color: rgb(134, 191, 232);
   position: relative;
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px;
+  line-height: 35px; /* Reduced line-height */
   margin-top: 20px;
   z-index: 999;
 }
 
 footer.footer {
-  color: #ffffff !important;  /* White text color */
+  color: #ffffff !important; /* White text color */
 }
+
+footer .social-media-icons {
+  margin-bottom: 10px; /* Reduce the space below the icons */
+}
+
+footer .container p {
+  margin-bottom: 5px; /* Less space between "OUR MEDIAS" and the icons */
+}
+
+.footer-title {
+  letter-spacing: 1px; /* Add letter spacing */
+}
+
+.social-media-icons a {
+  text-decoration: none; /* Remove underline from links */
+}
+
 
 @media (min-width: 768px) {
   html {
