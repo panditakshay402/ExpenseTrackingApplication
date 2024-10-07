@@ -329,4 +329,11 @@ public class BudgetController : Controller
         return null; // Return null if the user owns the budget
     }
     
+    // GET: Budget/AboutBudgets
+    [AllowAnonymous] // Allows non-logged-in users to access this page
+    public IActionResult AboutBudgets()
+    {
+        return View();
+    }
+    
 }

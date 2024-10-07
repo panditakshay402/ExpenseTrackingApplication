@@ -1,5 +1,6 @@
 ﻿/* ----- Layout styles ------ */
 
+/* profile picture style */
 .rounded-circle {
     border-radius: 50%;
 }
@@ -38,19 +39,6 @@
     border-radius: 0.3rem; /* Slight rounding on the edges of each item */
 }
 
-/* Change background color when hovering over a link */
-.dropdown-item:hover {
-    background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
-    color: white; /* Text in white for better readability */
-}
-
-/* Change color and add rounded corners for active menu item */
-.dropdown-item.active {
-    background-color: rgba(0, 86, 179, 0.8); /* Darker blue for active element */
-    color: white;
-    border-radius: 0.3rem; /* Rounded corners for the active item */
-}
-
 /* Style for the arrow next to the dropdown list */
 .dropdown-toggle::after {
     margin-left: 0.3em;
@@ -62,37 +50,30 @@
     transform: rotate(180deg);
 }
 
-/* Text and background color when hovering over entire navigation link */
-.nav-item.dropdown .nav-link:hover {
-    background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
-    color: white;
-}
-
 /* Style for the main navigation bar */
 .navbar {
     padding: 0.5rem 1rem;
 }
 
-/* Text and background color when hovering over the dropdown toggle */
-.nav-item.dropdown .dropdown-toggle:hover {
-    background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent hover color */
-    color: white; /* Text in white */
-    border-radius: 0.3rem; /* Rounded corners for hover state */
-}
-
 /* Style for the active state of the dropdown toggle */
 .nav-item.dropdown .dropdown-toggle:focus,
 .nav-item.dropdown .dropdown-toggle.show {
-    background-color: rgba(27, 110, 194, 0.8); /* Slightly transparent active color */
+    background-color: rgba(102, 166, 255, 0.8);; /* Slightly transparent active color */
     color: white; /* Text in white */
     border-radius: 0.3rem; /* Rounded corners for active state */
 }
 
 /* Remove active background when dropdown is closed, but keep hover effect */
 .nav-item.dropdown .dropdown-toggle:not(.show):hover {
-    background-color: rgba(27, 110, 194, 0.8); /* Keep hover effect when not active */
+    background-color: rgba(102, 166, 255, 0.8); /* Keep hover effect when not active */
     color: white; /* Text in white */
     border-radius: 0.3rem; /* Rounded corners for hover state */
+}
+
+/* Change background color when hovering over a link */
+.dropdown-item:hover {
+    background-color: rgba(102, 166, 255, 0.8); /* Slightly transparent hover color */
+    color: white; /* Text in white for better readability */
 }
 
 /* Reset background when dropdown is closed (optional) */
@@ -109,6 +90,8 @@
     user-select: none; /* Prevent text selection */
 }
 
+/* ---------------- */
+
 /* Style for sub-items */
 .dropdown-sub-item {
     padding-left: 1.5rem; /* Indent sub-items */
@@ -120,4 +103,29 @@
     color: inherit; /* Inherit text color */
 }
 
-/* ----------- */
+/* Styling for the Sign In button */
+.btn-sign-in {
+    border-radius: 0.25rem; /* Slight rounding on the corners */
+    padding: 0.5rem 1rem;   /* Padding for button-like appearance */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.btn-sign-in:hover {
+    background-color: rgba(102, 166, 255, 0.8); /* Black background on hover */
+    color: white;            /* White text on hover */
+}
+
+/* Styling for the Sign Up button */
+.btn-sign-up {
+    border-radius: 0.25rem; /* Slight rounding on the corners */
+    padding: 0.5rem 1rem;   /* Padding for button-like appearance */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.btn-sign-up:hover {
+    background-color: #69e369; /* Green background on hover */
+    color: white;            /* White text on hover */
+}
+
+
+/* --------------- */

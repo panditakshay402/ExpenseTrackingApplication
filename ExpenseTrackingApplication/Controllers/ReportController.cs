@@ -378,4 +378,11 @@ public class ReportController : Controller
 
         return null; // Return null if the user owns the budget
     }
+    
+    // GET: Report/AboutReports
+    [AllowAnonymous] // Allows non-logged-in users to access this page
+    public IActionResult AboutReports()
+    {
+        return View();
+    }
 }
