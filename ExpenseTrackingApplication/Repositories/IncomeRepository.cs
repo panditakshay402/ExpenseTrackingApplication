@@ -34,7 +34,7 @@ public class IncomeRepository : IIncomeRepository
             .ToListAsync();
     }
     
-    public async Task<decimal> GetCurrentMonthAmountAsync(int budgetId)
+    public async Task<decimal> GetBudgetMonthIncomeAsync(int budgetId)
     {
         var currentMonth = DateTime.Now.Month;
         var currentYear = DateTime.Now.Year;
@@ -44,6 +44,18 @@ public class IncomeRepository : IIncomeRepository
                         && i.Date.Month == currentMonth 
                         && i.Date.Year == currentYear)
             .SumAsync(i => i.Amount);
+    }
+    
+    public async Task<int> GetBudgetMonthIncomesCountAsync(int budgetId)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var currentYear = DateTime.Now.Year;
+
+        return await _context.Incomes
+            .Where(i => i.BudgetId == budgetId 
+                        && i.Date.Month == currentMonth 
+                        && i.Date.Year == currentYear)
+            .CountAsync();
     }
     
     public async Task<bool> AddAsync(Income income)

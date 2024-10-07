@@ -10,7 +10,8 @@ public interface ITransactionRepository
     Task<IEnumerable<Transaction>> GetByBudgetAsync(int budgetId);
     Task<IEnumerable<Transaction>> GetTransactionsByCategoriesAsync(int budgetId, List<TransactionCategory> transactionCategories);
     Task<IEnumerable<Transaction>> GetByDateRangeAsync(int budgetId, DateTime startDate, DateTime endDate);
-    Task<decimal> GetCurrentMonthAmountAsync(int budgetId);
+    Task<decimal> GetBudgetMonthExpenseAsync(int budgetId);
+    Task<int> GetBudgetMonthExpensesCountAsync(int budgetId);
     Task<decimal> GetCurrentMonthAmountForCategoriesAsync(int budgetId, List<TransactionCategory> transactionCategories);
     Task<bool> AddAsync(Transaction transaction);
     Task<bool> DeleteAsync(Transaction transaction);

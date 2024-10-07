@@ -30,7 +30,7 @@ public class BudgetCategoryTransactionCategoryController : Controller
         if (budgetCategory == null)
         {
             ModelState.AddModelError("", "Invalid budget category ID.");
-            return RedirectToAction("Index", "Budget");
+            return RedirectToAction("Overview", "Budget");
         }
         
         var selectedCategories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
@@ -54,14 +54,14 @@ public class BudgetCategoryTransactionCategoryController : Controller
         if (budgetCategory == null)
         {
             ModelState.AddModelError("", "Invalid budget category ID.");
-            return RedirectToAction("Index", "Budget");
+            return RedirectToAction("Overview", "Budget");
         }
         
         var budget = await _budgetRepository.GetByIdAsync(budgetCategory.BudgetId);
         if (budget == null)
         {
             ModelState.AddModelError("", "Invalid budget ID.");
-            return RedirectToAction("Index", "Budget");
+            return RedirectToAction("Overview", "Budget");
         }
         
         var selectedCategories = viewModel.SelectedCategories ?? new List<string>();

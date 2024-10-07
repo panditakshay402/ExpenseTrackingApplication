@@ -1,0 +1,9 @@
+﻿.card {
+    border: 1px solid #007bff; /* Change to your desired border color */
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Slightly enlarge the card on hover */
+}

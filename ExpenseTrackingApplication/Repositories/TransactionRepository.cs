@@ -42,7 +42,7 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync();
     }
     
-    public async Task<decimal> GetCurrentMonthAmountAsync(int budgetId)
+    public async Task<decimal> GetBudgetMonthExpenseAsync(int budgetId)
     {
         var currentMonth = DateTime.Now.Month;
         var currentYear = DateTime.Now.Year;
@@ -52,6 +52,18 @@ public class TransactionRepository : ITransactionRepository
                         && t.Date.Month == currentMonth 
                         && t.Date.Year == currentYear)
             .SumAsync(t => t.Amount);
+    }
+    
+    public async Task<int> GetBudgetMonthExpensesCountAsync(int budgetId)
+    {
+        var currentMonth = DateTime.Now.Month;
+        var currentYear = DateTime.Now.Year;
+
+        return await _context.Transactions
+            .Where(i => i.BudgetId == budgetId 
+                        && i.Date.Month == currentMonth 
+                        && i.Date.Year == currentYear)
+            .CountAsync();
     }
     
     public async Task<decimal> GetCurrentMonthAmountForCategoriesAsync(int budgetId, List<TransactionCategory> transactionCategories)

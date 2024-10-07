@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ExpenseTrackingApplication.ViewModels.BudgetViewModels.BudgetOverviewViewModel>
+
+@{
+    ViewData["Title"] = "Budgets";
+}
+
+<link rel="stylesheet" href="~/css/budget.css" asp-append-version="true"/>
+
+
+<h2>Your Budgets</h2>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@item.Name</h5>
+                <p class="card-text">Balance: @item.Balance</p>
+                <p class="card-text">Monthly Income: @item.MonthlyIncome</p>
+                <p class="card-text">Total Expenses: @item.MonthlyExpense</p>
+                <p class="card-text">Transactions This Month: @item.MonthlyTotalTransactions</p>
+                <p class="card-text">Created On: @item.CreatedDate.ToShortDateString()</p>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">View Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+<a asp-action="AddNewBudget" class="btn btn-warning">Add New Budget</a>

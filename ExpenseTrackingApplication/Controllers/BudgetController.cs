@@ -29,21 +29,43 @@ public class BudgetController : Controller
         _notificationRepository = notificationRepository;
     }
     
-    // GET: Budget
-    public async Task<IActionResult> Index()
+    // GET: Budget/Overview
+    public async Task<IActionResult> Overview()
     {
-        // Get the ID of the currently logged-in user
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
         {
             return NotFound();
         }
-        
+
         // Get all budgets that belong to the currently logged-in user
         var budgets = await _budgetRepository.GetBudgetByUserAsync(userId);
 
-        return View(budgets);
+        var budgetOverviewList = new List<BudgetOverviewViewModel>();
+
+        foreach (var budget in budgets)
+        {
+            var monthlyIncome = await _incomeRepository.GetBudgetMonthIncomeAsync(budget.Id);
+            var monthlyExpense = await _transactionRepository.GetBudgetMonthExpenseAsync(budget.Id);
+            var monthlyTotalExpenses = await _transactionRepository.GetBudgetMonthExpensesCountAsync(budget.Id);
+            var monthlyTotalIncomes = await _incomeRepository.GetBudgetMonthIncomesCountAsync(budget.Id);
+            var monthlyTotalTransactions = monthlyTotalExpenses + monthlyTotalIncomes;
+
+            budgetOverviewList.Add(new BudgetOverviewViewModel
+            {
+                Id = budget.Id,
+                Name = budget.Name,
+                Balance = budget.Balance,
+                MonthlyIncome = monthlyIncome,
+                MonthlyExpense = monthlyExpense,
+                MonthlyTotalTransactions = monthlyTotalTransactions,
+                CreatedDate = budget.CreatedDate // Assuming you have this in your budget model
+            });
+        }
+
+        return View(budgetOverviewList);
     }
+
     
     // GET: Budget/AddNewBudget
     public async Task<IActionResult> AddNewBudget()
@@ -309,7 +331,7 @@ public class BudgetController : Controller
             NotificationType.Budget
         );
         
-        return RedirectToAction("Index");
+        return RedirectToAction("Overview");
     }
     
     // Check if the user owns the budget
