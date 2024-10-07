@@ -7,9 +7,8 @@ ViewData["Title"] = "Budget Details";
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Details for Budget: @Model.Budget.Name</h2>
     <div>
-        <a asp-controller="Report" asp-action="Generate" class="btn btn-success" asp-route-id="@Model.Budget.Id">Create Report</a>
         <a asp-action="Edit" asp-route-id="@Model.Budget.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Overview" class="btn btn-primary">Back to List</a>
+        <a asp-action="Overview" class="btn btn-primary">Back to Overview</a>
     </div>
 </div>
 
@@ -35,8 +34,8 @@ ViewData["Title"] = "Budget Details";
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Total Expensess:</h5>
-                <p class="card-text">@Model.TotalExpenseAmount.ToString("C")</p>
+                <h5 class="card-title">Total Expenses:</h5>
+                <p class="card-text">-@Model.TotalExpenseAmount.ToString("C")</p>
             </div>
         </div>
     </div>
@@ -180,7 +179,6 @@ ViewData["Title"] = "Budget Details";
         </tbody>
     </table>
 </div>
-
 
 <div>
     <h4>Navigate to Another Budget</h4>
