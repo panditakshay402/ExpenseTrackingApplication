@@ -11,21 +11,21 @@ namespace ExpenseTrackingApplication.Controllers;
 public class BudgetCategoryController : Controller
 {
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
+    private readonly IBudgetCategoryExpenseCategoryRepository _bCtcRepository;
     private readonly IBudgetRepository _budgetRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IExpenseRepository _expenseRepository;
     private readonly IIncomeRepository _incomeRepository;
     private readonly INotificationRepository _notificationRepository;
 
     public BudgetCategoryController(IBudgetCategoryRepository budgetCategoryRepository,
-        IBudgetRepository budgetRepository, ITransactionRepository transactionRepository,
+        IBudgetRepository budgetRepository, IExpenseRepository expenseRepository,
         IIncomeRepository incomeRepository, INotificationRepository notificationRepository,
-        IBudgetCategoryTransactionCategoryRepository bCtcRepository)
+        IBudgetCategoryExpenseCategoryRepository bCtcRepository)
     {
         _budgetCategoryRepository = budgetCategoryRepository;
         _bCtcRepository = bCtcRepository;
         _budgetRepository = budgetRepository;
-        _transactionRepository = transactionRepository;
+        _expenseRepository = expenseRepository;
         _incomeRepository = incomeRepository;
         _notificationRepository = notificationRepository;
     }
@@ -49,7 +49,7 @@ public class BudgetCategoryController : Controller
             CurrentSpending = 0,
             Limit = 0,
             BudgetId = budgetId,
-            BudgetCategoryTransactionCategories = new List<BudgetCategoryTransactionCategory>()
+            BudgetCategoryExpenseCategories = new List<BudgetCategoryExpenseCategory>()
 
         };
 
@@ -117,7 +117,7 @@ public class BudgetCategoryController : Controller
         // Update the category in the database
         await _budgetCategoryRepository.UpdateAsync(budgetCategory);
         
-        return RedirectToAction("AssignTransactionCategories", "BudgetCategoryTransactionCategory", new { budgetCategoryId = viewModel.Id });
+        return RedirectToAction("AssignExpenseCategories", "BudgetCategoryExpenseCategory", new { budgetCategoryId = viewModel.Id });
 
 
     }
@@ -178,13 +178,13 @@ public class BudgetCategoryController : Controller
             return ownershipCheckResult;
         }
         
-        var categories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(id);
-        var transactions = await _transactionRepository.GetTransactionsByCategoriesAsync(budgetCategory.BudgetId, categories);
+        var categories = await _bCtcRepository.GetExpenseCategoriesByBudgetCategoryIdAsync(id);
+        var expenses = await _expenseRepository.GetExpensesByCategoriesAsync(budgetCategory.BudgetId, categories);
         
         var viewModel = new BudgetCategoryDetailsViewModel
         {
             BudgetCategory = budgetCategory,
-            CategoryTransactions = transactions
+            CategoryExpenses = expenses
         };
         
         return View(viewModel);

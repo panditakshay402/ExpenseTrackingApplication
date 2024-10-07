@@ -24,7 +24,7 @@ public class Budget
     public AppUser? AppUser { get; set; }
     
     // Navigation properties
-    public ICollection<Transaction> Transactions { get; init; } = new List<Transaction>();
+    public ICollection<Expense> Transactions { get; init; } = new List<Expense>();
     public ICollection<Income> Incomes { get; init; } = new List<Income>();
     public ICollection<Bill> Bills { get; init; } = new List<Bill>();
     public ICollection<BudgetCategory> BudgetCategories { get; init; } = new List<BudgetCategory>();

@@ -1,6 +1,6 @@
 ﻿namespace ExpenseTrackingApplication.Data.Enum;
 
-public enum TransactionCategory
+public enum ExpenseCategory
 {
     Groceries,        // Grocery shopping
     Rent,             // Rent

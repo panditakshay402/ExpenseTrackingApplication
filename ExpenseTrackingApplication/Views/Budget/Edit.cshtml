@@ -18,9 +18,9 @@ ViewData["Title"] = "Edit Budget";
 
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Transactions</h4>
+        <h4>Expenses</h4>
         <div>
-            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-success">Add Transaction</a>
+            <a asp-controller="Expense" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-success">Add Expense</a>
         </div>
     </div>
     <table class="table">
@@ -35,17 +35,17 @@ ViewData["Title"] = "Edit Budget";
         </tr>
         </thead>
         <tbody>
-        @foreach (var transaction in Model.Transactions)
+        @foreach (var expense in Model.Expenses)
         {
             <tr>
-                <td>@transaction.Date.ToShortDateString()</td>
-                <td>@transaction.Recipient</td>
-                <td>@transaction.Amount</td>
-                <td>@transaction.Category</td>
-                <td>@transaction.Description</td>
+                <td>@expense.Date.ToShortDateString()</td>
+                <td>@expense.Recipient</td>
+                <td>@expense.Amount</td>
+                <td>@expense.Category</td>
+                <td>@expense.Description</td>
                 <td>
-                    <a asp-controller="Transaction" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-warning">Edit</a>
-                    <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.Id" class="btn btn-danger">Delete</a>
+                    <a asp-controller="Expense" asp-action="Edit" asp-route-id="@expense.Id" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Expense" asp-action="Delete" asp-route-id="@expense.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

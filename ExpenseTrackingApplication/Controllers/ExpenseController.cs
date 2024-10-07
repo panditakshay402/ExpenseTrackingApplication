@@ -10,23 +10,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExpenseTrackingApplication.Controllers;
 
 [Authorize]
-public class TransactionController : Controller
+public class ExpenseController : Controller
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IExpenseRepository _expenseRepository;
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
+    private readonly IBudgetCategoryExpenseCategoryRepository _bCtcRepository;
     private readonly INotificationRepository _notificationRepository;
-    public TransactionController(ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationRepository notificationRepository, IBudgetCategoryTransactionCategoryRepository bCtcRepository)
+    public ExpenseController(IExpenseRepository expenseRepository, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, INotificationRepository notificationRepository, IBudgetCategoryExpenseCategoryRepository bCtcRepository)
     {
-        _transactionRepository = transactionRepository;
+        _expenseRepository = expenseRepository;
         _budgetRepository = budgetRepository;
         _notificationRepository = notificationRepository;
         _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
     }
     
-    // GET: Transaction/Create
+    // GET: Expense/Create
     public async Task<IActionResult> Create(int budgetId)
     {
         // Check if the user owns the budget
@@ -40,28 +40,28 @@ public class TransactionController : Controller
         return View();
     }
     
-    // POST: Transaction/Create
+    // POST: Expense/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int budgetId, [Bind("Recipient,Amount,Date,Category,Description")] Transaction transaction)
+    public async Task<IActionResult> Create(int budgetId, [Bind("Recipient,Amount,Date,Category,Description")] Expense expense)
     {
         if (!ModelState.IsValid)
         {
             ViewBag.BudgetId = budgetId;
-            return View(transaction); // Return the view with the error messages
+            return View(expense); // Return the view with the error messages
         }
     
-        transaction.BudgetId = budgetId;
-        var category = transaction.Category;
+        expense.BudgetId = budgetId;
+        var category = expense.Category;
 
-        if (await _transactionRepository.AddAsync(transaction))
+        if (await _expenseRepository.AddAsync(expense))
         {
             var budget = await _budgetRepository.GetByIdAsync(budgetId);
             if (budget != null)
             {
-                budget.Balance -= transaction.Amount;
+                budget.Balance -= expense.Amount;
                 await _budgetRepository.UpdateAsync(budget);
-                await UpdateBcSpending(budgetId, transaction.Date, category);
+                await UpdateBcSpending(budgetId, expense.Date, category);
             }
         
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
@@ -71,7 +71,7 @@ public class TransactionController : Controller
         return RedirectToAction("Details", "Budget", new { id = budgetId });
     }
     
-    // GET: Transaction/Details/{id}
+    // GET: Expense/Details/{id}
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -79,131 +79,131 @@ public class TransactionController : Controller
             return NotFound();
         }
 
-        var transaction = await _transactionRepository.GetByIdAsync(id.Value);
-        if (transaction == null)
+        var expense = await _expenseRepository.GetByIdAsync(id.Value);
+        if (expense == null)
         {
             return NotFound();
         }
         
         // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(transaction.BudgetId);
+        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
         if (ownershipCheckResult != null)
         {
             return ownershipCheckResult;
         }
 
-        return View(transaction);
+        return View(expense);
     }
     
-    // GET: Transaction/Edit/{id}
+    // GET: Expense/Edit/{id}
     public async Task<IActionResult> Edit(int id)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id);
-        if (transaction == null)
+        var expense = await _expenseRepository.GetByIdAsync(id);
+        if (expense == null)
         {
             return NotFound();
         }
         
         // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(transaction.BudgetId);
+        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
         if (ownershipCheckResult != null)
         {
             return ownershipCheckResult;
         }
         
-        var transactionViewModel = new TransactionEditViewModel
+        var expenseEditViewModel = new ExpenseEditViewModel
         {
-            Id = transaction.Id,
-            Recipient = transaction.Recipient,
-            Amount = transaction.Amount,
-            Date = transaction.Date,
-            Category = transaction.Category,
-            Description = transaction.Description,
-            BudgetId = transaction.BudgetId
+            Id = expense.Id,
+            Recipient = expense.Recipient,
+            Amount = expense.Amount,
+            Date = expense.Date,
+            Category = expense.Category,
+            Description = expense.Description,
+            BudgetId = expense.BudgetId
         };
 
-        return View(transactionViewModel);
+        return View(expenseEditViewModel);
     }
     
-    // POST: Transaction/Edit/{id}
+    // POST: Expense/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, TransactionEditViewModel viewModel)
+    public async Task<IActionResult> Edit(int id, ExpenseEditViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
-            ModelState.AddModelError("", "Failed to edit transaction.");
+            ModelState.AddModelError("", "Failed to edit expense.");
             return View("Edit", viewModel);
         }
 
-        var transaction = await _transactionRepository.GetByIdAsync(id);
-        if (transaction == null)
+        var expense = await _expenseRepository.GetByIdAsync(id);
+        if (expense == null)
         {
             return NotFound();
         }
         
-        var budget = await _budgetRepository.GetByIdAsync(transaction.BudgetId);
+        var budget = await _budgetRepository.GetByIdAsync(expense.BudgetId);
         if (budget == null)
         {
             return NotFound();
         }
 
         // Calculate new balance
-        var previousAmount = transaction.Amount;
+        var previousAmount = expense.Amount;
         var newAmount = viewModel.Amount;
         
-        // Update transaction details
-        transaction.Recipient = viewModel.Recipient;
-        transaction.Amount = viewModel.Amount;
-        transaction.Date = viewModel.Date;
-        transaction.Category = viewModel.Category;
-        transaction.Description = viewModel.Description;
+        // Update expense details
+        expense.Recipient = viewModel.Recipient;
+        expense.Amount = viewModel.Amount;
+        expense.Date = viewModel.Date;
+        expense.Category = viewModel.Category;
+        expense.Description = viewModel.Description;
 
         // Update the budget balance
         budget.Balance += previousAmount - newAmount;
     
         // Update the repositories
-        await _transactionRepository.UpdateAsync(transaction);
+        await _expenseRepository.UpdateAsync(expense);
         await _budgetRepository.UpdateAsync(budget);
         
-        await UpdateBcSpending(budget.Id, transaction.Date, transaction.Category);
+        await UpdateBcSpending(budget.Id, expense.Date, expense.Category);
         
-        return RedirectToAction("Edit", "Budget", new { id = transaction.BudgetId });
+        return RedirectToAction("Edit", "Budget", new { id = expense.BudgetId });
     }
     
-    // GET: Transaction/Delete/{id}
+    // GET: Expense/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id);
-        if (transaction == null)
+        var expense = await _expenseRepository.GetByIdAsync(id);
+        if (expense == null)
         {
             return NotFound();
         }
         
         // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(transaction.BudgetId);
+        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
         if (ownershipCheckResult != null)
         {
             return ownershipCheckResult;
         }
         
-        return View(transaction);
+        return View(expense);
     }
     
-    // POST: Transaction/Delete/{id}
-    [HttpPost, ActionName("DeleteTransaction")]
+    // POST: Expense/Delete/{id}
+    [HttpPost, ActionName("DeleteExpense")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id);
-        if (transaction == null)
+        var expense = await _expenseRepository.GetByIdAsync(id);
+        if (expense == null)
         {
             return NotFound();
         }
 
-        var budgetId = transaction.BudgetId;
+        var budgetId = expense.BudgetId;
 
-        // Get the budget associated with the transaction
+        // Get the budget associated with the expense
         var budget = await _budgetRepository.GetByIdAsync(budgetId);
         if (budget == null)
         {
@@ -211,14 +211,14 @@ public class TransactionController : Controller
         }
 
         // Update the budget balance
-        budget.Balance += transaction.Amount;
+        budget.Balance += expense.Amount;
         await _budgetRepository.UpdateAsync(budget);
         
-        var date = transaction.Date;
-        var category = transaction.Category;
+        var date = expense.Date;
+        var category = expense.Category;
         
-        // Delete the transaction
-        if (await _transactionRepository.DeleteAsync(transaction))
+        // Delete the expense
+        if (await _expenseRepository.DeleteAsync(expense))
         {
             await UpdateBcSpending(budgetId, date, category);
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
@@ -227,7 +227,7 @@ public class TransactionController : Controller
         return RedirectToAction("Error", "Home");
     }
     
-    private async Task UpdateBcSpending(int budgetId, DateTime transactionDate, TransactionCategory category)
+    private async Task UpdateBcSpending(int budgetId, DateTime expenseDate, ExpenseCategory category)
     {
         // Get all budget categories associated with the budget
         var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(budgetId);
@@ -237,25 +237,25 @@ public class TransactionController : Controller
         var startDate = new DateTime(now.Year, now.Month, 1);
         var endDate = startDate.AddMonths(1).AddDays(-1);
         
-        // Check if the transaction date is within the current month
-        if (transactionDate < startDate || transactionDate > endDate)
+        // Check if the expense date is within the current month
+        if (expenseDate < startDate || expenseDate > endDate)
         {
-            // If the transaction date is not within the current month, return
+            // If the expense date is not within the current month, return
             return;
         }
         
         foreach (var budgetCategory in budgetCategories)
         {
-            // Get the transaction categories associated with the budget category
-            var transactionCategories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(budgetCategory.Id);
+            // Get the expense categories associated with the budget category
+            var expenseCategories = await _bCtcRepository.GetExpenseCategoriesByBudgetCategoryIdAsync(budgetCategory.Id);
             
-            // Check if the transaction category is associated with the budget category
-            if (transactionCategories.Contains(category))
+            // Check if the expense category is associated with the budget category
+            if (expenseCategories.Contains(category))
             {
                 // Get the current month spending for the budget category
                 var currentMonthSpending =
-                    await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetId,
-                        transactionCategories);
+                    await _expenseRepository.GetCurrentMonthAmountForCategoriesAsync(budgetId,
+                        expenseCategories);
 
                 // Update the current spending for the budget category
                 budgetCategory.CurrentSpending = currentMonthSpending;

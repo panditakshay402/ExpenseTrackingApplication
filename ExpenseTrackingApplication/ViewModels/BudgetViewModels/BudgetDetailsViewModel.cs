@@ -10,7 +10,7 @@ public class BudgetDetailsViewModel
     public IEnumerable<Bill> Bills { get; set; }
     public IEnumerable<Budget> AllBudgets { get; set; }
     public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
-    public decimal TotalTransactionAmount { get; set; }
+    public decimal TotalExpenseAmount { get; set; }
     public decimal TotalIncomeAmount { get; set; }
     public SelectList BudgetSelectList { get; set; }
 }

@@ -24,5 +24,5 @@ public class BudgetCategory
     public int BudgetId { get; set; }
     public Budget? Budget { get; set; }
     
-    public ICollection<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; init; } = new List<BudgetCategoryTransactionCategory>();
+    public ICollection<BudgetCategoryExpenseCategory> BudgetCategoryExpenseCategories { get; init; } = new List<BudgetCategoryExpenseCategory>();
 }

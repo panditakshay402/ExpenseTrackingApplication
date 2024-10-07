@@ -13,8 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
 
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetCategory> BudgetCategories { get; set; }
-    public DbSet<BudgetCategoryTransactionCategory> BudgetCategoryTransactionCategories { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<BudgetCategoryExpenseCategory> BudgetCategoryExpenseCategories { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
     public DbSet<Income> Incomes { get; set; }
     public DbSet<Bill> Bills { get; set; }
     public DbSet<Notification> Notifications { get; set; }
@@ -61,7 +61,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .OnDelete(DeleteBehavior.Cascade);
         
         modelBuilder.Entity<BudgetCategory>()
-            .HasMany(bc => bc.BudgetCategoryTransactionCategories)
+            .HasMany(bc => bc.BudgetCategoryExpenseCategories)
             .WithOne(bctc => bctc.BudgetCategory)
             .HasForeignKey(bctc => bctc.BudgetCategoryId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -79,7 +79,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .Property(bc => bc.Limit)
             .HasColumnType("decimal(18,2)");
 
-        modelBuilder.Entity<Transaction>()
+        modelBuilder.Entity<Expense>()
             .Property(t => t.Amount)
             .HasColumnType("decimal(18,2)");
 

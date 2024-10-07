@@ -35,8 +35,8 @@ ViewData["Title"] = "Budget Details";
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Total Transactions:</h5>
-                <p class="card-text">@Model.TotalTransactionAmount.ToString("C")</p>
+                <h5 class="card-title">Total Expensess:</h5>
+                <p class="card-text">@Model.TotalExpenseAmount.ToString("C")</p>
             </div>
         </div>
     </div>
@@ -78,9 +78,9 @@ ViewData["Title"] = "Budget Details";
 
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Transactions & Incomes</h4>
+        <h4>Expenses & Incomes</h4>
         <div>
-            <a asp-controller="Transaction" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Transaction</a>
+            <a asp-controller="Expense" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Expense</a>
             <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
         </div>
     </div>
@@ -88,7 +88,7 @@ ViewData["Title"] = "Budget Details";
         <thead>
         <tr>
             <th>Date</th>
-            <th>Type</th> <!-- Transaction/Income -->
+            <th>Type</th> <!-- Expense/Income -->
             <th>Recipient/Source</th>
             <th>Amount</th>
             <th>Category</th>

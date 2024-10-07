@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ExpenseTrackingApplication.Data.Enum;
 
 namespace ExpenseTrackingApplication.Models;
 
-public class BudgetCategoryTransactionCategory
+public class BudgetCategoryExpenseCategory
 {
     [Key]
     public int Id { get; init; }
@@ -13,5 +12,5 @@ public class BudgetCategoryTransactionCategory
     public int BudgetCategoryId { get; set; }
     public BudgetCategory BudgetCategory { get; set; }
     
-    public string TransactionCategory { get; set; }
+    public string ExpenseCategory { get; set; }
 }

@@ -10,6 +10,6 @@ public class MonthlySummaryViewModel
     public decimal TotalExpenses { get; set; }
     public decimal TotalIncome { get; set; }
     public decimal NetSavings { get; set; }
-    public List<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public List<Expense> Expenses { get; set; } = new List<Expense>();
     public List<Income> Incomes { get; set; } = new List<Income>();
 }

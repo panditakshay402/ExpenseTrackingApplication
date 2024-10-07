@@ -3,7 +3,7 @@ using ExpenseTrackingApplication.Data.Enum;
 
 namespace ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 
-public class TransactionEditViewModel
+public class ExpenseEditViewModel
 {
     public int? Id { get; set; }
     [MaxLength(100)]
@@ -13,7 +13,7 @@ public class TransactionEditViewModel
     [Required(ErrorMessage = "Date is required.")]
     public DateTime Date { get; set; }
     [Required(ErrorMessage = "Category is required.")]
-    public TransactionCategory Category { get; set; }
+    public ExpenseCategory Category { get; set; }
     [MaxLength(100)]
     public string? Description { get; set; }
     public int BudgetId { get; set; }

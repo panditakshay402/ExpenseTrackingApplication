@@ -15,15 +15,15 @@ public class BudgetController : Controller
 {
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IExpenseRepository _expenseRepository;
     private readonly IIncomeRepository _incomeRepository;
     private readonly IBillRepository _billRepository;
     private readonly INotificationRepository _notificationRepository;
-    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationRepository notificationRepository)
+    public BudgetController(IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IBillRepository billRepository, INotificationRepository notificationRepository)
     {
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
-        _transactionRepository = transactionRepository;
+        _expenseRepository = expenseRepository;
         _incomeRepository = incomeRepository;
         _billRepository = billRepository;
         _notificationRepository = notificationRepository;
@@ -46,8 +46,8 @@ public class BudgetController : Controller
         foreach (var budget in budgets)
         {
             var monthlyIncome = await _incomeRepository.GetBudgetMonthIncomeAsync(budget.Id);
-            var monthlyExpense = await _transactionRepository.GetBudgetMonthExpenseAsync(budget.Id);
-            var monthlyTotalExpenses = await _transactionRepository.GetBudgetMonthExpensesCountAsync(budget.Id);
+            var monthlyExpense = await _expenseRepository.GetBudgetMonthExpenseAsync(budget.Id);
+            var monthlyTotalExpenses = await _expenseRepository.GetBudgetMonthExpensesCountAsync(budget.Id);
             var monthlyTotalIncomes = await _incomeRepository.GetBudgetMonthIncomesCountAsync(budget.Id);
             var monthlyTotalTransactions = monthlyTotalExpenses + monthlyTotalIncomes;
 
@@ -128,16 +128,16 @@ public class BudgetController : Controller
             return ownershipCheckResult;
         }
 
-        // Get transactions and incomes for the budget
-        var transactions = await _transactionRepository.GetByBudgetAsync(id);
+        // Get expenses and incomes for the budget
+        var expenses = await _expenseRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
         
-        // Combine transactions and incomes into a single list
-        var combinedEntries = transactions
+        // Combine expenses and incomes into a single list
+        var combinedEntries = expenses
             .Select(t => new CombinedEntryViewModel
             {
                 Date = t.Date,
-                Type = "Transaction",
+                Type = "Expense",
                 RecipientOrSource = t.Recipient,
                 Amount = t.Amount,
                 Category = t.Category.ToString(),
@@ -193,7 +193,7 @@ public class BudgetController : Controller
             Bills = sortedBills,
             AllBudgets = allBudgets,
             BudgetCategories = budgetCategories,
-            TotalTransactionAmount = transactions.Sum(t => t.Amount),
+            TotalExpenseAmount = expenses.Sum(t => t.Amount),
             TotalIncomeAmount = incomes.Sum(i => i.Amount),
             BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
@@ -217,7 +217,7 @@ public class BudgetController : Controller
             return ownershipCheckResult;
         }
         
-        var transactions = await _transactionRepository.GetByBudgetAsync(id);
+        var expenses = await _expenseRepository.GetByBudgetAsync(id);
         var incomes = await _incomeRepository.GetByBudgetAsync(id);
         var bills = await _billRepository.GetByBudgetAsync(id);
         
@@ -225,7 +225,7 @@ public class BudgetController : Controller
         {
             Id = id,
             Name = budget.Name,
-            Transactions = transactions,
+            Expenses = expenses,
             Incomes = incomes,
             Bills = bills
         };
@@ -247,7 +247,7 @@ public class BudgetController : Controller
         {
             // Fetch budget edit view model
             var budgetModel = await _budgetRepository.GetByIdAsync(id);
-            var transactions = await _transactionRepository.GetByBudgetAsync(id);
+            var expenses = await _expenseRepository.GetByBudgetAsync(id);
             var incomes = await _incomeRepository.GetByBudgetAsync(id);
             var bills = await _billRepository.GetByBudgetAsync(id);
 
@@ -255,7 +255,7 @@ public class BudgetController : Controller
             {
                 Id = budgetModel.Id,
                 Name = budgetModel.Name,
-                Transactions = transactions,
+                Expenses = expenses,
                 Incomes = incomes,
                 Bills = bills
             };

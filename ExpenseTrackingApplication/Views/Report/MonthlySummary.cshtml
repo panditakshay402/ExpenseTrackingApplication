@@ -13,8 +13,8 @@ ViewData["Title"] = "Monthly Summary";
     <p><strong>Net Savings:</strong> @Model.NetSavings.ToString("C")</p>
 </div>
 
-<h2>Transactions</h2>
-@if (Model.Transactions.Any())
+<h2>Expenses</h2>
+@if (Model.Expenses.Any())
 {
 <table class="table">
     <thead>
@@ -26,13 +26,13 @@ ViewData["Title"] = "Monthly Summary";
     </tr>
     </thead>
     <tbody>
-    @foreach (var transaction in Model.Transactions)
+    @foreach (var expense in Model.Expenses)
     {
     <tr>
-        <td>@transaction.Date.ToShortDateString()</td>
-        <td>@transaction.Category</td>
-        <td>@transaction.Amount.ToString("C")</td>
-        <td>@transaction.Description</td>
+        <td>@expense.Date.ToShortDateString()</td>
+        <td>@expense.Category</td>
+        <td>@expense.Amount.ToString("C")</td>
+        <td>@expense.Description</td>
     </tr>
     }
     </tbody>
@@ -40,7 +40,7 @@ ViewData["Title"] = "Monthly Summary";
 }
 else
 {
-<p>No transactions found for this month.</p>
+<p>No expenses found for this month.</p>
 }
 
 <h2>Incomes</h2>

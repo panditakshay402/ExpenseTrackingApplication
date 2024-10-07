@@ -6,25 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTrackingApplication.Controllers;
 
-public class BudgetCategoryTransactionCategoryController : Controller
+public class BudgetCategoryExpenseCategoryController : Controller
 {
-    private readonly IBudgetCategoryTransactionCategoryRepository _bCtcRepository;
+    private readonly IBudgetCategoryExpenseCategoryRepository _bCtcRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
     private readonly IBudgetRepository _budgetRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IExpenseRepository _expenseRepository;
     private readonly INotificationRepository _notificationRepository;
 
-    public BudgetCategoryTransactionCategoryController(IBudgetCategoryTransactionCategoryRepository bCtcRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, INotificationRepository notificationRepository, IBudgetRepository budgetRepository)
+    public BudgetCategoryExpenseCategoryController(IBudgetCategoryExpenseCategoryRepository bCtcRepository, IBudgetCategoryRepository budgetCategoryRepository, IExpenseRepository expenseRepository, INotificationRepository notificationRepository, IBudgetRepository budgetRepository)
     {
         _bCtcRepository = bCtcRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
-        _transactionRepository = transactionRepository;
+        _expenseRepository = expenseRepository;
         _notificationRepository = notificationRepository;
         _budgetRepository = budgetRepository;
     }
     
-    // GET: BudgetCategoryTransactionCategory/AssignTransactionCategories
-    public async Task<IActionResult> AssignTransactionCategories(int budgetCategoryId)
+    // GET: BudgetCategoryExpenseCategory/AssignExpenseCategories
+    public async Task<IActionResult> AssignExpenseCategories(int budgetCategoryId)
     {
         var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(budgetCategoryId);
         if (budgetCategory == null)
@@ -33,22 +33,22 @@ public class BudgetCategoryTransactionCategoryController : Controller
             return RedirectToAction("Overview", "Budget");
         }
         
-        var selectedCategories = await _bCtcRepository.GetTransactionCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
+        var selectedCategories = await _bCtcRepository.GetExpenseCategoriesByBudgetCategoryIdAsync(budgetCategoryId);
         
-        var viewModel = new AssignTransactionCategoriesViewModel
+        var viewModel = new AssignExpenseCategoriesViewModel
         {
             BudgetCategoryId = budgetCategoryId,
-            AllTransactionCategories = Enum.GetNames(typeof(TransactionCategory)).ToList(),
+            AllExpenseCategories = Enum.GetNames(typeof(ExpenseCategory)).ToList(),
             SelectedCategories = selectedCategories.Select(c => c.ToString()).ToList()
         };
 
         return View(viewModel);
     }
     
-    // POST: BudgetCategoryTransactionCategory/AssignTransactionCategories
+    // POST: BudgetCategoryExpenseCategory/AssignExpenseCategories
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AssignTransactionCategories(AssignTransactionCategoriesViewModel viewModel)
+    public async Task<IActionResult> AssignExpenseCategories(AssignExpenseCategoriesViewModel viewModel)
     {
         var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(viewModel.BudgetCategoryId);
         if (budgetCategory == null)
@@ -70,15 +70,15 @@ public class BudgetCategoryTransactionCategoryController : Controller
 
         foreach (var category in selectedCategories)
         {
-            var bCtc = new BudgetCategoryTransactionCategory
+            var bCtc = new BudgetCategoryExpenseCategory
             {
                 BudgetCategoryId = viewModel.BudgetCategoryId,
-                TransactionCategory = category
+                ExpenseCategory = category
             };
             await _bCtcRepository.AddAsync(bCtc);
         }
         
-        var currentMonthSpending = await _transactionRepository.GetCurrentMonthAmountForCategoriesAsync(budgetCategory.BudgetId, selectedCategories.Select(Enum.Parse<TransactionCategory>).ToList());
+        var currentMonthSpending = await _expenseRepository.GetCurrentMonthAmountForCategoriesAsync(budgetCategory.BudgetId, selectedCategories.Select(Enum.Parse<ExpenseCategory>).ToList());
         
         // Update the current spending amount for the budget category
         budgetCategory.CurrentSpending = currentMonthSpending;

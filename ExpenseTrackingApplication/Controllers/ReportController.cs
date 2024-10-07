@@ -17,16 +17,16 @@ public class ReportController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly IBudgetRepository _budgetRepository;
     private readonly IBudgetCategoryRepository _budgetCategoryRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IExpenseRepository _expenseRepository;
     private readonly IIncomeRepository _incomeRepository;
 
-    public ReportController(IReportRepository reportRepository, UserManager<AppUser> userManager, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, ITransactionRepository transactionRepository, IIncomeRepository incomeRepository)
+    public ReportController(IReportRepository reportRepository, UserManager<AppUser> userManager, IBudgetRepository budgetRepository, IBudgetCategoryRepository budgetCategoryRepository, IExpenseRepository expenseRepository, IIncomeRepository incomeRepository)
     {
         _userManager = userManager;
         _budgetRepository = budgetRepository;
         _budgetCategoryRepository = budgetCategoryRepository;
         _reportRepository = reportRepository;
-        _transactionRepository = transactionRepository;
+        _expenseRepository = expenseRepository;
         _incomeRepository = incomeRepository;
         
     }
@@ -112,13 +112,13 @@ public class ReportController : Controller
         var budget = await _budgetRepository.GetByIdAsync(budgetId);
         var budgetName = budget.Name;
         
-        // Get transactions and incomes for the month
-        var transactions = (await _transactionRepository.GetByDateRangeAsync(budgetId, startDate, endDate)).ToList();
+        // Get expenses and incomes for the month
+        var expenses = (await _expenseRepository.GetByDateRangeAsync(budgetId, startDate, endDate)).ToList();
         var incomes = (await _incomeRepository.GetByDateRangeAsync(budgetId, startDate, endDate)).ToList();
 
         // Calculate total income, total expenses, and net savings
         var totalIncome = incomes.Sum(i => i.Amount);
-        var totalExpenses = transactions.Sum(e => e.Amount);
+        var totalExpenses = expenses.Sum(e => e.Amount);
         var netSavings = totalIncome - totalExpenses;
 
         return new MonthlySummaryViewModel
@@ -129,7 +129,7 @@ public class ReportController : Controller
             TotalExpenses = totalExpenses,
             TotalIncome = totalIncome,
             NetSavings = netSavings,
-            Transactions = transactions.ToList(),
+            Expenses = expenses.ToList(),
             Incomes = incomes.ToList()
         };
     }
@@ -207,9 +207,9 @@ public class ReportController : Controller
     
     public async Task<ExpensesByCategoryViewModel> GetExpensesByCategoryAsync(int budgetId, DateTime startDate, DateTime endDate)
     {
-        var transactions = await _transactionRepository.GetByDateRangeAsync(budgetId, startDate, endDate);
+        var expenses = await _expenseRepository.GetByDateRangeAsync(budgetId, startDate, endDate);
 
-        var expensesByCategory = transactions
+        var expensesByCategory = expenses
             .GroupBy(t => t.Category)
             .Select(group => new CategoryExpenses
             {
@@ -270,9 +270,9 @@ public class ReportController : Controller
     
     public async Task<TrendAnalysisViewModel> GetTrendAnalysisAsync(int budgetId)
     {
-        var transactions = await _transactionRepository.GetByBudgetAsync(budgetId);
+        var expenses = await _expenseRepository.GetByBudgetAsync(budgetId);
 
-        var monthlySpending = transactions
+        var monthlySpending = expenses
             .GroupBy(t => new { t.Date.Year, t.Date.Month })
             .Select(group => new MonthlySpending
             {

@@ -9,6 +9,6 @@ public class ExpensesByCategoryViewModel
 
 public class CategoryExpenses
 {
-    public TransactionCategory Category { get; set; }
+    public ExpenseCategory Category { get; set; }
     public decimal TotalAmount { get; set; }
 }

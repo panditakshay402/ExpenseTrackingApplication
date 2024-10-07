@@ -1,14 +1,14 @@
-﻿@model ExpenseTrackingApplication.ViewModels.BudgetViewModels.AssignTransactionCategoriesViewModel
+﻿@model ExpenseTrackingApplication.ViewModels.BudgetViewModels.AssignExpenseCategoriesViewModel
 
-<h2>Assign transaction categories to Budget Category</h2>
+<h2>Assign expense categories to Budget Category</h2>
 
-<form asp-action="AssignTransactionCategories" method="post">
+<form asp-action="AssignExpenseCategories" method="post">
     <input type="hidden" asp-for="BudgetCategoryId" />
 
     <div>
-        @if (Model.AllTransactionCategories.Any())
+        @if (Model.AllExpenseCategories.Any())
         {
-        foreach (var category in Model.AllTransactionCategories)
+        foreach (var category in Model.AllExpenseCategories)
         {
             <div>
                 <input type="checkbox" name="SelectedCategories" value="@category"

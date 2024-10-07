@@ -9,7 +9,7 @@ public class BudgetEditViewModel
     [Required (ErrorMessage = "Name is required.")]
     [StringLength(25, ErrorMessage = "The Budget name must be at most 25 characters long.")]
     public string Name { get; set; } = "Budget";
-    public IEnumerable<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public IEnumerable<Expense> Expenses { get; set; } = new List<Expense>();
     public IEnumerable<Income> Incomes { get; set; } = new List<Income>();
     public IEnumerable<Bill> Bills { get; set; } = new List<Bill>();
 }

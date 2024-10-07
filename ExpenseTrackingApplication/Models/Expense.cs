@@ -4,7 +4,7 @@ using ExpenseTrackingApplication.Data.Enum;
 
 namespace ExpenseTrackingApplication.Models;
 
-public class Transaction
+public class Expense
 {
     [Key]
     public int Id { get; init; }
@@ -15,7 +15,7 @@ public class Transaction
     [Required(ErrorMessage = "Date is required.")]
     public DateTime Date { get; set; }
     [Required(ErrorMessage = "Category is required.")]
-    public TransactionCategory Category { get; set; }
+    public ExpenseCategory Category { get; set; }
     [MaxLength(100)]
     public string? Description { get; set; }
     

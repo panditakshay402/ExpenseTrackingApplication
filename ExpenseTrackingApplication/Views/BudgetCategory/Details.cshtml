@@ -25,9 +25,9 @@
 </div>
 
 <div>
-    <h4>Transactions for this Category</h4>
+    <h4>Expenses for this Category</h4>
     <hr />
-    @if (Model.CategoryTransactions.Any())
+    @if (Model.CategoryExpenses.Any())
     {
         <table class="table table-striped">
             <thead>
@@ -40,14 +40,14 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var transaction in Model.CategoryTransactions.OrderByDescending(t => t.Date)) // Sortowanie po dacie
+            @foreach (var expense in Model.CategoryExpenses.OrderByDescending(t => t.Date)) // Sortowanie po dacie
             {
                 <tr>
-                    <td>@transaction.Date.ToString("yyyy-MM-dd")</td>
-                    <td>@transaction.Recipient</td>
-                    <td>@transaction.Amount</td>
-                    <td>@transaction.Description</td>
-                    <td>@transaction.Category</td>
+                    <td>@expense.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@expense.Recipient</td>
+                    <td>@expense.Amount</td>
+                    <td>@expense.Description</td>
+                    <td>@expense.Category</td>
                 </tr>
             }
             </tbody>
@@ -55,7 +55,7 @@
     }
     else
     {
-        <p>No transactions available for this category.</p>
+        <p>No expense available for this category.</p>
     }
 </div>
 
