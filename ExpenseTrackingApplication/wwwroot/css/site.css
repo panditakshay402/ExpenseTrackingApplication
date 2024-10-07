@@ -20,6 +20,7 @@ html, body {
 /* Transparent header with light green background */
 header {
   background-color: rgba(78, 220, 255, 0.75);
+  backdrop-filter: blur(8px); /* Background blur */
   font-weight: bold; /* Bold font */
   position: sticky;
   top: 0; /* Stick to the top */

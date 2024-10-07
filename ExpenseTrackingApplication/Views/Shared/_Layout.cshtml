@@ -44,11 +44,11 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="AboutBudgets">About</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Index">Overview</a></li>
                             <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="AddNewBudget">Add New Budget</a></li>
 
                             @if (User.Identity is { IsAuthenticated: true }) // Only show user's budgets if authenticated
                             {
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Budget" asp-action="Index">Overview</a></li>
                                 <li class="dropdown-header text-muted" role="presentation">Your Budgets:</li>
                                 @foreach (var budget in userBudgets)
                                 {
