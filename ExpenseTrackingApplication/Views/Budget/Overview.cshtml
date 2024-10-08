@@ -6,32 +6,119 @@
 
 <link rel="stylesheet" href="~/css/budget.css" asp-append-version="true"/>
 
-<div>
-    <h2>Your Budgets</h2>
-    <a asp-action="AddNewBudget" class="btn btn-warning">Add New Budget</a>
+<div class="budget-header">
+    <h2>Your Budget Overview</h2>
+    <a asp-action="AddNewBudget" class="btn btn-success">Add New Budget</a>
 </div>
+
 
 <div class="row">
     @foreach (var item in Model)
     {
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body position-relative">
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-edit-icon position-absolute">
-                    <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/edit.png" alt="Edit" width="16" height="16"/>
-                </a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-delete-icon position-absolute">
-                    <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/remove.png" alt="Delete" width="16" height="16"/>
-                </a>
-                <h5 class="card-title">@item.Name</h5>
-                <p class="card-text">Balance: @item.Balance</p>
-                <p class="card-text">Monthly Income: @item.MonthlyIncome</p>
-                <p class="card-text">Monthly Expenses: @item.MonthlyExpense</p>
-                <p class="card-text">Transactions This Month: @item.MonthlyTotalTransactions</p>
-                <p class="card-text">Created On: @item.CreatedDate.ToShortDateString()</p>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">View Details</a>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-edit-icon position-absolute">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/edit.png" alt="Edit" width="16" height="16"/>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-delete-icon position-absolute">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/remove.png" alt="Delete" width="16" height="16"/>
+                    </a>
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728380171/icons/balance.png" alt="Balance Icon" width="16" height="16" class="balance-icon" />
+                        <span class="balance-label">Balance:</span>
+                        <span class="balance-value" data-balance="@item.Balance"></span>
+                    </p>
+                    <p class="card-text">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728380306/icons/income2.png" alt="Income Icon" width="16" height="16" class="income-icon" />
+                        <span class="income-label">Monthly Income:</span>
+                        <span class="income-value" data-income="@item.MonthlyIncome">@item.MonthlyIncome</span>
+                    </p>
+                    <p class="card-text">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728381618/icons/buy.png" alt="Expenses Icon" width="16" height="16" class="expense-icon" />
+                        <span class="expense-label">Monthly Expenses:</span>
+                        <span class="expense-value" data-expense="@item.MonthlyExpense">@item.MonthlyExpense</span>
+                    </p>
+                    <p class="card-text">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728382067/icons/calculator.png" alt="Transactions Icon" width="16" height="16" class="transactions-icon" />
+                        <span class="transactions-label">Transactions This Month:</span>
+                        <span class="transactions-value">@item.MonthlyTotalTransactions</span>
+                    </p>
+                    <p class="card-text">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728381864/icons/calendar.png" alt="Created On Icon" width="16" height="16" class="created-date-icon" />
+                        <span class="created-date-label">Created On:</span>
+                        <span class="created-date-value">@item.CreatedDate.ToShortDateString()</span>
+                    </p>
+
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-details position-absolute">
+                        <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726214738/icons/seen.png" alt="Details Icon" width="16" height="16" class="details-icon"/>
+                        Details
+                    </a>
+
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const balanceElements = document.querySelectorAll('.balance-value');
+
+        balanceElements.forEach(el => {
+            const finalValue = parseFloat(el.getAttribute('data-balance').replace(',', '.'));
+            animateValue(el, finalValue, 1000);
+        });
+
+        function animateValue(el, end, duration) {
+            const start = 0; // Always start from 0
+            const increment = end > start ? Math.ceil((end - start) / 100) : Math.floor((end - start) / 100); // Increment for spinning
+            let currentValue = start;
+            let startTime = null;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+
+                // Change the value at a consistent rate
+                if (progress < duration) {
+                    currentValue += increment;
+
+                    // Prevent overshooting the end value
+                    if ((increment > 0 && currentValue >= end) || (increment < 0 && currentValue <= end)) {
+                        currentValue = end;
+                    }
+
+                    // Update the displayed value
+                    el.textContent = currentValue.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    el.classList.add('animating');
+                    window.requestAnimationFrame(step);
+                } else {
+                    // Ensure we end at the final value
+                    el.textContent = end.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    el.classList.remove('animating');
+                    // Set color based on final value
+                    if (end >= 0) {
+                        el.classList.add('animated-up');
+                    } 
+                    else {
+                        el.classList.add('animated-down');
+                    }
+                }
+
+                // Spinning effect
+                if (progress % 200 < 100) { // Change the value for spin speed
+                    el.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+                } else {
+                    el.style.transform = 'rotate(0deg)';
+                }
+            }
+
+            window.requestAnimationFrame(step);
+        }
+    });
+</script>
+
+
+

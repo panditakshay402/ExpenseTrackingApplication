@@ -1,5 +1,23 @@
 ﻿/* --------- Budget Style ------------ */
 
+/* Budget header */
+.budget-header {
+    display: flex; /* Allows flexible arrangement of elements */
+    justify-content: space-between; /* Arranges elements with space between them */
+    align-items: center; /* Aligns elements vertically */
+    margin-bottom: 20px; /* Distance from the bottom */
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+
 /* Main style for cards */
 .card {
     background: linear-gradient(to right, #ff767c, #6cb3ff); /* Red-blue gradient */
@@ -8,6 +26,15 @@
     position: relative;
     overflow: hidden;
 }
+
+/* Main style for card titles */
+.card-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #333;             /* Adding a darker color for better visibility */
+    margin-bottom: 0.75rem;  /* A little bit of space from the bottom elements */
+}
+
 
 /* Style for delete and edit button */
 .btn-delete-icon,
@@ -51,3 +78,86 @@
     width: 16px;
     height: 16px;
 }
+
+/* Style for balance icon and text */
+.balance-icon {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.balance-label {
+    font-weight: bold; /* Highlighted inscription "Balance" */
+}
+
+.balance-value {
+    font-weight: bold; /* Distinguish value */
+    transition: color 0.5s ease; /* Smooth color change */
+}
+
+.animating {
+    color: yellow; /* Color during animation */
+}
+
+.animated-up {
+    color: green; /* Color when animation ends with positive value */
+}
+
+.animated-down {
+    color: red; /* Color when animation ends with negative value */
+}
+
+.income-value,
+.expense-value {
+    font-weight: bold; /* Distinguish value */
+}
+
+.income-label,
+.expense-label {
+    margin-left: 5px; /* Space between icon and text */
+}
+
+.income-value {
+    color: #28a745;
+}
+
+.expense-value {
+    color: #dc3545;
+}
+
+
+.transactions-value,
+.created-date-value {
+    font-weight: bold;
+}
+
+.transactions-label,
+.created-date-label {
+    margin-left: 5px;
+}
+
+.transactions-value {
+    color: #007bff; /* Color for transaction quantity */
+}
+
+.created-date-value {
+    color: #6c757d; /* Color for date */
+}
+
+/* Style for details button */
+.btn-details {
+    background-color: #17a2b8;
+    color: white;
+    bottom: 10px; /* Distance from the bottom */
+    right: 10px; /* Distance from right edge */
+    border-radius: 0.5rem; /* Rounding the edges */
+}
+
+.btn-details:hover {
+    background-color: #138496;
+}
+
+.details-icon {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+
