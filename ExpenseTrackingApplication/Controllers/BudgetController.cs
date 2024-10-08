@@ -290,8 +290,8 @@ public class BudgetController : Controller
     // GET: Budget/Delete/{id}
     public async Task<IActionResult> Delete(int id)
     {
-        var budgetDetails = await _budgetRepository.GetByIdAsync(id);
-        if (budgetDetails == null)
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null)
         {
             return NotFound();
         }
@@ -303,7 +303,14 @@ public class BudgetController : Controller
             return ownershipCheckResult;
         }
         
-        return View(budgetDetails);
+        // Convert Budget to BudgetOverviewViewModel
+        var budgetViewModel = new BudgetOverviewViewModel
+        {
+            Id = budget.Id,
+            Name = budget.Name,
+        };
+
+        return PartialView("_DeleteBudgetPartialView", budgetViewModel);
     }
     
     // POST: Budget/Delete/{id}
@@ -323,7 +330,6 @@ public class BudgetController : Controller
         }
         
         await _budgetRepository.DeleteAsync(budget);
-        
         await _notificationRepository.SendNotificationAsync(
             userId,
             "Budget Removed",

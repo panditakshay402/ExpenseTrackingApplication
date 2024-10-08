@@ -21,9 +21,11 @@
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-edit-icon position-absolute">
                         <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/edit.png" alt="Edit" width="16" height="16"/>
                     </a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-delete-icon position-absolute">
+                    <button type="button" class="btn btn-danger btn-delete-icon position-absolute" data-bs-toggle="modal" data-bs-target="#DeleteBudget-@item.Id">
                         <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728377095/icons/remove.png" alt="Delete" width="16" height="16"/>
-                    </a>
+                    </button>
+                    @await Html.PartialAsync("_DeleteBudgetPartialView", item)
+
                     <h5 class="card-title">@item.Name</h5>
                     <p class="card-text">
                         <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728380171/icons/balance.png" alt="Balance Icon" width="16" height="16" class="balance-icon" />
@@ -61,7 +63,7 @@
     }
 </div>
 
-
+@* balance animation *@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const balanceElements = document.querySelectorAll('.balance-value');
@@ -112,6 +114,3 @@
         }
     });
 </script>
-
-
-
