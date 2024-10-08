@@ -1,9 +1,53 @@
-﻿.card {
-    border: 1px solid #007bff; /* Change to your desired border color */
+﻿/* --------- Budget Style ------------ */
+
+/* Main style for cards */
+.card {
+    background: linear-gradient(to right, #ff767c, #6cb3ff); /* Red-blue gradient */
     border-radius: 0.5rem;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Style for delete and edit button */
+.btn-delete-icon,
+.btn-edit-icon {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: transform 0.2s;
 }
 
-.card:hover {
-    transform: scale(1.05); /* Slightly enlarge the card on hover */
+/* Set buttons close to top-right corner */
+.btn-delete-icon {
+    background-color: #dc3545;
+    top: 8px;
+    right: 8px;
+    position: absolute;
+}
+
+.btn-edit-icon {
+    background-color: #ffc107;
+    top: 8px;
+    right: 48px;
+    position: absolute;
+}
+
+.btn-delete-icon:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+.btn-edit-icon:hover {
+    background-color: #e0a800;
+    transform: scale(1.1);
+}
+
+.btn-edit-icon img,
+.btn-delete-icon img {
+    width: 16px;
+    height: 16px;
 }
