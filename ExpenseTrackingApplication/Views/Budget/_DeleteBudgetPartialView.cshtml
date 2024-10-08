@@ -1,6 +1,6 @@
 ﻿@model ExpenseTrackingApplication.ViewModels.BudgetViewModels.BudgetOverviewViewModel
 
-<link rel="stylesheet" href="~/css/budget.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true"/>
 
 <div class="modal fade" id="DeleteBudget-@Model.Id" aria-labelledby="deleteBudgetLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -17,8 +17,8 @@
                         <p>Are you sure you want to delete @Model.Name?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-delete">Delete</button>
                     </div>
                 </form>
             </div>

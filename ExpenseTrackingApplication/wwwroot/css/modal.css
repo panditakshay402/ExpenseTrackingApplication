@@ -1,0 +1,63 @@
+﻿/* --------- Delete Budget Modal Style ------------ */
+
+/* Main style for modal */
+.modal-content {
+    border-radius: 0.5rem; /* Rounding the edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Modal header style */
+.modal-header {
+    background-color: #3e9dff; /* Light gray background */
+    border-bottom: 1px solid #dee2e6; /* Border at the bottom */
+}
+
+/* Modal title style */
+.modal-title {
+    font-weight: bold; /* Bold title */
+    color: #333; /* Dark color for visibility */
+}
+
+/* Modal body style */
+.modal-body {
+    background: linear-gradient(to right, #6cb3ff, #ff767c);
+    padding: 20px; /* Spacing inside the modal */
+}
+
+/* Modal footer style */
+.modal-footer {
+    /*background-color: #ff4951; !* Light gray background *!*/
+    border-top: 1px solid #dee2e6; /* Border at the top */
+}
+
+/* Button styles */
+.btn-cancel {
+    background-color: #ffd442 !important;
+    color: white !important;
+}
+
+.btn-delete {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.btn-cancel:hover {
+    background-color: #d6b323 !important;
+}
+
+.btn-delete:hover {
+    background-color: #c82333 !important;
+}
+
+/* Close button style */
+.btn-close {
+    color: #000; /* Close button color */
+}
+
+/* Ensuring responsive design */
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 100%; /* Full width on small screens */
+        margin: 0; /* Remove margin */
+    }
+}
