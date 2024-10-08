@@ -6,11 +6,11 @@
 
 <link rel="stylesheet" href="~/css/budget.css" asp-append-version="true"/>
 
+
 <div class="budget-header">
     <h2>Your Budget Overview</h2>
     <a asp-action="AddNewBudget" class="btn btn-success">Add New Budget</a>
 </div>
-
 
 <div class="row">
     @foreach (var item in Model)
@@ -55,7 +55,6 @@
                         <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1726214738/icons/seen.png" alt="Details Icon" width="16" height="16" class="details-icon"/>
                         Details
                     </a>
-
                 </div>
             </div>
         </div>
