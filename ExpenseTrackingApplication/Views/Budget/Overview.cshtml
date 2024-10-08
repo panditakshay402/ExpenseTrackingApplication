@@ -62,6 +62,7 @@
     }
 </div>
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const balanceElements = document.querySelectorAll('.balance-value');
@@ -106,15 +107,8 @@
                         el.classList.add('animated-down');
                     }
                 }
-
-                // Spinning effect
-                if (progress % 200 < 100) { // Change the value for spin speed
-                    el.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-                } else {
-                    el.style.transform = 'rotate(0deg)';
-                }
             }
-
+            
             window.requestAnimationFrame(step);
         }
     });
