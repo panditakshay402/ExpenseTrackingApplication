@@ -5,7 +5,7 @@ ViewData["Title"] = "Budget Details";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Details for Budget: @Model.Budget.Name</h2>
+    <h2>Details for Budget</h2>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Budget.Id" class="btn btn-warning">Edit</a>
         <a asp-action="Overview" class="btn btn-primary">Back to Overview</a>
@@ -13,37 +13,43 @@ ViewData["Title"] = "Budget Details";
 </div>
 
 <div class="row">
-    <div class="col-md-4 mb-3">
+    <!-- First card: 2/3 width -->
+    <div class="col-lg-8 mb-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Name:</h5>
-                <p class="card-text">@Model.Budget.Name</p>
+                <h5 class="card-title">Budget Overview</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Name:</strong> @Model.Budget.Name</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="balance @(Model.Budget.Balance >= 0 ? "positive" : "negative")">
+                            <strong>Balance:</strong> @Model.Budget.Balance.ToString("C")
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Expenses:</strong> -@Model.TotalExpenseAmount.ToString("C")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Income:</strong> @Model.TotalIncomeAmount.ToString("C")</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
+
+    <!-- Second card: 1/3 width -->
+    <div class="col-lg-4 mb-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Balance:</h5>
-                <p class="card-text balance @(Model.Budget.Balance >= 0 ? "positive" : "negative")">
-                    @Model.Budget.Balance.ToString("C")
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Total Expenses:</h5>
-                <p class="card-text">-@Model.TotalExpenseAmount.ToString("C")</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Total Income:</h5>
-                <p class="card-text">@Model.TotalIncomeAmount.ToString("C")</p>
+                <h5 class="card-title">Statistics</h5>
+                <hr>
+                <p>aaaa</p>
+                @* <p><strong>Total Categories:</strong> @Model.BudgetCategories.Count</p> *@
+                @* <p><strong>Remaining Balance:</strong> @Model.RemainingBalance.ToString("C")</p> *@
+                @* <p><strong>Average Monthly Spending:</strong> @Model.AverageMonthlySpending.ToString("C")</p> *@
+                @* <p><strong>Months Active:</strong> @Model.MonthsActive</p> *@
             </div>
         </div>
     </div>
@@ -83,35 +89,26 @@ ViewData["Title"] = "Budget Details";
             <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
         </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Type</th> <!-- Expense/Income -->
-            <th>Recipient/Source</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var entry in Model.CombinedEntries)
+    <div class="list-group">
+        @foreach (var dateGroup in Model.CombinedEntries.GroupBy(e => e.Date.ToShortDateString()))
         {
-        <tr>
-            <td>@entry.Date.ToShortDateString()</td>
-            <td>
-                <span style="color:@(entry.Type == "Income" ? "green" : "black")">
-                    @entry.Type
-                </span>
-            </td>
-            <td>@entry.RecipientOrSource</td>
-            <td>@entry.Amount</td>
-            <td>@entry.Category</td>
-            <td>@entry.Description</td>
-        </tr>
+        <div class="list-group-item">
+            <h5>@dateGroup.Key</h5>
+            <ul class="list-unstyled mb-0">
+                @foreach (var entry in dateGroup)
+                {
+                <li class="d-flex justify-content-between">
+                    <span><strong>@entry.RecipientOrSource</strong></span>
+                    <span class="@(entry.Type == "Income" ? "text-success" : "text-danger")">
+                                @(entry.Type == "Expense" ? "-" : "") @entry.Amount.ToString("C")
+                            </span>
+                    <span><em>@entry.Category</em></span>
+                </li>
+                }
+            </ul>
+        </div>
         }
-        </tbody>
-    </table>
+    </div>
 </div>
 
 <div>
@@ -121,51 +118,42 @@ ViewData["Title"] = "Budget Details";
             <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Bill</a>
         </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>DueDate</th>
-            <th>Frequency</th>
-            <th>Status</th>
-            <th>Days Left</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
+
+    <div class="list-group">
         @foreach (var bill in Model.Bills)
         {
-        <tr>
-            <td>@bill.Name</td>
-            <td>@bill.Amount</td>
-            <td>@bill.DueDate.ToShortDateString()</td>
-            <td>@bill.Frequency.ToString()</td>
-            <td class="@(bill.IsPaid ? "text-success" : "")">
-                @(bill.IsPaid ? "Paid" : "Unpaid")
-            </td>
-            <td>
-                @if (!bill.IsPaid)
-                {
-                    var daysLeft = (bill.DueDate - DateTime.Now.AddDays(-1)).Days;
-                    if (daysLeft >= 0)
+        <div class="list-group-item">
+            <h5>@bill.Name</h5>
+            <ul class="list-unstyled mb-0">
+                <li><strong>Amount:</strong> @bill.Amount.ToString("C")</li>
+                <li><strong>Due Date:</strong> @bill.DueDate.ToShortDateString()</li>
+                <li><strong>Frequency:</strong> @bill.Frequency.ToString()</li>
+                <li class="@(bill.IsPaid ? "text-success" : "")">
+                    <strong>Status:</strong> @(bill.IsPaid ? "Paid" : "Unpaid")
+                </li>
+                <li>
+                    @if (!bill.IsPaid)
                     {
-                        <span>@daysLeft days left</span>
-                    }
+                        var daysLeft = (bill.DueDate - DateTime.Now.AddDays(-1)).Days;
+                        if (daysLeft >= 0)
+                        {
+                            <strong>Days Left:</strong> <span>@daysLeft days left</span>
+                        }
+                        else
+                        {
+                            <strong>Days Left:</strong> <span class="text-danger">Overdue by @Math.Abs(daysLeft-1) days</span>
+                        }
+                        }
                     else
                     {
-                        <span class="text-danger">Overdue by @Math.Abs(daysLeft-1) days</span>
+                        <strong>Days Left:</strong> <span class="text-muted">Already Paid</span>
                     }
-                }
-                else
-                {
-                    <span class="text-muted">Already Paid</span>
-                }
-            </td>
-            <td>
+                </li>
+            </ul>
+            <div class="mt-2">
                 @if (!bill.IsPaid)
                 {
-                <form asp-controller="Bill" asp-action="Pay" asp-route-id="@bill.Id" method="post">
+                <form asp-controller="Bill" asp-action="Pay" asp-route-id="@bill.Id" method="post" class="d-inline">
                     <button type="submit" class="btn btn-success">Pay</button>
                 </form>
                 }
@@ -173,24 +161,8 @@ ViewData["Title"] = "Budget Details";
                 {
                 <span class="text-muted">Already Paid</span>
                 }
-            </td>
-        </tr>
-        }
-        </tbody>
-    </table>
-</div>
-
-<div>
-    <h4>Navigate to Another Budget</h4>
-    <form asp-controller="Budget" asp-action="Details" method="get">
-        <div class="form-group">
-            <label for="budgetSelect">Select Budget</label>
-            <select id="budgetSelect" name="id" class="form-control" onchange="this.form.submit()">
-                @foreach (var budget in Model.AllBudgets)
-                {
-                    <option value="@budget.Id" selected="@(budget.Id == Model.Budget.Id)">@budget.Name</option>
-                }
-            </select>
+            </div>
         </div>
-    </form>
+        }
+    </div>
 </div>

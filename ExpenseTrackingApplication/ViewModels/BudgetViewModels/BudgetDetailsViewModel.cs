@@ -12,5 +12,4 @@ public class BudgetDetailsViewModel
     public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
     public decimal TotalExpenseAmount { get; set; }
     public decimal TotalIncomeAmount { get; set; }
-    public SelectList BudgetSelectList { get; set; }
 }

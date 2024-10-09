@@ -31,22 +31,22 @@
 }
 
 /* Button styles */
-.btn-cancel {
-    background-color: #ffd442 !important;
-    color: white !important;
+.btn-cancelM {
+    background-color: #4fd341;
+    color: white;
 }
 
-.btn-delete {
-    background-color: #dc3545 !important;
-    color: white !important;
+.btn-deleteM {
+    background-color: #dc3545;
+    color: white;
 }
 
-.btn-cancel:hover {
-    background-color: #d6b323 !important;
+.btn-cancelM:hover {
+    background-color: #2ad315;
 }
 
-.btn-delete:hover {
-    background-color: #c82333 !important;
+.btn-deleteM:hover {
+    background-color: #c82333;
 }
 
 /* Close button style */

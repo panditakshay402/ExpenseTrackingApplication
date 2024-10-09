@@ -80,11 +80,8 @@
 }
 
 /* Style for balance icon and text */
-.balance-icon {
-    margin-right: 8px; /* Space between icon and text */
-}
-
 .balance-label {
+    margin-left: 5px;
     font-weight: bold; /* Highlighted inscription "Balance" */
 }
 
@@ -160,4 +157,6 @@
     vertical-align: middle;
 }
 
-/* -------------------- */
+
+/* ---------- Budget Details Styles ---------- */
+

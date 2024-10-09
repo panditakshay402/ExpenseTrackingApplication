@@ -195,7 +195,6 @@ public class BudgetController : Controller
             BudgetCategories = budgetCategories,
             TotalExpenseAmount = expenses.Sum(t => t.Amount),
             TotalIncomeAmount = incomes.Sum(i => i.Amount),
-            BudgetSelectList = new SelectList(allBudgets, "Id", "Name", budget.Id)
         };
 
         return View(viewModel);
