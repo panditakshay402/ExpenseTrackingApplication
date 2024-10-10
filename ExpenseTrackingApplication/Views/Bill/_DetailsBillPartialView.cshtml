@@ -1,0 +1,33 @@
+﻿@model Bill
+
+<div class="modal fade" id="DetailsBill-@Model.Id" tabindex="-1" aria-labelledby="detailsBillLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsBillLabel">Bill Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Amount:</dt>
+                    <dd class="col-sm-9">@Model.Amount.ToString("C")</dd>
+
+                    <dt class="col-sm-3">Due Date:</dt>
+                    <dd class="col-sm-9">@Model.DueDate.ToShortDateString()</dd>
+
+                    <dt class="col-sm-3">Frequency:</dt>
+                    <dd class="col-sm-9">@Model.Frequency.ToString()</dd>
+
+                    <dt class="col-sm-3">Status:</dt>
+                    <dd class="col-sm-9">@(@Model.IsPaid ? "Paid" : "Not Paid")</dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

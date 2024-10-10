@@ -20,20 +20,6 @@ public class IncomeController : Controller
         _notificationRepository = notificationRepository;
     }
     
-    // GET: Income/Create
-    public async Task<IActionResult> Create(int budgetId)
-    {
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(budgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        ViewBag.BudgetId = budgetId;
-        return PartialView("_CreateIncomePartialView", new Income { BudgetId = budgetId });
-    }
-    
     // POST: Income/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -43,6 +29,13 @@ public class IncomeController : Controller
         {
             ViewBag.BudgetId = budgetId;
             return PartialView("_CreateIncomePartialView", income); // Return the view with the error messages
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         income.BudgetId = budgetId;
@@ -64,36 +57,6 @@ public class IncomeController : Controller
         return PartialView("_CreateIncomePartialView", income);
     }
     
-    // GET: Income/Edit/{id}
-    public async Task<IActionResult> Edit(int id)
-    {
-        var income = await _incomeRepository.GetByIdAsync(id);
-        if (income == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        var incomeViewModel = new IncomeEditViewModel
-        {
-            Id = income.Id,
-            Source = income.Source,
-            Amount = income.Amount,
-            Date = income.Date,
-            Category = income.Category,
-            Description = income.Description,
-            BudgetId = income.BudgetId
-        };
-        
-        return PartialView("_EditIncomePartialView", incomeViewModel);
-    }
-    
     // POST: Income/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -109,6 +72,13 @@ public class IncomeController : Controller
         if (income == null)
         {
             return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
@@ -138,25 +108,6 @@ public class IncomeController : Controller
         return RedirectToAction("Edit", "Budget", new { id = income.BudgetId });
     }
     
-    // GET: Income/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
-    {
-        var income = await _incomeRepository.GetByIdAsync(id);
-        if (income == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        return PartialView("_DeleteIncomePartialView", income);
-    }
-    
     // POST: Income/Delete/{id}
     [HttpPost, ActionName("DeleteIncome")]
     [ValidateAntiForgeryToken]
@@ -168,15 +119,21 @@ public class IncomeController : Controller
             return NotFound();
         }
         
-        var budgetId = income.BudgetId;
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
         
         // Get the budget associated with the income
-        var budget = await _budgetRepository.GetByIdAsync(budgetId);
+        var budget = await _budgetRepository.GetByIdAsync(income.BudgetId);
         if (budget == null)
         {
             return NotFound();
         }
-
+        
+        var budgetId = income.BudgetId;
         var amount = income.Amount;
         
         if (await _incomeRepository.DeleteAsync(income))
@@ -187,30 +144,6 @@ public class IncomeController : Controller
         }
         
         return RedirectToAction("Error", "Home");
-    }
-    
-    // GET: Income/Details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-        
-        var income = await _incomeRepository.GetByIdAsync(id.Value);
-        if (income == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        return View(income);
     }
     
     // Check if the user owns the budget

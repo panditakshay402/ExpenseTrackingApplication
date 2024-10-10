@@ -19,20 +19,6 @@ public class BillController : Controller
         _notificationRepository = notificationRepository;
     }
     
-    // GET: Bill/Create
-    public async Task<IActionResult> Create(int budgetId)
-    {
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(budgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        ViewBag.BudgetId = budgetId;
-        return PartialView("_CreateBillPartialView", new Bill { BudgetId = budgetId });
-    }
-    
     // POST: Bill/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -42,6 +28,13 @@ public class BillController : Controller
         {
             ViewBag.BudgetId = budgetId;
             return PartialView("_CreateBillPartialView", bill); // Return the view with the error messages
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
         }
         
         bill.BudgetId = budgetId;
@@ -62,34 +55,6 @@ public class BillController : Controller
         return PartialView("_CreateBillPartialView", bill);
     }
     
-    // GET: Bill/Edit/{id}
-    public async Task<IActionResult> Edit(int id)
-    {
-        var bill = await _billRepository.GetByIdAsync(id);
-        if (bill == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        var billViewModel = new BillEditViewModel
-        {
-            Name = bill.Name,
-            Amount = bill.Amount,
-            DueDate = bill.DueDate,
-            Frequency = bill.Frequency,
-            BudgetId = bill.BudgetId
-        };
-        
-        return PartialView("_EditBillPartialView", billViewModel);
-    }
-    
     // POST: Bill/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -106,24 +71,6 @@ public class BillController : Controller
         {
             return NotFound();
         }
-
-        bill.Name = viewModel.Name;
-        bill.Amount = viewModel.Amount;
-        bill.DueDate = viewModel.DueDate;
-        bill.Frequency = viewModel.Frequency;
-
-        await _billRepository.UpdateAsync(bill);
-        return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
-    }
-    
-    // GET: Bill/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
-    {
-        var bill = await _billRepository.GetByIdAsync(id);
-        if (bill == null)
-        {
-            return NotFound();
-        }
         
         // Check if the user owns the budget
         var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
@@ -132,7 +79,13 @@ public class BillController : Controller
             return ownershipCheckResult;
         }
         
-        return PartialView("_DeleteBillPartialView", bill);
+        bill.Name = viewModel.Name;
+        bill.Amount = viewModel.Amount;
+        bill.DueDate = viewModel.DueDate;
+        bill.Frequency = viewModel.Frequency;
+
+        await _billRepository.UpdateAsync(bill);
+        return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
     }
     
     // POST: Bill/Delete/{id}
@@ -146,28 +99,6 @@ public class BillController : Controller
             return NotFound();
         }
         
-        if (await _billRepository.DeleteAsync(bill))
-        {
-            return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
-        }
-        
-        return RedirectToAction("Error", "Home");
-    }
-    
-    // GET: Bill/Details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-        
-        var bill = await _billRepository.GetByIdAsync(id.Value);
-        if (bill == null)
-        {
-            return NotFound();
-        }
-    
         // Check if the user owns the budget
         var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
         if (ownershipCheckResult != null)
@@ -175,7 +106,12 @@ public class BillController : Controller
             return ownershipCheckResult;
         }
         
-        return View(bill);
+        if (await _billRepository.DeleteAsync(bill))
+        {
+            return RedirectToAction("Edit", "Budget", new { id = bill.BudgetId });
+        }
+        
+        return RedirectToAction("Error", "Home");
     }
     
     // POST: Bill/Pay/{id}
@@ -188,7 +124,14 @@ public class BillController : Controller
         {
             return NotFound();
         }
-
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(bill.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         // Set the bill as paid
         bill.IsPaid = true;
 

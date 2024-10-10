@@ -1,0 +1,33 @@
+﻿@model Expense
+
+<div class="modal fade" id="DetailsExpense-@Model.Id" tabindex="-1" aria-labelledby="detailsExpenseLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsExpenseLabel">Expense Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Recipient:</dt>
+                    <dd class="col-sm-9">@Model.Recipient</dd>
+
+                    <dt class="col-sm-3">Amount:</dt>
+                    <dd class="col-sm-9">@Model.Amount.ToString("C")</dd>
+
+                    <dt class="col-sm-3">Date:</dt>
+                    <dd class="col-sm-9">@Model.Date.ToShortDateString()</dd>
+
+                    <dt class="col-sm-3">Category:</dt>
+                    <dd class="col-sm-9">@Model.Category.ToString()</dd>
+
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9">@Model.Description</dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

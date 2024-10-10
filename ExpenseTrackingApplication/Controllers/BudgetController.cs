@@ -3,6 +3,7 @@ using ExpenseTrackingApplication.Data.Enum;
 using ExpenseTrackingApplication.Interfaces;
 using ExpenseTrackingApplication.Models;
 using ExpenseTrackingApplication.ViewModels.BudgetViewModels;
+using ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -105,101 +106,6 @@ public class BudgetController : Controller
         return View("Index");
     }
     
-    // GET: Budget/Details/{id}
-    public async Task<IActionResult> Details(int id)
-    {
-        var budget = await _budgetRepository.GetByIdAsync(id);
-        if (budget == null)
-        {
-            return NotFound();
-        }
-        
-        // Get the ID of the currently logged-in user
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(id);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-
-        // Get expenses and incomes for the budget
-        var expenses = await _expenseRepository.GetByBudgetAsync(id);
-        var incomes = await _incomeRepository.GetByBudgetAsync(id);
-        
-        // Combine expenses and incomes into a single list
-        var combinedEntries = expenses
-            .Select(t => new CombinedEntryViewModel
-            {
-                Date = t.Date,
-                Type = "Expense",
-                RecipientOrSource = t.Recipient,
-                Amount = t.Amount,
-                Category = t.Category.ToString(),
-                Description = t.Description
-            })
-            .Concat(incomes.Select(i => new CombinedEntryViewModel
-            {
-                Date = i.Date,
-                Type = "Income",
-                RecipientOrSource = i.Source,
-                Amount = i.Amount,
-                Category = i.Category.ToString(),
-                Description = i.Description
-            }))
-            .OrderByDescending(e => e.Date) // Sort by date
-            .ToList();
-        
-        // Get bills and send notifications to the user
-        var bills = await _billRepository.GetByBudgetAsync(id);
-        foreach (var bill in bills)
-        {
-            if (!bill.IsPaid)
-            {
-                // Notification for bills due in 3 days
-                if (bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
-                {
-                    await _notificationRepository.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
-                    bill.ReminderSent = true;
-                    await _billRepository.UpdateAsync(bill);
-                }
-
-                // Notification for overdue bills
-                if (bill.DueDate.Date < DateTime.Now.Date && !bill.OverdueReminderSent)
-                {
-                    await _notificationRepository.SendNotificationAsync(userId, "Overdue Bill Reminder", $"Your bill '{bill.Name}' is overdue!", NotificationType.Bill);
-                    bill.OverdueReminderSent = true;
-                    await _billRepository.UpdateAsync(bill);
-                }
-            }
-        }
-        // Sort bills by due date
-        var sortedBills = bills.OrderBy(b => b.DueDate).ToList();
-        
-        // Update current amounts for budget categories before getting them
-        var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
-        // Get all budgets for the current user
-        var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
-        
-        var viewModel = new BudgetDetailsViewModel
-        {
-            Budget = budget,
-            CombinedEntries = combinedEntries,
-            Bills = sortedBills,
-            AllBudgets = allBudgets,
-            BudgetCategories = budgetCategories,
-            TotalExpenseAmount = expenses.Sum(t => t.Amount),
-            TotalIncomeAmount = incomes.Sum(i => i.Amount),
-        };
-
-        return View(viewModel);
-    }
-    
     // GET: Budget/Edit/{id}
     public async Task<IActionResult> Edit(int id)
     {
@@ -286,32 +192,6 @@ public class BudgetController : Controller
         }
     }
     
-    // GET: Budget/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
-    {
-        var budget = await _budgetRepository.GetByIdAsync(id);
-        if (budget == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(id);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        // Convert Budget to BudgetOverviewViewModel
-        var budgetViewModel = new BudgetOverviewViewModel
-        {
-            Id = budget.Id,
-            Name = budget.Name,
-        };
-
-        return PartialView("_DeleteBudgetPartialView", budgetViewModel);
-    }
-    
     // POST: Budget/Delete/{id}
     [HttpPost, ActionName("DeleteBudget")]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -328,6 +208,13 @@ public class BudgetController : Controller
             return NotFound();
         }
         
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(id);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         await _budgetRepository.DeleteAsync(budget);
         await _notificationRepository.SendNotificationAsync(
             userId,
@@ -337,6 +224,103 @@ public class BudgetController : Controller
         );
         
         return RedirectToAction("Overview");
+    }
+    
+    // GET: Budget/Details/{id}
+    public async Task<IActionResult> Details(int id)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null)
+        {
+            return NotFound();
+        }
+        
+        // Get the ID of the currently logged-in user
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(id);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+
+        // Get expenses and incomes for the budget
+        var expenses = await _expenseRepository.GetByBudgetAsync(id);
+        var incomes = await _incomeRepository.GetByBudgetAsync(id);
+        
+        // Combine expenses and incomes into a single list
+        var combinedEntries = expenses
+            .Select(t => new CombinedEntryViewModel
+            {
+                Id = t.Id,
+                Date = t.Date,
+                Type = "Expense",
+                RecipientOrSource = t.Recipient,
+                Amount = t.Amount,
+                Category = t.Category.ToString(),
+                Description = t.Description
+            })
+            .Concat(incomes.Select(i => new CombinedEntryViewModel
+            {
+                Id = i.Id,
+                Date = i.Date,
+                Type = "Income",
+                RecipientOrSource = i.Source,
+                Amount = i.Amount,
+                Category = i.Category.ToString(),
+                Description = i.Description
+            }))
+            .OrderByDescending(e => e.Date) // Sort by date
+            .ToList();
+        
+        // Get bills and send notifications to the user
+        var bills = await _billRepository.GetByBudgetAsync(id);
+        foreach (var bill in bills)
+        {
+            if (!bill.IsPaid)
+            {
+                // Notification for bills due in 3 days
+                if (bill.DueDate.Date <= DateTime.Now.AddDays(3).Date && !bill.ReminderSent)
+                {
+                    await _notificationRepository.SendNotificationAsync(userId, "Bill Reminder", $"Your bill '{bill.Name}' is due in 3 days.", NotificationType.Bill);
+                    bill.ReminderSent = true;
+                    await _billRepository.UpdateAsync(bill);
+                }
+
+                // Notification for overdue bills
+                if (bill.DueDate.Date < DateTime.Now.Date && !bill.OverdueReminderSent)
+                {
+                    await _notificationRepository.SendNotificationAsync(userId, "Overdue Bill Reminder", $"Your bill '{bill.Name}' is overdue!", NotificationType.Bill);
+                    bill.OverdueReminderSent = true;
+                    await _billRepository.UpdateAsync(bill);
+                }
+            }
+        }
+        // Sort bills by due date
+        var sortedBills = bills.OrderBy(b => b.DueDate).ToList();
+        
+        // Update current amounts for budget categories before getting them
+        var budgetCategories = await _budgetCategoryRepository.GetByBudgetIdAsync(id);
+        // Get all budgets for the current user
+        var allBudgets = (await _budgetRepository.GetBudgetByUserAsync(userId)).ToList();
+        
+        var viewModel = new BudgetDetailsViewModel
+        {
+            Budget = budget,
+            CombinedEntries = combinedEntries,
+            Bills = sortedBills,
+            AllBudgets = allBudgets,
+            BudgetCategories = budgetCategories,
+            TotalExpenseAmount = expenses.Sum(t => t.Amount),
+            TotalIncomeAmount = incomes.Sum(i => i.Amount),
+        };
+
+        return View(viewModel);
     }
     
     // Check if the user owns the budget

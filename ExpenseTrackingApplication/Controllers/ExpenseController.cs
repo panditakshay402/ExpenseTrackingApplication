@@ -26,20 +26,6 @@ public class ExpenseController : Controller
         _budgetCategoryRepository = budgetCategoryRepository;
     }
     
-    // GET: Expense/Create
-    public async Task<IActionResult> Create(int budgetId)
-    {
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(budgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        ViewBag.BudgetId = budgetId;
-        return PartialView("_CreateExpensePartialView", new Expense { BudgetId = budgetId });
-    }
-    
     // POST: Expense/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -50,7 +36,14 @@ public class ExpenseController : Controller
             ViewBag.BudgetId = budgetId;
             return PartialView("_CreateExpensePartialView", expense); // Return the view with the error messages
         }
-    
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(budgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
         expense.BudgetId = budgetId;
         var category = expense.Category;
 
@@ -72,9 +65,17 @@ public class ExpenseController : Controller
         return PartialView("_CreateExpensePartialView", expense);
     }
     
-    // GET: Expense/Edit/{id}
-    public async Task<IActionResult> Edit(int id)
+    // POST: Expense/Edit/{id}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, ExpenseEditViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError("", "Failed to edit expense.");
+            return PartialView("_EditExpensePartialView", viewModel);
+        }
+        
         var expense = await _expenseRepository.GetByIdAsync(id);
         if (expense == null)
         {
@@ -88,43 +89,12 @@ public class ExpenseController : Controller
             return ownershipCheckResult;
         }
         
-        var expenseEditViewModel = new ExpenseEditViewModel
-        {
-            Id = expense.Id,
-            Recipient = expense.Recipient,
-            Amount = expense.Amount,
-            Date = expense.Date,
-            Category = expense.Category,
-            Description = expense.Description,
-            BudgetId = expense.BudgetId
-        };
-
-        return PartialView("_EditExpensePartialView", expenseEditViewModel);
-    }
-    
-    // POST: Expense/Edit/{id}
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, ExpenseEditViewModel viewModel)
-    {
-        if (!ModelState.IsValid)
-        {
-            ModelState.AddModelError("", "Failed to edit expense.");
-            return PartialView("_EditExpensePartialView", viewModel);
-        }
-
-        var expense = await _expenseRepository.GetByIdAsync(id);
-        if (expense == null)
-        {
-            return NotFound();
-        }
-        
         var budget = await _budgetRepository.GetByIdAsync(expense.BudgetId);
         if (budget == null)
         {
             return NotFound();
         }
-
+        
         // Calculate new balance
         var previousAmount = expense.Amount;
         var newAmount = viewModel.Amount;
@@ -148,25 +118,6 @@ public class ExpenseController : Controller
         return RedirectToAction("Edit", "Budget", new { id = expense.BudgetId });
     }
     
-    // GET: Expense/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
-    {
-        var expense = await _expenseRepository.GetByIdAsync(id);
-        if (expense == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        return PartialView("_DeleteExpensePartialView", expense);
-    }
-    
     // POST: Expense/Delete/{id}
     [HttpPost, ActionName("DeleteExpense")]
     [ValidateAntiForgeryToken]
@@ -178,15 +129,21 @@ public class ExpenseController : Controller
             return NotFound();
         }
 
-        var budgetId = expense.BudgetId;
-
         // Get the budget associated with the expense
-        var budget = await _budgetRepository.GetByIdAsync(budgetId);
+        var budget = await _budgetRepository.GetByIdAsync(expense.BudgetId);
         if (budget == null)
         {
             return NotFound();
         }
         
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
+        var budgetId = expense.BudgetId;
         var amount = expense.Amount;
         var date = expense.Date;
         var category = expense.Category;
@@ -201,30 +158,6 @@ public class ExpenseController : Controller
         }
 
         return RedirectToAction("Error", "Home");
-    }
-    
-    // GET: Expense/Details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var expense = await _expenseRepository.GetByIdAsync(id.Value);
-        if (expense == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-
-        return View(expense);
     }
     
     private async Task UpdateBcSpending(int budgetId, DateTime expenseDate, ExpenseCategory category)
@@ -286,7 +219,7 @@ public class ExpenseController : Controller
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null)
         {
-            return NotFound(); // Return 404 if user is not found
+            return NotFound(); // Return 404 if user is not logged in
         }
         
         if (!await _budgetRepository.UserOwnsBudgetAsync(budgetId, userId))

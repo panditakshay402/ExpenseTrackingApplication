@@ -1,4 +1,5 @@
-﻿@model ExpenseTrackingApplication.ViewModels.BudgetViewModels.BudgetDetailsViewModel
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.ViewModels.BudgetViewModels.BudgetDetailsViewModel
 
 @{
 ViewData["Title"] = "Budget Details";
@@ -105,13 +106,41 @@ ViewData["Title"] = "Budget Details";
             <ul class="list-unstyled mb-0">
                 @foreach (var entry in dateGroup)
                 {
-                <li class="d-flex justify-content-between">
-                    <span><strong>@entry.RecipientOrSource</strong></span>
-                    <span class="@(entry.Type == "Income" ? "text-success" : "text-danger")">
-                                @(entry.Type == "Expense" ? "-" : "") @entry.Amount.ToString("C")
-                            </span>
-                    <span><em>@entry.Category</em></span>
-                </li>
+                    <li class="d-flex justify-content-between">
+                        <span><strong>@entry.RecipientOrSource</strong></span>
+                        <span><em>@entry.Category</em></span>
+                        <span class="@(entry.Type == "Income" ? "text-success" : "text-danger")">
+                            @(entry.Type == "Expense" ? "-" : "") @entry.Amount.ToString("C")
+                        </span>
+                        @if (entry.Type == "Expense")
+                        {
+                            Enum.TryParse<ExpenseCategory>(entry.Category, out var category);
+                            <button type="button" class="btn btn-info btn-details-icon" data-bs-toggle="modal" data-bs-target="#DetailsExpense-@entry.Id">Details</button>
+                            @await Html.PartialAsync("~/Views/Expense/_DetailsExpensePartialView.cshtml", new Expense
+                            {
+                                Id = entry.Id,
+                                Recipient = entry.RecipientOrSource,
+                                Amount = entry.Amount,
+                                Date = entry.Date,
+                                Category = category,
+                                Description = entry.Description
+                            });
+                        }
+                        else if (entry.Type == "Income")
+                        {
+                            Enum.TryParse<IncomeCategory>(entry.Category, out var category);
+                            <button type="button" class="btn btn-info btn-details-icon" data-bs-toggle="modal" data-bs-target="#DetailsIncome-@entry.Id">Details</button>
+                            @await Html.PartialAsync("~/Views/Income/_DetailsIncomePartialView.cshtml", new Income
+                            {
+                                Id = entry.Id,
+                                Source = entry.RecipientOrSource,
+                                Amount = entry.Amount,
+                                Date = entry.Date,
+                                Category = category,
+                                Description = entry.Description
+                            });
+                        }
+                    </li>
                 }
             </ul>
         </div>
@@ -139,6 +168,10 @@ ViewData["Title"] = "Budget Details";
                 <li><strong>Frequency:</strong> @bill.Frequency.ToString()</li>
                 <li class="@(bill.IsPaid ? "text-success" : "")">
                     <strong>Status:</strong> @(bill.IsPaid ? "Paid" : "Unpaid")
+                </li>
+                <li class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-info btn-details-icon" data-bs-toggle="modal" data-bs-target="#DetailsBill-@bill.Id">Details</button>
+                    @await Html.PartialAsync("~/Views/Bill/_DetailsBillPartialView.cshtml", bill)
                 </li>
                 <li>
                     @if (!bill.IsPaid)

@@ -1,7 +1,8 @@
-﻿namespace ExpenseTrackingApplication.ViewModels.BudgetViewModels;
+﻿namespace ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 
 public class CombinedEntryViewModel
 {
+    public int Id { get; set; }
     public DateTime Date { get; set; }
     public string? Type { get; set; } // "Expense" or "Income"
     public string? RecipientOrSource { get; set; }

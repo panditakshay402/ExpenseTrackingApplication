@@ -1,5 +1,5 @@
 ﻿using ExpenseTrackingApplication.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using ExpenseTrackingApplication.ViewModels.TransactionViewModels;
 
 namespace ExpenseTrackingApplication.ViewModels.BudgetViewModels;
 
