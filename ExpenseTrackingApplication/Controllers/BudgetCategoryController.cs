@@ -138,11 +138,11 @@ public class BudgetCategoryController : Controller
             return ownershipCheckResult;
         }
         
-        return View(budgetCategory);
+        return PartialView("_DeleteBudgetCategoryPartialView", budgetCategory);
     }
     
     // POST: BudgetCategory/Delete/{id}
-    [HttpPost, ActionName("Delete")]
+    [HttpPost, ActionName("DeleteBudgetCategory")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -151,15 +151,14 @@ public class BudgetCategoryController : Controller
         {
             return NotFound();
         }
-
-        var result = await _budgetCategoryRepository.DeleteAsync(budgetCategory);
-        if (result)
+        
+        // Delete the category
+        if (await _budgetCategoryRepository.DeleteAsync(budgetCategory))
         {
             return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
         }
-
-        ModelState.AddModelError("", "Error while deleting category.");
-        return RedirectToAction("Details", "Budget", new { id = budgetCategory.BudgetId });
+        
+        return RedirectToAction("Error", "Home");
     }
     
     // GET: BudgetCategory/Details/{id}

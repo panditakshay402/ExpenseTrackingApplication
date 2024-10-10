@@ -73,7 +73,9 @@ ViewData["Title"] = "Budget Details";
                         </p>
                         <a class="btn btn-primary" asp-controller="BudgetCategory" asp-action="Details" asp-route-id="@category.Id">View Details</a>
                         <a class="btn btn-warning" asp-controller="BudgetCategory" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
-                        <a class="btn btn-danger" asp-controller="BudgetCategory" asp-action="Delete" asp-route-id="@category.Id">Delete</a>
+                        <button type="button" class="btn btn-danger btn-delete-icon position-absolute" data-bs-toggle="modal" data-bs-target="#DeleteBudgetCategory-@category.Id">Delete</button>
+                        @await Html.PartialAsync("~/Views/BudgetCategory/_DeleteBudgetCategoryPartialView.cshtml", category)
+
                     </div>
                 </div>
             </div>
