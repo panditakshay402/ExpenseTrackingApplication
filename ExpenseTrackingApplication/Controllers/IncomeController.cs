@@ -64,30 +64,6 @@ public class IncomeController : Controller
         return PartialView("_CreateIncomePartialView", income);
     }
     
-    // GET: Income/Details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-        
-        var income = await _incomeRepository.GetByIdAsync(id.Value);
-        if (income == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-        
-        return View(income);
-    }
-    
     // GET: Income/Edit/{id}
     public async Task<IActionResult> Edit(int id)
     {
@@ -178,7 +154,7 @@ public class IncomeController : Controller
             return ownershipCheckResult;
         }
         
-        return View(income);
+        return PartialView("_DeleteIncomePartialView", income);
     }
     
     // POST: Income/Delete/{id}
@@ -201,16 +177,40 @@ public class IncomeController : Controller
             return NotFound();
         }
 
-        // Update the budget balance
-        budget.Balance -= income.Amount;
-        await _budgetRepository.UpdateAsync(budget);
+        var amount = income.Amount;
         
         if (await _incomeRepository.DeleteAsync(income))
         {
+            budget.Balance -= amount;
+            await _budgetRepository.UpdateAsync(budget);
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
         
         return RedirectToAction("Error", "Home");
+    }
+    
+    // GET: Income/Details/{id}
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        
+        var income = await _incomeRepository.GetByIdAsync(id.Value);
+        if (income == null)
+        {
+            return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(income.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+        
+        return View(income);
     }
     
     // Check if the user owns the budget

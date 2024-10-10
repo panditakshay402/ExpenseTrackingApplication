@@ -1,0 +1,27 @@
+﻿@model Expense
+
+<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true"/>
+
+<div class="modal fade" id="DeleteExpense-@Model.Id" aria-labelledby="deleteExpenseLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteExpenseLabel">Delete Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Expense" asp-action="DeleteExpense" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <p>Are you sure you want to delete the expense for @Model.Recipient?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancelM" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-deleteM">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -56,8 +56,9 @@ ViewData["Title"] = "Edit Budget";
                         Category = expense.Category,
                         Description = expense.Description
                     })
-                    
-                    <a asp-controller="Expense" asp-action="Delete" asp-route-id="@expense.Id" class="btn btn-danger">Delete</a>
+
+                    <button type="button" class="btn btn-danger btn-delete-icon position-absolute" data-bs-toggle="modal" data-bs-target="#DeleteExpense-@expense.Id">Delete</button>
+                    @await Html.PartialAsync("~/Views/Expense/_DeleteExpensePartialView.cshtml", expense)
                 </td>
             </tr>
         }
@@ -105,8 +106,9 @@ ViewData["Title"] = "Edit Budget";
                     Category = income.Category,
                     Description = income.Description
                     })
-                    
-                    <a asp-controller="Income" asp-action="Delete" asp-route-id="@income.Id" class="btn btn-danger">Delete</a>
+
+                    <button type="button" class="btn btn-danger btn-delete-icon position-absolute" data-bs-toggle="modal" data-bs-target="#DeleteIncome-@income.Id">Delete</button>
+                    @await Html.PartialAsync("~/Views/Income/_DeleteIncomePartialView.cshtml", income)
                 </td>
             </tr>
         }
@@ -153,8 +155,9 @@ ViewData["Title"] = "Edit Budget";
                     DueDate = bill.DueDate,
                     Frequency = bill.Frequency
                     })
-                    
-                    <a asp-controller="Bill" asp-action="Delete" asp-route-id="@bill.Id" class="btn btn-danger">Delete</a>
+
+                    <button type="button" class="btn btn-danger btn-delete-icon position-absolute" data-bs-toggle="modal" data-bs-target="#DeleteBill-@bill.Id">Delete</button>
+                    @await Html.PartialAsync("~/Views/Bill/_DeleteBillPartialView.cshtml", bill)
                 </td>
             </tr>
         }

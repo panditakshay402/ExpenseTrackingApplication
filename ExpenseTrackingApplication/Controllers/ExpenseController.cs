@@ -72,30 +72,6 @@ public class ExpenseController : Controller
         return PartialView("_CreateExpensePartialView", expense);
     }
     
-    // GET: Expense/Details/{id}
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var expense = await _expenseRepository.GetByIdAsync(id.Value);
-        if (expense == null)
-        {
-            return NotFound();
-        }
-        
-        // Check if the user owns the budget
-        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
-        if (ownershipCheckResult != null)
-        {
-            return ownershipCheckResult;
-        }
-
-        return View(expense);
-    }
-    
     // GET: Expense/Edit/{id}
     public async Task<IActionResult> Edit(int id)
     {
@@ -188,7 +164,7 @@ public class ExpenseController : Controller
             return ownershipCheckResult;
         }
         
-        return View(expense);
+        return PartialView("_DeleteExpensePartialView", expense);
     }
     
     // POST: Expense/Delete/{id}
@@ -210,22 +186,45 @@ public class ExpenseController : Controller
         {
             return NotFound();
         }
-
-        // Update the budget balance
-        budget.Balance += expense.Amount;
-        await _budgetRepository.UpdateAsync(budget);
         
+        var amount = expense.Amount;
         var date = expense.Date;
         var category = expense.Category;
         
         // Delete the expense
         if (await _expenseRepository.DeleteAsync(expense))
         {
+            budget.Balance += amount;
+            await _budgetRepository.UpdateAsync(budget);
             await UpdateBcSpending(budgetId, date, category);
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
 
         return RedirectToAction("Error", "Home");
+    }
+    
+    // GET: Expense/Details/{id}
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var expense = await _expenseRepository.GetByIdAsync(id.Value);
+        if (expense == null)
+        {
+            return NotFound();
+        }
+        
+        // Check if the user owns the budget
+        var ownershipCheckResult = await CheckUserOwnership(expense.BudgetId);
+        if (ownershipCheckResult != null)
+        {
+            return ownershipCheckResult;
+        }
+
+        return View(expense);
     }
     
     private async Task UpdateBcSpending(int budgetId, DateTime expenseDate, ExpenseCategory category)
