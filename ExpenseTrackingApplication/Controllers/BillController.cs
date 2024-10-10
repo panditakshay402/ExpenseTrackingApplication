@@ -111,7 +111,7 @@ public class BillController : Controller
             BudgetId = bill.BudgetId
         };
         
-        return View(billViewModel);
+        return PartialView("_EditBillPartialView", billViewModel);
     }
     
     // POST: Bill/Edit/{id}
@@ -122,7 +122,7 @@ public class BillController : Controller
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to update the bill. Please correct the errors and try again.");
-            return View(viewModel);
+            return PartialView("_EditBillPartialView", viewModel);
         }
         
         var bill = await _billRepository.GetByIdAsync(id);

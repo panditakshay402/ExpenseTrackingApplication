@@ -115,7 +115,7 @@ public class IncomeController : Controller
             BudgetId = income.BudgetId
         };
         
-        return View(incomeViewModel);
+        return PartialView("_EditIncomePartialView", incomeViewModel);
     }
     
     // POST: Income/Edit/{id}
@@ -126,7 +126,7 @@ public class IncomeController : Controller
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit income.");
-            return View("Edit", viewModel);
+            return PartialView("_EditIncomePartialView", viewModel);
         }
 
         var income = await _incomeRepository.GetByIdAsync(id);

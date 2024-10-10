@@ -94,7 +94,18 @@ ViewData["Title"] = "Edit Budget";
                 <td>@income.Category</td>
                 <td>@income.Description</td>
                 <td>
-                    <a asp-controller="Income" asp-action="Edit" asp-route-id="@income.Id" class="btn btn-warning">Edit</a>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditIncomeModal-@income.Id">Edit</button>
+                    @await Html.PartialAsync("~/Views/Income/_EditIncomePartialView.cshtml", new ExpenseTrackingApplication.ViewModels.TransactionViewModels.IncomeEditViewModel
+                    {
+                    Id = income.Id,
+                    BudgetId = income.BudgetId,
+                    Source = income.Source,
+                    Amount = income.Amount,
+                    Date = income.Date,
+                    Category = income.Category,
+                    Description = income.Description
+                    })
+                    
                     <a asp-controller="Income" asp-action="Delete" asp-route-id="@income.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
@@ -132,7 +143,17 @@ ViewData["Title"] = "Edit Budget";
                 <td>@bill.Frequency.ToString()</td>
                 <td>@(bill.IsPaid ? "Paid" : "Unpaid")</td>
                 <td>
-                    <a asp-controller="Bill" asp-action="Edit" asp-route-id="@bill.Id" class="btn btn-warning">Edit</a>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditBillModal-@bill.Id">Edit</button>
+                    @await Html.PartialAsync("~/Views/Bill/_EditBillPartialView.cshtml", new ExpenseTrackingApplication.ViewModels.TransactionViewModels.BillEditViewModel
+                    {
+                    Id = bill.Id,
+                    BudgetId = bill.BudgetId,
+                    Name = bill.Name,
+                    Amount = bill.Amount,
+                    DueDate = bill.DueDate,
+                    Frequency = bill.Frequency
+                    })
+                    
                     <a asp-controller="Bill" asp-action="Delete" asp-route-id="@bill.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>

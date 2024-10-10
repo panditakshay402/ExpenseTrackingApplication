@@ -8,10 +8,10 @@ public class Bill
 {
     [Key]
     public int Id { get; init; }
-    [Required]
+    [Required(ErrorMessage = "Name is required.")]
     [StringLength(50, ErrorMessage = "The Bill name must be at most 50 characters long.")]
-    public string? Name { get; set; }
-    [Required]
+    public string Name { get; set; }
+    [Required(ErrorMessage = "Amount is required.")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be a positive number.")]
     public decimal Amount { get; set; }
     [Required(ErrorMessage = "DueData is required.")]
