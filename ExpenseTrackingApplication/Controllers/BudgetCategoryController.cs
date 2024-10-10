@@ -122,8 +122,10 @@ public class BudgetCategoryController : Controller
 
     }
     
-    // GET: BudgetCategory/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
+    // POST: BudgetCategory/Delete/{id}
+    [HttpPost, ActionName("DeleteBudgetCategory")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
         if (budgetCategory == null)
@@ -136,20 +138,6 @@ public class BudgetCategoryController : Controller
         if (ownershipCheckResult != null)
         {
             return ownershipCheckResult;
-        }
-        
-        return PartialView("_DeleteBudgetCategoryPartialView", budgetCategory);
-    }
-    
-    // POST: BudgetCategory/Delete/{id}
-    [HttpPost, ActionName("DeleteBudgetCategory")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var budgetCategory = await _budgetCategoryRepository.GetByIdAsync(id);
-        if (budgetCategory == null)
-        {
-            return NotFound();
         }
         
         // Delete the category
