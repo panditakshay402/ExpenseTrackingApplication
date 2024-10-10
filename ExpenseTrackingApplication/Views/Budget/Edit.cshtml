@@ -45,7 +45,18 @@ ViewData["Title"] = "Edit Budget";
                 <td>@expense.Category</td>
                 <td>@expense.Description</td>
                 <td>
-                    <a asp-controller="Expense" asp-action="Edit" asp-route-id="@expense.Id" class="btn btn-warning">Edit</a>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditExpenseModal-@expense.Id">Edit</button>
+                    @await Html.PartialAsync("~/Views/Expense/_EditExpensePartialView.cshtml", new ExpenseTrackingApplication.ViewModels.TransactionViewModels.ExpenseEditViewModel
+                    {
+                        Id = expense.Id,
+                        BudgetId = expense.BudgetId,
+                        Recipient = expense.Recipient,
+                        Amount = expense.Amount,
+                        Date = expense.Date,
+                        Category = expense.Category,
+                        Description = expense.Description
+                    })
+                    
                     <a asp-controller="Expense" asp-action="Delete" asp-route-id="@expense.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>

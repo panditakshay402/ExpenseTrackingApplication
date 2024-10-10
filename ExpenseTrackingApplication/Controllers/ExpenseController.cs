@@ -123,7 +123,7 @@ public class ExpenseController : Controller
             BudgetId = expense.BudgetId
         };
 
-        return View(expenseEditViewModel);
+        return PartialView("_EditExpensePartialView", expenseEditViewModel);
     }
     
     // POST: Expense/Edit/{id}
@@ -134,7 +134,7 @@ public class ExpenseController : Controller
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError("", "Failed to edit expense.");
-            return View("Edit", viewModel);
+            return PartialView("_EditExpensePartialView", viewModel);
         }
 
         var expense = await _expenseRepository.GetByIdAsync(id);
