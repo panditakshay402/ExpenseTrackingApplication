@@ -31,7 +31,7 @@ public class IncomeController : Controller
         }
         
         ViewBag.BudgetId = budgetId;
-        return View();
+        return PartialView("_CreateIncomePartialView", new Income { BudgetId = budgetId });
     }
     
     // POST: Income/Create
@@ -42,7 +42,7 @@ public class IncomeController : Controller
         if (!ModelState.IsValid)
         {
             ViewBag.BudgetId = budgetId;
-            return View(income); // Return the view with the error messages
+            return PartialView("_CreateIncomePartialView", income); // Return the view with the error messages
         }
         
         income.BudgetId = budgetId;
@@ -60,7 +60,8 @@ public class IncomeController : Controller
         }
         
         // If something went wrong
-        return RedirectToAction("Details", "Budget", new { id = budgetId });
+        ViewBag.BudgetId = budgetId;
+        return PartialView("_CreateIncomePartialView", income);
     }
     
     // GET: Income/Details/{id}

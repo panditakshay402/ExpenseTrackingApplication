@@ -20,7 +20,8 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Expenses</h4>
         <div>
-            <a asp-controller="Expense" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-success">Add Expense</a>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateExpenseModal-@Model.Id">Add Expense</button>
+            @await Html.PartialAsync("~/Views/Expense/_CreateExpensePartialView.cshtml", new Expense { BudgetId = Model.Id })
         </div>
     </div>
     <table class="table">
@@ -57,7 +58,8 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Incomes</h4>
         <div>
-            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-info">Add Income</a>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateIncomeModal-@Model.Id">Add Income</button>
+            @await Html.PartialAsync("~/Views/Income/_CreateIncomePartialView.cshtml", new Income { BudgetId = Model.Id })
         </div>
     </div>
     <table class="table">
@@ -94,7 +96,8 @@ ViewData["Title"] = "Edit Budget";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Bills</h4>
         <div>
-            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Id" class="btn btn-warning">Add Bill</a>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateBillModal-@Model.Id">Add Bill</button>
+            @await Html.PartialAsync("~/Views/Bill/_CreateBillPartialView.cshtml", new Bill { BudgetId = Model.Id })
         </div>
     </div>
     <table class="table">

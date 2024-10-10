@@ -30,7 +30,7 @@ public class BillController : Controller
         }
         
         ViewBag.BudgetId = budgetId;
-        return View();
+        return PartialView("_CreateBillPartialView", new Bill { BudgetId = budgetId });
     }
     
     // POST: Bill/Create
@@ -40,8 +40,8 @@ public class BillController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ModelState.AddModelError("", "Failed to create the bill. Please correct the errors and try again.");
-            return View(bill);
+            ViewBag.BudgetId = budgetId;
+            return PartialView("_CreateBillPartialView", bill); // Return the view with the error messages
         }
         
         bill.BudgetId = budgetId;
@@ -57,7 +57,9 @@ public class BillController : Controller
             return RedirectToAction("Edit", "Budget", new { id = budgetId });
         }
         
-        return RedirectToAction("Details", "Budget", new { id = budgetId });
+        // If something went wrong
+        ViewBag.BudgetId = budgetId;
+        return PartialView("_CreateBillPartialView", bill);
     }
     
     // GET: Bill/Details/{id}

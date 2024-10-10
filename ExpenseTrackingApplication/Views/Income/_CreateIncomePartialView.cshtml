@@ -1,0 +1,58 @@
+﻿@using ExpenseTrackingApplication.Data.Enum
+@model ExpenseTrackingApplication.Models.Income
+
+<div class="modal fade" id="CreateIncomeModal-@Model.BudgetId" aria-labelledby="createIncomeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createExpenseLabel">Create Income</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Income" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="BudgetId" value="@Model.BudgetId"/>
+
+                    <div class="form-group">
+                        <label asp-for="Source" class="control-label">Source</label>
+                        <input asp-for="Source" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label">Amount</label>
+                        <input asp-for="Amount" class="form-control" type="number"/>
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label">Date</label>
+                        <input asp-for="Date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"/>
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Category" class="control-label">Income Category</label>
+                        <select asp-for="Category" asp-items="@Html.GetEnumSelectList<IncomeCategory>()" class="form-control">
+                            <option selected="selected" value="">Select Category</option>
+                        </select>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Description</label>
+                        <input asp-for="Description" class="form-control"/>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancelM" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

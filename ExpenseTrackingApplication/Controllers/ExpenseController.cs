@@ -37,7 +37,7 @@ public class ExpenseController : Controller
         }
         
         ViewBag.BudgetId = budgetId;
-        return View();
+        return PartialView("_CreateExpensePartialView", new Expense { BudgetId = budgetId });
     }
     
     // POST: Expense/Create
@@ -48,7 +48,7 @@ public class ExpenseController : Controller
         if (!ModelState.IsValid)
         {
             ViewBag.BudgetId = budgetId;
-            return View(expense); // Return the view with the error messages
+            return PartialView("_CreateExpensePartialView", expense); // Return the view with the error messages
         }
     
         expense.BudgetId = budgetId;
@@ -68,7 +68,8 @@ public class ExpenseController : Controller
         }
 
         // If something went wrong
-        return RedirectToAction("Details", "Budget", new { id = budgetId });
+        ViewBag.BudgetId = budgetId;
+        return PartialView("_CreateExpensePartialView", expense);
     }
     
     // GET: Expense/Details/{id}

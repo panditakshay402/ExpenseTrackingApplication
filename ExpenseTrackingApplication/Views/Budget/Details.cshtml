@@ -85,8 +85,14 @@ ViewData["Title"] = "Budget Details";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Expenses & Incomes</h4>
         <div>
-            <a asp-controller="Expense" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Expense</a>
-            <a asp-controller="Income" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-info">Add Income</a>
+            <div>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateExpenseModal-@Model.Budget.Id">Add Expense</button>
+                @await Html.PartialAsync("~/Views/Expense/_CreateExpensePartialView.cshtml", new Expense { BudgetId = Model.Budget.Id })
+            </div>
+            <div>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateIncomeModal-@Model.Budget.Id">Add Income</button>
+                @await Html.PartialAsync("~/Views/Income/_CreateIncomePartialView.cshtml", new Income { BudgetId = Model.Budget.Id })
+            </div>
         </div>
     </div>
     <div class="list-group">
@@ -115,7 +121,8 @@ ViewData["Title"] = "Budget Details";
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Bills</h4>
         <div>
-            <a asp-controller="Bill" asp-action="Create" asp-route-budgetId="@Model.Budget.Id" class="btn btn-warning">Add Bill</a>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CreateBillModal-@Model.Budget.Id">Add Bill</button>
+            @await Html.PartialAsync("~/Views/Bill/_CreateBillPartialView.cshtml", new Bill { BudgetId = Model.Budget.Id })
         </div>
     </div>
 
