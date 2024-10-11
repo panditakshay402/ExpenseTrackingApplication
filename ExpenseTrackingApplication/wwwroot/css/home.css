@@ -91,18 +91,25 @@
     text-align: center; /* Keep text centered */
 }
 
-.custom-btn {
-    background-color: rgba(84, 216, 117, 1); /* Ustawienie koloru tła */
-    color: white; /* Kolor tekstu */
-    border: none; /* Brak obramowania */
-    border-radius: 25px; /* Zaokrąglone rogi */
-    padding: 10px 20px; /* Padding wewnętrzny */
-    font-weight: bold; /* Pogrubiony tekst */
-    transition: background-color 0.3s ease; /* Płynne przejście koloru tła */
+.join-them-btn {
+    background-color: rgba(30, 144, 255, 1); /* Niebieski */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-.custom-btn:hover {
-    background-color: rgba(70, 200, 100, 1); /* Ciemniejszy kolor tła podczas najechania */
+.join-them-btn:hover {
+    background-color: rgba(0, 120, 215, 1); /* Ciemniejszy niebieski */
 }
 
 
+.border-box {
+    border: 2px solid rgba(99, 60, 242, 1); /* Kolor ramki */
+    padding: 20px; /* Padding wewnętrzny */
+    border-radius: 15px; /* Zaokrąglone rogi */
+    background-color: rgba(255, 255, 255, 0.8); /* Lekko przezroczyste tło */
+    margin: 10px; /* Odstęp od innych elementów */
+}

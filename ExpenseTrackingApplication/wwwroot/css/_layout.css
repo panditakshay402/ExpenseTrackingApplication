@@ -1,28 +1,43 @@
 ﻿/* ----- Layout styles ------ */
 
+:root {
+    --main-color: rgba(117, 82, 242, 0.8);
+    --hover-color: rgba(99, 60, 242, 0.8);
+    --background-color: rgba(158, 135, 242, 0.5);
+}
+
 /* profile picture style */
 .rounded-circle {
     border-radius: 50%;
 }
 
-/* Style for navigation items to increase spacing */
-.navbar-nav .nav-item {
-    margin-right: 1rem; /* Adjust the value as needed */
-}
-
 /* Style for dropdown menu */
 .dropdown-menu {
-    background-color: rgba(158, 135, 242, 0.85); /* Dashboard-3-rgba */
-    backdrop-filter: blur(8px); /* Background blur */
-    border-radius: 0.5rem; /* Rounded corners */
+    background-color: var(--background-color);
+    backdrop-filter: blur(8px);
+    border-radius: 0.5rem;
     padding: 0.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(242, 242, 242, 0.07); /* Subtle shadow for depth (Dashboard-5-rgba) */
+    box-shadow: 0 0.125rem 0.25rem rgba(242, 242, 242, 0.07);
 
-    /* Start hidden and slightly shifted */
+    position: relative;
+    z-index: 1000;
+    
     opacity: 0;
-    transform: translateY(-10px); /* Move menu 10px upwards */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for both opacity and position */
-    pointer-events: none; /* Disable interaction when hidden */
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+/* When the menu is shown */
+.nav-item.dropdown .dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Style for navigation items */
+.navbar-nav .nav-item {
+    margin-right: 1rem;
 }
 
 /* Style for menu items */
@@ -31,13 +46,6 @@
     transition: background-color 0.2s ease-in-out, border-radius 0.2s ease-in-out; /* Smooth transition for hover and rounded corners */
     border-radius: 0.3rem; /* Slight rounding on the edges of each item */
     font-weight: bold; 
-}
-
-/* When the menu is shown (via Bootstrap's .show class) */
-.nav-item.dropdown .dropdown-menu.show {
-    opacity: 1; /* Fully visible */
-    transform: translateY(0); /* No translation (back to original position) */
-    pointer-events: auto; /* Enable interaction when shown */
 }
 
 /* Style for the arrow next to the dropdown list */
@@ -62,25 +70,19 @@
     border-radius: 0.3rem;
 }
 
-/* Style for the active state of the dropdown toggle */
+/* Hover and focus styles */
 .nav-item.dropdown .dropdown-toggle:focus,
-.nav-item.dropdown .dropdown-toggle.show {
-    background-color: rgba(117, 82, 242, 0.8); /* Slightly transparent active color (Dashboard-2-rgba) */
-    color: white; /* Text in white */
-    border-radius: 0.3rem; /* Rounded corners for active state */
-}
-
-/* Remove active background when dropdown is closed, but keep hover effect */
+.nav-item.dropdown .dropdown-toggle.show,
 .nav-item.dropdown .dropdown-toggle:not(.show):hover {
-    background-color: rgba(117, 82, 242, 0.8); /* Keep hover effect when not active (Dashboard-2-rgba) */
-    color: white; /* Text in white */
-    border-radius: 0.3rem; /* Rounded corners for hover state */
+    background-color: var(--main-color);
+    color: white;
+    border-radius: 0.3rem;
 }
 
-/* Change background color when hovering over a link */
+/* Dropdown item hover */
 .dropdown-item:hover {
-    background-color: rgba(117, 82, 242, 0.8); /* Slightly transparent hover color (Dashboard-2-rgba) */
-    color: white; /* Text in white for better readability */
+    background-color: var(--main-color);
+    color: white;
 }
 
 /* Reset background when dropdown is closed (optional) */
@@ -97,8 +99,6 @@
     user-select: none; /* Prevent text selection */
 }
 
-/* ---------------- */
-
 /* Style for sub-items */
 .dropdown-sub-item {
     padding-left: 1.5rem; /* Indent sub-items */
@@ -109,6 +109,8 @@
     background-color: transparent; /* No background change on hover */
     color: inherit; /* Inherit text color */
 }
+
+/* -------------------- */
 
 /* Styling for the Sign In button */
 .btn-sign-in {

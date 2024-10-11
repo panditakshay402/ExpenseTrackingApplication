@@ -8,8 +8,7 @@ body {
 }
 
 header {
-  background-color: rgba(117, 82, 242, 0.75);
-  backdrop-filter: blur(8px); /* Background blur */
+  background-color: rgba(117, 82, 242, 0.9);
   font-weight: bold; /* Bold font */
   position: sticky;
   top: 0; /* Stick to the top */
@@ -23,7 +22,7 @@ footer {
   width: 100%;
   white-space: nowrap;
   line-height: 35px; /* Reduced line-height */
-  z-index: 999;
+  z-index: 1000;
 }
 
 footer .social-media-icons {
@@ -43,14 +42,14 @@ footer .container p {
 }
 
 .privacy-link {
-  color: #FFD700; /* Złoty kolor tekstu */
-  text-decoration: underline; /* Podkreślenie tekstu */
-  font-weight: bold; /* Pogrubienie tekstu */
-  transition: color 0.3s ease; /* Efekt przejścia koloru */
+  color: #FFD700;
+  text-decoration: underline;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 .privacy-link:hover {
-  color: #ffffff; /* Zmiana koloru na biały przy najechaniu */
+  color: #ffffff;
 }
 
 
