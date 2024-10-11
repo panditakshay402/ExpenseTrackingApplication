@@ -20,7 +20,7 @@
 
 /* Main style for cards */
 .card {
-    background: linear-gradient(to right, #ff767c, #6cb3ff); /* Red-blue gradient */
+    background-color: rgba(158, 135, 242, 0.5);
     border-radius: 0.5rem;
     padding: 20px;
     position: relative;
@@ -141,7 +141,7 @@
 
 /* Style for details button */
 .btn-details {
-    background-color: #17a2b8;
+    background-color: #55D976;
     color: white;
     bottom: 10px; /* Distance from the bottom */
     right: 10px; /* Distance from right edge */
@@ -149,7 +149,7 @@
 }
 
 .btn-details:hover {
-    background-color: #138496;
+    background-color: #44b15c;
 }
 
 .details-icon {

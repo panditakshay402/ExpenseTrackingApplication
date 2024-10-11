@@ -1,4 +1,5 @@
 /* General styles */
+
 html {
   font-size: 14px;
   position: relative;
@@ -7,8 +8,7 @@ html {
 
 body {
   font-family: 'Arial', sans-serif;
-  background: linear-gradient(to left, #ff8b68, #a2f7fd); /* Gradient background */
-  color: #333;
+  background-color: rgba(242, 242, 242, 1);
   margin: 0;
   padding: 0;
 }
@@ -17,9 +17,8 @@ html, body {
   height: 100%;
 }
 
-/* Transparent header with light green background */
 header {
-  background-color: rgba(78, 220, 255, 0.75);
+  background-color: rgba(117, 82, 242, 0.75);
   backdrop-filter: blur(8px); /* Background blur */
   font-weight: bold; /* Bold font */
   position: sticky;
@@ -33,7 +32,8 @@ main {
 }
 
 footer {
-  background-color: rgb(134, 191, 232);
+  background-color: rgba(99, 60, 242, 1);
+  color: white;
   position: relative;
   bottom: 0;
   width: 100%;
@@ -41,10 +41,6 @@ footer {
   line-height: 35px; /* Reduced line-height */
   margin-top: 20px;
   z-index: 999;
-}
-
-footer.footer {
-  color: #ffffff !important; /* White text color */
 }
 
 footer .social-media-icons {
