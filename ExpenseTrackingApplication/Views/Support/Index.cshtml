@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Support";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="support-content">
+    <p>
+        Welcome to the Support section! Here, you can find resources to help you with any issues or questions you may have.
+    </p>
+    <h2>Contact Us</h2>
+    <p>
+        If you need assistance, please visit our <a asp-controller="Support" asp-action="Contact">Contact</a> page.
+    </p>
+
+    <h2>Frequently Asked Questions (FAQ)</h2>
+    <p>
+        Check our <a asp-controller="Support" asp-action="FAQ">FAQ</a> section for answers to common questions.
+    </p>
+
+    <h2>Support Resources</h2>
+    <ul>
+        <li>Help Center</li>
+        <li>Community Forums</li>
+        <li>Documentation</li>
+    </ul>
+</div>
