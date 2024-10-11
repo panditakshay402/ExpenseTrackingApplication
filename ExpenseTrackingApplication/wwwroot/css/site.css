@@ -42,6 +42,17 @@ footer .container p {
   text-decoration: none; /* Remove underline from links */
 }
 
+.privacy-link {
+  color: #FFD700; /* Złoty kolor tekstu */
+  text-decoration: underline; /* Podkreślenie tekstu */
+  font-weight: bold; /* Pogrubienie tekstu */
+  transition: color 0.3s ease; /* Efekt przejścia koloru */
+}
+
+.privacy-link:hover {
+  color: #ffffff; /* Zmiana koloru na biały przy najechaniu */
+}
+
 
 @media (min-width: 768px) {
   html {
