@@ -2,23 +2,16 @@
 ViewData["Title"] = "Home Page";
 }
 
-<!DOCTYPE html>
-<html lang="en">
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true"/>
 
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Expense Tracker</title>
-    <link rel="stylesheet" href="~/css/home.css"/>
-</head>
 <body>
-
-<div class="hero rounded bg-white p-4">
+<div class="hero p-4">
     <div class="hero-content d-flex align-items-center">
         <div class="text-container">
             <h1 class="display-4">Take Charge of Your Finances Today</h1>
             <p class="lead">Boost your financial awareness and start saving smarter with Expense Tracker. Join now and take control of your budget today!</p>
-            <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg">Get Started</a>
+            <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-lg get-start-btn">Get Started</a>
+
         </div>
         <div class="image-container ml-4">
             <img src="https://res.cloudinary.com/ggeztrw22/image/upload/v1728080863/images/getstartnow.jpg" alt="Get Started" class="rounded img-fluid">
@@ -27,34 +20,36 @@ ViewData["Title"] = "Home Page";
 </div>
 
 <div class="features">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 text-center">
-                <div class="feature-box">
-                    <i class="fas fa-chart-line fa-3x"></i>
-                    <h3>Track Expenses</h3>
-                    <p>Keep an eye on your spending and stay within your budget.</p>
+    <div class="features-background">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="feature-box">
+                        <i class="fas fa-chart-line fa-3x"></i>
+                        <h3>Track Expenses</h3>
+                        <p>Keep an eye on your spending and stay within your budget.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="feature-box">
-                    <i class="fas fa-wallet fa-3x"></i>
-                    <h3>Manage Budgets</h3>
-                    <p>Create and manage your personal and family budgets.</p>
+                <div class="col-md-4 text-center">
+                    <div class="feature-box">
+                        <i class="fas fa-wallet fa-3x"></i>
+                        <h3>Manage Budgets</h3>
+                        <p>Create and manage your personal and family budgets.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="feature-box">
-                    <i class="fas fa-mobile-alt fa-3x"></i>
-                    <h3>Generate Reports</h3>
-                    <p>Review and manage detailed reports of your budgets and expenses at any time.</p>
+                <div class="col-md-4 text-center">
+                    <div class="feature-box">
+                        <i class="fas fa-mobile-alt fa-3x"></i>
+                        <h3>Generate Reports</h3>
+                        <p>Review and manage detailed reports of your budgets and expenses at any time.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="user-success-story mt-5 rounded bg-white p-4">
+<div class="user-success-story success-bg">
     <div class="container">
         <div class="row d-flex align-items-center">
             <div class="col-md-6">
@@ -63,16 +58,10 @@ ViewData["Title"] = "Home Page";
             <div class="col-md-6">
                 <h2>They Planned, They Succeeded!</h2>
                 <p>Our users have already taken the first step towards financial freedom by signing up and creating their budgets. Now, it's your turn to join them and achieve your financial goals!</p>
-                <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-primary">Join Them Now</a>
+                <a asp-area="" asp-controller="Account" asp-action="Register" class="btn custom-btn">Join Them Now</a>
             </div>
         </div>
     </div>
 </div>
 
-
-@section Scripts {
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-}
-
 </body>
-</html>

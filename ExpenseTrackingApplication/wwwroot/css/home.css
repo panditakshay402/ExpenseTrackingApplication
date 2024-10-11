@@ -1,12 +1,32 @@
-﻿.hero {
-    background-color: #f8f9fa; /* Light grey background */
-    border-radius: 25px; /* Rounded corners */
-    padding: 50px; /* Increase padding for a larger box */
-    text-align: center; /* Center align text */
-    margin: 20px; /* Add margin */
+﻿/* ---------- Home Style ----------- */
+
+/* Color Theme in Hex */
+.Dashboard-1-hex { color: #643DF2; }
+.Dashboard-2-hex { color: #7552F2; }
+.Stock-Market-insight-Dashboard-3-hex { color: #9F88F2; }
+.Stock-Market-insight-Dashboard-4-hex { color: #55D976; }
+.Stock-Market-insight-Dashboard-5-hex { color: #F2F2F2; }
+
+/* Color Theme in RGBA */
+.Dashboard-1-rgba { color: rgba(99, 60, 242, 1); }
+.Dashboard-2-rgba { color: rgba(117, 82, 242, 1); }
+.Dashboard-3-rgba { color: rgba(158, 135, 242, 1); }
+.Dashboard-4-rgba { color: rgba(84, 216, 117, 1); }
+.Dashboard-5-rgba { color: rgba(242, 242, 242, 1); }
+
+.hero {
+    background: linear-gradient(to bottom, rgba(117, 82, 242, 1), rgba(242, 242, 242, 1)); /* Gradient background */
+    width: 100vw; /* Full width */
+    padding: 50px 0; /* Padding for top and bottom, adjust as needed */
+    margin-left: calc(-50vw + 50%); /* Align to stretch full width */
+    margin-right: calc(-50vw + 50%); /* Ensure full width */
+    text-align: center; /* Keep text centered */
+    border-radius: 0; /* Remove rounded corners */
 }
 
 .hero-content {
+    max-width: 1200px; /* Limit content width */
+    margin: 0 auto; /* Center content */
     display: flex;
     align-items: center;
 }
@@ -25,10 +45,64 @@
     border-radius: 15px;
 }
 
+.get-start-btn {
+    background-color: rgba(84, 216, 117, 1);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.get-start-btn:hover {
+    background-color: rgba(70, 200, 100, 1);
+}
+
+
+.features-background {
+    background: linear-gradient(to bottom, rgba(242, 242, 242, 1), rgba(158, 135, 242, 1)); /* Gradient background */
+    width: 100vw; /* Full width */
+    padding: 50px 0; /* Padding for top and bottom */
+    margin-left: calc(-50vw + 50%); /* Align to stretch full width */
+    margin-right: calc(-50vw + 50%); /* Ensure full width */
+    text-align: center; /* Keep text centered */
+}
+
 .feature-box {
     background-color: #ffffff; /* White background */
     border-radius: 25px; /* Rounded corners */
     padding: 20px; /* Add padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
     margin: 10px; /* Add margin */
+    transition: transform 0.2s; /* Add transition for hover effect */
 }
+
+.feature-box:hover {
+    transform: scale(1.05); /* Scale up slightly on hover */
+}
+
+.success-bg {
+    background: linear-gradient(to bottom, rgba(158, 135, 242, 1), rgba(99, 60, 242, 1)); /* Gradient background */
+    width: 100vw; /* Full width */
+    padding: 50px 0; /* Padding for top and bottom */
+    margin-left: calc(-50vw + 50%); /* Align to stretch full width */
+    margin-right: calc(-50vw + 50%); /* Ensure full width */
+    text-align: center; /* Keep text centered */
+}
+
+.custom-btn {
+    background-color: rgba(84, 216, 117, 1); /* Ustawienie koloru tła */
+    color: white; /* Kolor tekstu */
+    border: none; /* Brak obramowania */
+    border-radius: 25px; /* Zaokrąglone rogi */
+    padding: 10px 20px; /* Padding wewnętrzny */
+    font-weight: bold; /* Pogrubiony tekst */
+    transition: background-color 0.3s ease; /* Płynne przejście koloru tła */
+}
+
+.custom-btn:hover {
+    background-color: rgba(70, 200, 100, 1); /* Ciemniejszy kolor tła podczas najechania */
+}
+
+
